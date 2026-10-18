@@ -95,10 +95,18 @@ def main():
     cube("Entrance canopy", (0, -1.02, 1.36), (0.96, 0.6, 0.10), accents, 0.03)
     cube("Hall signboard", (0, -0.84, 1.73), (1.35, 0.09, 0.18), accents, 0.02)
 
+    # Smaller companion office, set forward/right with a clear gap to the hall.
+    cube("Trade Office body", (2.25, -1.15, 0.83), (1.30, 1.20, 1.20), wall)
+    cube("Trade Office roof", (2.25, -1.15, 1.52), (1.52, 1.42, 0.20), roof, 0.07)
+    cube("Trade Office door", (2.04, -1.78, 0.61), (0.36, 0.07, 0.76), wood, 0.02)
+    cube("Trade Office window", (2.60, -1.78, 0.97), (0.34, 0.07, 0.40), window, 0.025)
+    cube("Trade Office canopy", (2.04, -1.91, 1.06), (0.60, 0.40, 0.08), accents, 0.025)
+    cube("Trade Office signboard", (2.25, -1.78, 1.31), (0.80, 0.07, 0.12), accents, 0.02)
+
     # Uncluttered background landscaping.
     for number, (x, y, height) in enumerate(
         [(-3.10, -1.2, 1.15), (-2.8, 2.1, 0.9),
-         (2.8, 1.65, 1.22), (2.95, -1.55, 0.82)], start=1
+         (2.8, 1.65, 1.22), (0.95, -3.15, 0.82)], start=1
     ):
         cylinder(f"Tree {number:02d} trunk", (x, y, 0.47), 0.13, 0.49, wood, 10)
         sphere(
