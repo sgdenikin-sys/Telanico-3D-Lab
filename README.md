@@ -64,6 +64,28 @@ A starting Dockerfile is provided under infra/. This makes the generator portabl
 
 ## Binary assets and version control
 
+### Download the two-office + Coffee Area models on iPhone
+
+The Coffee Area scene builds on `codex/second-office-smoke` and preserves both
+offices. Its small terracotta kiosk has a cream cup sign and a matching bench.
+
+1. Sign in to GitHub in Safari and open the Coffee Area pull request.
+2. Open its **Checks** tab and the **Blender smoke test** run. Alternatively,
+   open the repository's **Actions** tab and select that run. Confirm the run
+   belongs to the latest Coffee Area commit, rather than `main`.
+3. After the build succeeds, open the run's **Summary**, scroll to **Artifacts**,
+   and tap **telanico-smoke-test-models** to download the ZIP.
+4. Open the ZIP in the iPhone **Files** app to extract
+   `blender/generated/smoke_test.blend` and
+   `godot/assets/generated/smoke_test.glb`.
+
+Artifacts expire after **7 days**. To rebuild, open **Actions → Blender smoke
+test → Run workflow**, choose **codex/coffee-area-smoke**, and run it. If Safari
+hides the controls, use **Request Desktop Website**. No merge into `main` or
+home computer is needed; downloading these files does not require Blender on
+the iPhone. This workflow generates and validates the GLB; Godot import is
+checked separately in the cloud environment.
+
 The **Python scripts and Godot scenes are versioned**. Generated .blend/.glb files are ignored for the smoke test to keep the repository lightweight and builds reproducible; GitHub Actions uploads them as build artifacts.
 
 When original, hand-edited .blend assets need permanent versioning, enable Git LFS on all development machines and explicitly track approved source files. Avoid committing entire unreviewed asset-pack ZIPs.

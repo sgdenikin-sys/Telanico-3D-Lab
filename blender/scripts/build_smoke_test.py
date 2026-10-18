@@ -67,6 +67,45 @@ def sphere(name, location, scale, mat):
     return obj
 
 
+def coffee_area(wall, wood, accents):
+    """A low kiosk with a cup silhouette, separate from both office buildings."""
+    canopy = material("coffee muted terracotta", (0.58, 0.34, 0.26))
+    ceramic = material("coffee cream ceramic", (0.88, 0.81, 0.66))
+    coffee = material("coffee dark roast", (0.16, 0.09, 0.05))
+    cube("Coffee Area terrace", (-1.55, -2.45, 0.28), (2.20, 1.55, 0.10),
+         wood, 0.045)
+    cube("Coffee Area kiosk", (-1.65, -2.02, 0.805), (1.08, 0.72, 0.95),
+         wall, 0.06)
+    cube("Coffee Area serving window", (-1.65, -2.395, 0.98), (0.78, 0.05, 0.38),
+         coffee, 0.025)
+    cube("Coffee Area counter", (-1.65, -2.48, 0.78), (1.22, 0.32, 0.10),
+         accents, 0.035)
+    cube("Coffee Area rounded canopy", (-1.65, -2.12, 1.36), (1.42, 1.10, 0.18),
+         canopy, 0.075)
+
+    # Oversized cream cup reads as a sign without fonts or external textures.
+    cylinder("Coffee Area cup sign", (-1.65, -2.12, 1.64), 0.19, 0.38,
+             ceramic, 24)
+    cylinder("Coffee Area coffee surface", (-1.65, -2.12, 1.835), 0.15, 0.012,
+             coffee, 24)
+    bpy.ops.mesh.primitive_torus_add(
+        major_segments=24, minor_segments=8,
+        location=(-1.40, -2.12, 1.65), rotation=(math.pi / 2, 0, 0),
+        major_radius=0.115, minor_radius=0.035,
+    )
+    handle = bpy.context.object
+    handle.name = "Coffee Area cup handle"
+    handle.data.materials.append(ceramic)
+    for polygon in handle.data.polygons:
+        polygon.use_smooth = True
+
+    cube("Coffee Area bench seat", (-1.65, -2.96, 0.59), (1.08, 0.32, 0.10),
+         canopy, 0.035)
+    for number, x in enumerate((-2.03, -1.27), start=1):
+        cube(f"Coffee Area bench leg {number}", (x, -2.96, 0.435),
+             (0.10, 0.25, 0.21), wood, 0.025)
+
+
 def main():
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.object.delete(use_global=False)
@@ -102,6 +141,8 @@ def main():
     cube("Trade Office window", (2.60, -1.78, 0.97), (0.34, 0.07, 0.40), window, 0.025)
     cube("Trade Office canopy", (2.04, -1.91, 1.06), (0.60, 0.40, 0.08), accents, 0.025)
     cube("Trade Office signboard", (2.25, -1.78, 1.31), (0.80, 0.07, 0.12), accents, 0.02)
+
+    coffee_area(wall, wood, accents)
 
     # Uncluttered background landscaping.
     for number, (x, y, height) in enumerate(

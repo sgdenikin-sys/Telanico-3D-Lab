@@ -2,6 +2,14 @@ name: Blender smoke test
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'blender/scripts/**'
+      - 'tools/validate_glb.py'
+      - '.github/workflows/blender-smoke.yml'
+
+permissions:
+  contents: read
 
 jobs:
   build:
