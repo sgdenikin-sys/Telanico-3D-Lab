@@ -12,10 +12,11 @@ jobs:
       - name: Install headless Blender
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
           blender --version
+          blender --background --python-exit-code 1 --python-expr "import numpy; print('NumPy available:', numpy.__version__)"
       - name: Build editable Blender scene and GLB
-        run: blender --background --python blender/scripts/build_smoke_test.py
+        run: blender --background --python-exit-code 1 --python blender/scripts/build_smoke_test.py
       - name: Validate GLB
         run: python3 tools/validate_glb.py godot/assets/generated/smoke_test.glb
       - name: Upload models
