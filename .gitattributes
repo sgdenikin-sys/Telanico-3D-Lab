@@ -1,0 +1,4 @@
+# Explicitly mark binary formats for future Git LFS decisions.
+*.blend binary
+*.glb binary
+*.fbx binary

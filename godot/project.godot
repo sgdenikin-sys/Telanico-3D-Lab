@@ -1,0 +1,14 @@
+; Engine configuration file.
+; Open with Godot 4.x. Uses Compatibility rendering for desktop/mobile web.
+
+config_version=5
+
+[application]
+
+config/name="Telanico 3D Lab"
+run/main_scene="res://scenes/main.tscn"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

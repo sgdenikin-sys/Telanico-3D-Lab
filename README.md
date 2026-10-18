@@ -1,2 +1,78 @@
-# Telanico-3D-Lab
-Port from 2.5D to 3D map
+# Telanico 3D Lab
+
+An isolated experiment for replacing **only the world map** of Telanico Trading with a soft, tabletop-style 3D diorama. The established indoor story quests, dialogue, invoice UI, and game rules are deliberately out of scope.
+
+## Principles
+
+- Visual direction: **Kenney+ / premium tabletop diorama**: soft, restrained colors, readable silhouettes, tasteful bevels, warm light, and an adult-proportioned Cooper honey badger.
+- Two islands; buildings are destinations. **No city road network**. Short walking or running transitions may use open paths in the landscape.
+- Work in this repository only. Never edit or copy from the production Telanico Trading repository unless expressly requested.
+- Blender generates editable source files (.blend) and Godot interchange files (.glb). Code is reproducible on Windows or headless Linux.
+- Start without external asset-pack downloads. Import CC0 packs later only after checking license terms and authorship.
+
+## Project layout
+
+- AGENTS.md — permanent instructions for Codex.
+- blender/scripts/build_smoke_test.py — procedural Blender diorama generator.
+- blender/generated/ — local .blend output (not checked into Git).
+- godot/project.godot — isolated Godot 4 test project.
+- godot/scenes/main.tscn — simple 3D viewer for the generated model.
+- godot/assets/generated/ — .glb output (not checked into Git).
+- tools/run_blender.ps1 — Windows one-command Blender generation.
+- tools/validate_glb.py — basic output validation using Python stdlib.
+- infra/Dockerfile — foundation for a future Linux VM/container.
+- .github/workflows/blender-smoke.yml — manually triggered Linux build and downloadable artifacts.
+
+## Start on Windows (recommended)
+
+1. In **GitHub Desktop**, choose File > Clone repository > sgdenikin-sys/Telanico-3D-Lab and clone to a working directory (e.g. Documents/GitHub/Telanico-3D-Lab).
+2. Open **PowerShell in the cloned repo root** (the folder containing this README).
+3. Run the smoke test:
+
+~~~powershell
+powershell -ExecutionPolicy Bypass -File .\tools\run_blender.ps1
+~~~
+
+The script looks for blender.exe on PATH or under Program Files/Blender Foundation. It generates:
+- blender/generated/smoke_test.blend
+- godot/assets/generated/smoke_test.glb
+
+4. Open the file **blender/generated/smoke_test.blend** in Blender to confirm that geometry is editable.
+5. Open **godot/project.godot** via the Godot Project Manager. Press F6 on scenes/main.tscn or F5 for the project to view the exported diorama.
+6. Open a terminal in the repository root and start Codex using **codex** (or select the cloned folder in the Codex app). Sign in with ChatGPT when prompted.
+
+Suggested first Codex prompt:
+> Read AGENTS.md and README.md. Inspect the Blender generator, Godot viewer, and output validation. Check which tools are installed before running anything. Make one small improvement to the tabletop island smoke test; regenerate and validate it. Work on a feature branch and describe exactly what you tested. Do not change the production Telanico game.
+
+### If the Blender command is not found
+Open blender.exe normally to verify installation. You can run it using its full path. The PowerShell helper checks the usual Program Files location; if installed elsewhere, add its folder to PATH or edit the helper's path.
+
+## Codex Cloud / iPhone
+
+Open https://chatgpt.com/codex, connect your GitHub account, enable this repository for Codex if prompted, and create/select an environment using **sgdenikin-sys/Telanico-3D-Lab**. Those account authorizations must be completed interactively by the repository owner.
+
+The local Blender installation is **not** automatically available in a cloud Codex environment. For headless 3D generation, its environment must install Blender, or run builds using the included GitHub Actions workflow / a future VM. Outputs from these environments must be explicitly committed or uploaded as artifacts.
+
+## Headless Blender (Linux/VM)
+
+~~~bash
+blender --background --python blender/scripts/build_smoke_test.py
+python3 tools/validate_glb.py godot/assets/generated/smoke_test.glb
+~~~
+
+A starting Dockerfile is provided under infra/. This makes the generator portable to a Linux VM; it is not an already-provisioned server. Geometry export can run CPU-only. Photorealistic rendering or interactive Blender over remote desktop may later need GPU support.
+
+## Binary assets and version control
+
+The **Python scripts and Godot scenes are versioned**. Generated .blend/.glb files are ignored for the smoke test to keep the repository lightweight and builds reproducible; GitHub Actions uploads them as build artifacts.
+
+When original, hand-edited .blend assets need permanent versioning, enable Git LFS on all development machines and explicitly track approved source files. Avoid committing entire unreviewed asset-pack ZIPs.
+
+## Next milestones
+
+1. Validate the Blender → .blend → .glb → Godot chain locally.
+2. Set up Codex Cloud GitHub environment, then test unattended Linux execution.
+3. Add curated Kenney / KayKit / Quaternius assets with recorded licenses.
+4. Build one polished modular office and a small island without roads.
+5. Prototype Cooper's adult-proportioned figurine and short walking animations.
+6. Only then explore integration into the presentation game's existing world-map transitions.

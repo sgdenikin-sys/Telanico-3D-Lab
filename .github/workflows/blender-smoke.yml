@@ -1,0 +1,29 @@
+name: Blender smoke test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install headless Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Build editable Blender scene and GLB
+        run: blender --background --python blender/scripts/build_smoke_test.py
+      - name: Validate GLB
+        run: python3 tools/validate_glb.py godot/assets/generated/smoke_test.glb
+      - name: Upload models
+        uses: actions/upload-artifact@v4
+        with:
+          name: telanico-smoke-test-models
+          path: |
+            blender/generated/smoke_test.blend
+            godot/assets/generated/smoke_test.glb
+          if-no-files-found: error
+          retention-days: 7
