@@ -1,13 +1,22 @@
 extends Node3D
 
 const MODEL_PATH := "res://assets/generated/smoke_test.glb"
+const MIN_ZOOM := 7.0
+const MAX_ZOOM := 18.0
+const INITIAL_ZOOM := 12.0
+
+var camera: Camera3D
+var island: Node3D
+var touches: Dictionary = {}
+var portrait_hint: ColorRect
+
 
 func _ready() -> void:
-    var camera := Camera3D.new()
+    camera = Camera3D.new()
     camera.name = "TabletopCamera"
     camera.position = Vector3(8.0, 9.0, 10.5)
     camera.projection = Camera3D.PROJECTION_ORTHOGONAL
-    camera.size = 12.0
+    camera.size = INITIAL_ZOOM
     camera.current = true
     add_child(camera)
     camera.look_at(Vector3(0.0, 1.0, 0.0), Vector3.UP)
@@ -31,8 +40,108 @@ func _ready() -> void:
     if ResourceLoader.exists(MODEL_PATH):
         var packed_scene := load(MODEL_PATH) as PackedScene
         if packed_scene:
-            var island := packed_scene.instantiate()
+            island = packed_scene.instantiate()
             island.name = "GeneratedIsland"
             add_child(island)
     else:
-        push_warning("Run Blender smoke generator first: " + MODEL_PATH)
+        push_error("Run Blender smoke generator first: " + MODEL_PATH)
+    _build_hud()
+    get_viewport().size_changed.connect(_update_orientation)
+    _update_orientation()
+    print("TELANICO_VIEWER_READY")
+
+
+func _build_hud() -> void:
+    var hud := CanvasLayer.new()
+    add_child(hud)
+    var instructions := Label.new()
+    instructions.text = "TELANICO 3D LAB\nDrag to rotate · Pinch to zoom"
+    instructions.position = Vector2(24, 18)
+    instructions.add_theme_font_size_override("font_size", 28)
+    instructions.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    hud.add_child(instructions)
+
+    var reset := Button.new()
+    reset.text = "Reset view"
+    reset.custom_minimum_size = Vector2(224, 88)
+    reset.add_theme_font_size_override("font_size", 24)
+    hud.add_child(reset)
+    reset.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+    reset.offset_left = -248
+    reset.offset_right = -24
+    reset.offset_top = 18
+    reset.offset_bottom = 106
+    reset.pressed.connect(reset_view)
+
+    portrait_hint = ColorRect.new()
+    portrait_hint.color = Color(0.07, 0.10, 0.13, 1.0)
+    portrait_hint.mouse_filter = Control.MOUSE_FILTER_STOP
+    hud.add_child(portrait_hint)
+    portrait_hint.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    var label := Label.new()
+    label.text = "Rotate your iPhone to landscape\nThen drag to rotate · Pinch to zoom"
+    label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    label.add_theme_font_size_override("font_size", 64)
+    portrait_hint.add_child(label)
+    label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+
+func _update_orientation() -> void:
+    var size := get_viewport().get_visible_rect().size
+    portrait_hint.visible = size.y > size.x
+    touches.clear()
+
+
+func reset_view() -> void:
+    touches.clear()
+    if island:
+        island.rotation.y = 0.0
+    camera.size = INITIAL_ZOOM
+
+
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+        touches.clear()
+
+
+func _input(event: InputEvent) -> void:
+    # A release over a HUD button must still clear an earlier island touch.
+    if event is InputEventScreenTouch and (not event.pressed or event.canceled):
+        touches.erase(event.index)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+    if not island or portrait_hint.visible:
+        return
+    if event is InputEventScreenTouch:
+        if event.pressed and not event.canceled:
+            touches[event.index] = event.position
+        else:
+            touches.erase(event.index)
+    elif event is InputEventScreenDrag and touches.has(event.index):
+        if touches.size() == 1:
+            var previous: Vector2 = touches[event.index]
+            var width := maxf(get_viewport().get_visible_rect().size.x, 1.0)
+            island.rotation.y += (event.position.x - previous.x) / width * TAU
+        elif touches.size() == 2:
+            var other_index: int = touches.keys()[0]
+            if other_index == event.index:
+                other_index = touches.keys()[1]
+            var previous: Vector2 = touches[event.index]
+            var other: Vector2 = touches[other_index]
+            var old_distance := previous.distance_to(other)
+            var new_distance: float = event.position.distance_to(other)
+            if old_distance > 1.0 and new_distance > 1.0:
+                camera.size = clampf(camera.size * old_distance / new_distance,
+                                    MIN_ZOOM, MAX_ZOOM)
+        touches[event.index] = event.position
+    elif event is InputEventMouseMotion and touches.is_empty():
+        if event.button_mask & MOUSE_BUTTON_MASK_LEFT:
+            island.rotation.y += event.relative.x / maxf(
+                get_viewport().get_visible_rect().size.x, 1.0) * TAU
+    elif event is InputEventMouseButton and event.pressed and touches.is_empty():
+        if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+            camera.size = clampf(camera.size * 0.9, MIN_ZOOM, MAX_ZOOM)
+        elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+            camera.size = clampf(camera.size / 0.9, MIN_ZOOM, MAX_ZOOM)
