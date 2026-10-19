@@ -9,6 +9,8 @@ var camera: Camera3D
 var island: Node3D
 var touches: Dictionary = {}
 var portrait_hint: ColorRect
+var instructions: Label
+var reset: Button
 
 
 func _ready() -> void:
@@ -48,20 +50,25 @@ func _ready() -> void:
     _build_hud()
     get_viewport().size_changed.connect(_update_orientation)
     _update_orientation()
+    var layout_timer := Timer.new()
+    layout_timer.wait_time = 0.25
+    layout_timer.timeout.connect(_layout_hud)
+    add_child(layout_timer)
+    layout_timer.start()
     print("TELANICO_VIEWER_READY")
 
 
 func _build_hud() -> void:
     var hud := CanvasLayer.new()
     add_child(hud)
-    var instructions := Label.new()
+    instructions = Label.new()
     instructions.text = "TELANICO 3D LAB\nDrag to rotate · Pinch to zoom"
     instructions.position = Vector2(24, 18)
     instructions.add_theme_font_size_override("font_size", 28)
     instructions.mouse_filter = Control.MOUSE_FILTER_IGNORE
     hud.add_child(instructions)
 
-    var reset := Button.new()
+    reset = Button.new()
     reset.text = "Reset view"
     reset.custom_minimum_size = Vector2(224, 88)
     reset.add_theme_font_size_override("font_size", 24)
@@ -80,6 +87,7 @@ func _build_hud() -> void:
     portrait_hint.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     var label := Label.new()
     label.text = "Rotate your iPhone to landscape\nThen drag to rotate · Pinch to zoom"
+    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     label.add_theme_font_size_override("font_size", 64)
@@ -91,6 +99,43 @@ func _update_orientation() -> void:
     var size := get_viewport().get_visible_rect().size
     portrait_hint.visible = size.y > size.x
     touches.clear()
+    _layout_hud()
+
+
+func _layout_hud() -> void:
+    if not is_instance_valid(reset):
+        return
+    var size := get_viewport().get_visible_rect().size
+    var units := 1.0
+    var safe_left := 0.0
+    var safe_right := 0.0
+    var safe_top := 0.0
+    if OS.has_feature("web"):
+        var raw = JavaScriptBridge.eval("window.telanicoViewport ? window.telanicoViewport() : null")
+        if raw is String:
+            var layout = JSON.parse_string(raw)
+            if layout is Dictionary and float(layout.get("width", 0)) > 0:
+                units = size.x / float(layout["width"])
+                safe_left = float(layout.get("left", 0)) * units
+                safe_right = float(layout.get("right", 0)) * units
+                safe_top = float(layout.get("top", 0)) * units
+    # Screen-pixel sizing keeps the tap target at 112 x 48 CSS pixels even
+    # when canvas_items expands the logical viewport on a wide iPhone.
+    var margin := 12.0 * units
+    reset.custom_minimum_size = Vector2(112, 48) * units
+    reset.add_theme_font_size_override("font_size", roundi(16 * units))
+    reset.offset_left = -safe_right - margin - 112 * units
+    reset.offset_right = -safe_right - margin
+    reset.offset_top = safe_top + margin
+    reset.offset_bottom = safe_top + margin + 48 * units
+    instructions.position = Vector2(safe_left + margin, safe_top + margin)
+    instructions.add_theme_font_size_override("font_size", roundi(16 * units))
+    if OS.has_feature("web"):
+        # Read-only layout evidence for browser tests of the canvas-rendered HUD.
+        var rect := reset.get_global_rect()
+        var evidence := {"x": rect.position.x / units, "y": rect.position.y / units,
+                         "width": rect.size.x / units, "height": rect.size.y / units}
+        JavaScriptBridge.eval("window.telanicoHUD = " + JSON.stringify(evidence))
 
 
 func reset_view() -> void:
