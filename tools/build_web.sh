@@ -10,8 +10,9 @@ mkdir -p build/logs
 rm -rf build/web
 mkdir -p build/web
 "$blender_bin" --background --factory-startup --python-exit-code 1 \
-  --python blender/scripts/build_smoke_test.py 2>&1 | tee build/logs/blender.log
-python3 tools/validate_glb.py godot/assets/generated/smoke_test.glb
+  --python blender/scripts/build_overworld.py 2>&1 | tee build/logs/blender.log
+python3 tools/validate_overworld.py
+python3 tools/validate_glb.py godot/assets/generated/overworld.glb
 "$godot_bin" --headless --path godot --editor --import 2>&1 | tee build/logs/import.log
 # Godot can log script errors without returning nonzero: require the test marker.
 timeout 60 "$godot_bin" --headless --path godot --script res://tests/test_viewer.gd \

@@ -1,20 +1,23 @@
 extends Node3D
 
-const MODEL_PATH := "res://assets/generated/smoke_test.glb"
-const MIN_ZOOM := 7.0
-const MAX_ZOOM := 18.0
-const INITIAL_ZOOM := 12.0
+const MODEL_PATH := "res://assets/generated/overworld.glb"
+const MIN_ZOOM := 30.0
+const MAX_ZOOM := 82.0
+const INITIAL_ZOOM := 52.0
 
 var camera: Camera3D
 var island: Node3D
 var touches: Dictionary = {}
 var portrait_hint: ColorRect
+var landmark_labels: Array[Label] = []
+var label_anchors: Array[Node3D] = []
+var show_landmark_labels := true
 
 
 func _ready() -> void:
     camera = Camera3D.new()
     camera.name = "TabletopCamera"
-    camera.position = Vector3(8.0, 9.0, 10.5)
+    camera.position = Vector3(0.0, 65.0, 78.0)
     camera.projection = Camera3D.PROJECTION_ORTHOGONAL
     camera.size = INITIAL_ZOOM
     camera.current = true
@@ -43,6 +46,21 @@ func _ready() -> void:
             island = packed_scene.instantiate()
             island.name = "GeneratedIsland"
             add_child(island)
+            var names_layer := CanvasLayer.new()
+            add_child(names_layer)
+            for anchor in island.find_children("*label anchor", "Node3D", true, false):
+                var label := Label.new()
+                label.text = String(anchor.name).replace(" label anchor", "").replace("VAT Tax", "VAT / Tax")
+                label.text = label.text.replace(" Harbor Launch", " Launch").replace(" Tube Station", " Tube")
+                label.add_theme_font_size_override("font_size", 22)
+                label.add_theme_color_override("font_color", Color(0.07, 0.14, 0.16))
+                label.add_theme_color_override("font_outline_color", Color(0.97, 0.94, 0.83))
+                label.add_theme_constant_override("outline_size", 4)
+                label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+                names_layer.add_child(label)
+                label.size = label.get_minimum_size()
+                label_anchors.append(anchor)
+                landmark_labels.append(label)
     else:
         push_error("Run Blender smoke generator first: " + MODEL_PATH)
     _build_hud()
@@ -51,11 +69,20 @@ func _ready() -> void:
     print("TELANICO_VIEWER_READY")
 
 
+func _process(_delta: float) -> void:
+    # Screen-space type stays legible on a small landscape phone viewport.
+    for i in range(landmark_labels.size()):
+        var label := landmark_labels[i]
+        var anchor := label_anchors[i]
+        label.visible = show_landmark_labels and not portrait_hint.visible
+        label.position = camera.unproject_position(anchor.global_position) - label.size / 2
+
+
 func _build_hud() -> void:
     var hud := CanvasLayer.new()
     add_child(hud)
     var instructions := Label.new()
-    instructions.text = "TELANICO 3D LAB\nDrag to rotate · Pinch to zoom"
+    instructions.text = "TELANICO · OVERWORLD\nDrag to rotate · Pinch to zoom"
     instructions.position = Vector2(24, 18)
     instructions.add_theme_font_size_override("font_size", 28)
     instructions.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -72,6 +99,20 @@ func _build_hud() -> void:
     reset.offset_top = 18
     reset.offset_bottom = 106
     reset.pressed.connect(reset_view)
+
+    var names_button := Button.new()
+    names_button.text = "Landmarks"
+    names_button.toggle_mode = true
+    names_button.button_pressed = true
+    names_button.add_theme_font_size_override("font_size", 24)
+    hud.add_child(names_button)
+    names_button.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+    names_button.offset_left = -484
+    names_button.offset_right = -260
+    names_button.offset_top = 18
+    names_button.offset_bottom = 106
+    names_button.toggled.connect(func(visible_names: bool):
+        show_landmark_labels = visible_names)
 
     portrait_hint = ColorRect.new()
     portrait_hint.color = Color(0.07, 0.10, 0.13, 1.0)
