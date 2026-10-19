@@ -37,6 +37,7 @@ var inspect_mode := false
 var follow_character := false
 var show_names := false
 var touches: Dictionary = {}
+var ui_touches: Dictionary = {}
 var pointer_start := Vector2.ZERO
 var pointer_last := Vector2.ZERO
 var pointer_dragged := false
@@ -565,9 +566,22 @@ func _pan(delta: Vector2) -> void:
     camera_target.z = clampf(camera_target.z,-75,75)
     follow_character = false
 
+func _over_ui(point: Vector2) -> bool:
+    if panel.visible and panel.get_global_rect().has_point(point): return true
+    for button in top_buttons.values():
+        if button.get_global_rect().has_point(point): return true
+    return false
+
+func _input(event: InputEvent) -> void:
+    if event is InputEventScreenTouch:
+        if event.pressed and _over_ui(event.position): ui_touches[event.index] = true
+        elif not event.pressed and ui_touches.has(event.index):
+            ui_touches.erase.call_deferred(event.index)
+
 func _unhandled_input(event: InputEvent) -> void:
     if portrait.visible: return
     if event is InputEventScreenTouch:
+        if ui_touches.has(event.index): return
         if event.pressed:
             touches[event.index] = event.position
             if touches.size()==1:
@@ -621,7 +635,9 @@ func _unhandled_input(event: InputEvent) -> void:
         if event.keycode==KEY_I: _top_action("Explore")
 
 func _notification(what: int) -> void:
-    if what==NOTIFICATION_APPLICATION_FOCUS_OUT: touches.clear()
+    if what==NOTIFICATION_APPLICATION_FOCUS_OUT:
+        touches.clear()
+        ui_touches.clear()
 
 func _publish_probe() -> void:
     var projected: Dictionary = {}

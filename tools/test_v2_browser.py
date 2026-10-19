@@ -19,9 +19,12 @@ with sync_playwright() as pw:
   print('GAME_READY',width,flush=True)
   def state():return page.evaluate('window.__TELANICO_STATE')
   def click(group,key):
-   print('ACTION',width,group,key,flush=True);s=state();x,y=s[group][key];v=s['viewport'];r=page.locator('#canvas').bounding_box();x=r['x']+x/v[0]*r['width'];y=r['y']+y/v[1]*r['height']
+   print('ACTION',width,group,key,flush=True)
+   page.wait_for_function('(v)=>window.__TELANICO_STATE[v[0]][v[1]] !== undefined',arg=[group,key],polling=250,timeout=30000)
+   s=state();x,y=s[group][key];v=s['viewport'];r=page.locator('#canvas').bounding_box();x=r['x']+x/v[0]*r['width'];y=r['y']+y/v[1]*r['height']
    (page.touchscreen.tap if touch else page.mouse.click)(x,y);page.wait_for_timeout(100 if key=='Walk' else 700)
-   if group=='sites':page.wait_for_function('(id)=>window.__TELANICO_STATE.selected===id',arg=key,timeout=20000)
+   if group=='sites':page.wait_for_function('(id)=>window.__TELANICO_STATE.selected===id',arg=key,polling=250,timeout=30000)
+   if key=='Enter':page.wait_for_function('window.__TELANICO_STATE.ui.Return !== undefined',polling=250,timeout=30000)
   assert len(state()['sites'])==15
   page.screenshot(timeout=120000,path=str(out/f'world-{width}.png'))
   click('sites','finance');assert state()['selected']=='finance',state()
