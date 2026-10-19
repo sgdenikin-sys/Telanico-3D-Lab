@@ -95,7 +95,9 @@ def exercise(browser, url, width, height, touch, output):
         # Complete travel on desktop and phone. The smaller HiDPI phone adds
         # selection, camera and rotation coverage without duplicating all trips.
         if width != 667:
-            page.evaluate('window.__TELANICO_COMMAND={rate:1}')
+            # CPU-only WebGL may render at 1 FPS. Keep a visible walking
+            # interval while allowing enough physics steps within the deadline.
+            page.evaluate('window.__TELANICO_COMMAND={rate:3}')
             click('sites', 'finance')
             click('ui', 'Walk')
             wait("window.__TELANICO_STATE.state==='WALKING'")
