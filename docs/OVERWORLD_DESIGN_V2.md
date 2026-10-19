@@ -38,3 +38,5 @@ These are actual V2 WebGL development-build captures (HUD identifies their sourc
 ![Outer east tube](v2/tube-east.png)
 ![Central channel, docks and bridge](v2/channel.png)
 ![Temporary courier at Settlements](v2/cooper-temporary.png)
+
+![Actual walking animation near Settlements, temporary courier](v2/courier-walking.png)

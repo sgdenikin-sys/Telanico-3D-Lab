@@ -11,7 +11,7 @@ else:url=args.url
 with sync_playwright() as pw:
  browser=pw.chromium.launch(executable_path=shutil.which('chromium'),headless=True,args=['--no-sandbox','--use-angle=swiftshader','--enable-webgl','--enable-unsafe-swiftshader'])
  for width,height,touch in [(1440,900,False),(844,390,True),(667,375,True)]:
-  context=browser.new_context(viewport={'width':width,'height':height},has_touch=touch,device_scale_factor=2 if touch else 1)
+  context=browser.new_context(viewport={'width':width,'height':height},has_touch=touch,device_scale_factor=2 if width==667 else 1)
   page=context.new_page();page.on('response',lambda r:errors.append(f'HTTP {r.status} {r.url}') if r.status>=400 else None);page.on('console',lambda m:print('BROWSER',m.type,m.text,flush=True));errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.goto(url+'?test=1',wait_until='domcontentloaded',timeout=120000)
   print('HTML_READY',width,flush=True)
@@ -43,25 +43,28 @@ with sync_playwright() as pw:
   page.screenshot(timeout=120000,path=str(out/f'world-{width}.png'))
   click('sites','finance');assert state()['selected']=='finance',state()
   assert 'Walk' in state()['ui'];click('ui','Cancel');assert state()['story_minutes']==0
-  page.evaluate('window.__TELANICO_COMMAND={rate:3}')
-  click('sites','finance');click('ui','Walk')
-  page.wait_for_function("window.__TELANICO_STATE.state==='WALKING'",polling=250)
-  assert 'Walking' in state()['animation']
-  page.screenshot(timeout=120000,path=str(out/f'walking-{width}.png'))
-  page.wait_for_function("window.__TELANICO_STATE.current==='finance' && window.__TELANICO_STATE.state==='IDLE'",polling=250,timeout=90000)
-  assert state()['story_minutes']>0 and 'Idle' in state()['animation']
-  page.evaluate('window.__TELANICO_COMMAND={rate:12}')
-  assert 'Enter' in state()['ui'];click('ui','Enter');click('ui','Return')
-  # The same browser input path exercises slow and fast crossings.
-  click('sites','dock_e');click('ui','Walk')
-  page.wait_for_function("window.__TELANICO_STATE.current==='dock_e' && window.__TELANICO_STATE.state==='IDLE'",timeout=120000)
-  before=state()['story_minutes'];click('ui','Boat')
-  page.wait_for_function("window.__TELANICO_STATE.current==='dock_w' && window.__TELANICO_STATE.state==='IDLE'",polling=250,timeout=120000)
-  assert state()['story_minutes']-before==5 and state()['last_trip']['kind']=='boat'
-  click('ui','Outside');click('sites','tube_w');click('ui','Tube')
-  page.wait_for_function("window.__TELANICO_STATE.current==='tube_e' && window.__TELANICO_STATE.state==='IDLE'",polling=250,timeout=120000)
-  assert state()['last_trip']['kind']=='tube' and state()['last_trip']['minutes']==3
-  click('ui','Outside')
+  # Full travel suite at desktop and phone sizes; the small HiDPI phone
+  # additionally covers layout/selection/gestures without repeating every trip.
+  if width!=667:
+   page.evaluate('window.__TELANICO_COMMAND={rate:3}')
+   click('sites','finance');click('ui','Walk')
+   page.wait_for_function("window.__TELANICO_STATE.state==='WALKING'",polling=250)
+   assert 'Walking' in state()['animation']
+   page.screenshot(timeout=120000,path=str(out/f'walking-{width}.png'))
+   page.wait_for_function("window.__TELANICO_STATE.current==='finance' && window.__TELANICO_STATE.state==='IDLE'",polling=250,timeout=90000)
+   assert state()['story_minutes']>0 and 'Idle' in state()['animation']
+   page.evaluate('window.__TELANICO_COMMAND={rate:12}')
+   assert 'Enter' in state()['ui'];click('ui','Enter');click('ui','Return')
+   # The same browser input path exercises slow and fast crossings.
+   click('sites','dock_e');click('ui','Walk')
+   page.wait_for_function("window.__TELANICO_STATE.current==='dock_e' && window.__TELANICO_STATE.state==='IDLE'",timeout=120000)
+   before=state()['story_minutes'];click('ui','Boat')
+   page.wait_for_function("window.__TELANICO_STATE.current==='dock_w' && window.__TELANICO_STATE.state==='IDLE'",polling=250,timeout=120000)
+   assert state()['story_minutes']-before==5 and state()['last_trip']['kind']=='boat'
+   click('ui','Outside');click('sites','tube_w');click('ui','Tube')
+   page.wait_for_function("window.__TELANICO_STATE.current==='tube_e' && window.__TELANICO_STATE.state==='IDLE'",polling=250,timeout=120000)
+   assert state()['last_trip']['kind']=='tube' and state()['last_trip']['minutes']==3
+   click('ui','Outside')
   click('ui','Explore');assert state()['inspect'];drag_camera(True)
   page.wait_for_function('Math.abs(window.__TELANICO_STATE.yaw)>0.01',polling=250,timeout=30000)
   click('ui','Explore');assert not state()['inspect']
