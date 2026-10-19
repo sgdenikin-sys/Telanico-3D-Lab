@@ -312,7 +312,8 @@ def manifest():
             'LC Desk to Trade Finance':shortest('lc','trade'),
             'Operations to VAT Tax':shortest('operations','tax'),
             'Archive to FX Desk':shortest('archive','fx'),
-            'Civic hub to civic hub via bridge':shortest('west_hub','east_hub')})
+            'Civic hub to civic hub via bridge':shortest('west_hub','east_hub'),
+            'Central dock to central dock via bridge':shortest('west_dock','east_dock')})
     (OUT/'overworld_layout.json').write_text(json.dumps(data,indent=2)+'\n')
     return data
 
@@ -355,7 +356,7 @@ def main():
     for name,(side,kind,x,y,z) in LANDMARKS.items():
         make_building(name,kind,x,y,z,side)
     landscaping()
-    cam=camera('Overworld editable camera',(52,-70,75),(0,0,1),87)
+    cam=camera('Overworld editable camera',(38,-74,85),(0,0,1),100)
     bpy.context.scene.camera=cam
     bpy.ops.object.light_add(type='AREA',location=(-20,-30,60))
     key=bpy.context.object;key.name='Soft studio key';key.data.energy=45000

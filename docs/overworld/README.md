@@ -35,7 +35,7 @@ is symbolic, with no second bridge or pipe obstructing the channel.
 Primary promenades are 2.4 units wide, secondary stone paths 1.4, and dirt/gravel
 shortcuts 0.85. Terrace approaches rise gradually, supported by retaining wedges.
 The FX branch stays separate from the main east promenade to reserve later route
-choices. This blockout uses roughly 202 meshes and 30k exported vertices, with a
+choices. This blockout uses roughly 206 meshes and 30k exported vertices, with a
 260-mesh / 100k-vertex test ceiling. Materials are flat colors without textures.
 
 ## Travel calibration, not a simulation
@@ -53,8 +53,11 @@ illustrative costs; it does not move a player or implement travel/quest timing.
 | Operations → VAT / Tax | 9.9 |
 | Archive Rotunda → FX Desk | 16.4 |
 | West civic hub → east civic hub via bridge | 17.0 |
+| Central dock → central dock via bridge | 15.9 |
 
-Boat travel is a **7-minute dock-to-dock design allowance**, including boarding;
+Short waterfront promenades make the bridge route from the same central docks
+about **15.9 minutes on foot**. Boat travel is a **7-minute dock-to-dock design
+allowance**, including boarding;
 the tube allowance is **2 minutes station-to-station**. Walking to either connector
 is additional and varies with the origin. These figures deliberately compare
 specified endpoints, not every possible department pair. The green ~90, yellow

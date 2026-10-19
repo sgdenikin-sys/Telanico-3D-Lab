@@ -27,6 +27,7 @@ ISLANDS = {
              (34,15),(26,23),(13,23),(7,17),(5,9),(7,0)],
 }
 NODES = {
+    'west_shore': (-9,10,GROUND), 'east_shore': (9,10,GROUND),
     'west_hub': (-16,2,GROUND), 'west_north': (-12,9,GROUND),
     'west_lc_junction': (-13,14,GROUND), 'west_south': (-16,-8,GROUND),
     'hall': (-22,3.4,GROUND), 'trade': (-26,-8.4,GROUND),
@@ -52,9 +53,13 @@ ROUTES = [
     ('Coffee garden walk','west_south','coffee','secondary',[(-16,-14,GROUND)]),
     ('West tube approach','west_south','west_tube','secondary',[(-13,-10,GROUND)]),
     ('West harbor promenade','west_hub','west_dock','primary',[(-10,5,GROUND),(-7,1,GROUND)]),
-    ('West bridge approach','west_north','bridge_west','primary',[]),
+    ('West bridge forecourt','west_north','west_shore','primary',[]),
+    ('West bridge approach','west_shore','bridge_west','primary',[]),
+    ('West waterfront walk','west_dock','west_shore','secondary',[(-7.7,1,GROUND),(-9,5,GROUND)]),
     ('Pedestrian bridge','bridge_west','bridge_east','bridge',[(0,11.5,2.15)]),
-    ('East bridge approach','bridge_east','east_north','primary',[(8,10,GROUND)]),
+    ('East bridge approach','bridge_east','east_shore','primary',[(8,10,GROUND)]),
+    ('East bridge forecourt','east_shore','east_north','primary',[]),
+    ('East waterfront walk','east_dock','east_shore','secondary',[(7.7,1,GROUND),(9,5,GROUND)]),
     ('East civic promenade','east_hub','east_north','primary',[]),
     ('East south promenade','east_hub','east_south','primary',[]),
     ('Operations forecourt','east_hub','operations','primary',[]),

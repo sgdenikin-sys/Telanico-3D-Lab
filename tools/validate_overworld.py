@@ -43,10 +43,12 @@ def validate():
     times=report['representative_walk_minutes']
     for key,lo,hi in [('Hall to Compliance',4,6),('Hall to LC Desk',8,12),
         ('LC Desk to Trade Finance',12,18),('Operations to VAT Tax',8,12),
-        ('Archive to FX Desk',12,18),('Civic hub to civic hub via bridge',15,20)]:
+        ('Archive to FX Desk',12,18),('Civic hub to civic hub via bridge',15,20),
+        ('Central dock to central dock via bridge',15,20)]:
         assert lo<=times[key]<=hi, (key,times[key])
     assert 6<=report['transfer_estimates']['boat_dock_to_dock_minutes']<=8
     assert report['transfer_estimates']['tube_station_to_station_minutes']<6
+    assert times['Central dock to central dock via bridge'] > 2*report['transfer_estimates']['boat_dock_to_dock_minutes']
     assert len(report['routes'])==len(ROUTES)
     adjacency={node:set() for node in NODES}
     for _,a,b,_,_ in ROUTES:
