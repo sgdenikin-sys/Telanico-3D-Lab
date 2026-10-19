@@ -18,6 +18,18 @@ with sync_playwright() as pw:
   page.wait_for_function('window.__TELANICO_STATE?.ready',polling=500,timeout=120000)
   print('GAME_READY',width,flush=True)
   def state():return page.evaluate('window.__TELANICO_STATE')
+  cdp=context.new_cdp_session(page) if touch else None
+  def fingers(kind,points):
+   cdp.send('Input.dispatchTouchEvent',{'type':kind,'touchPoints':[{'x':x,'y':y,'id':i} for i,(x,y) in enumerate(points)]})
+  def drag_camera(inspect=False):
+   if touch:
+    fingers('touchStart',[(width*.5,height*.6)])
+    for step in range(1,9):fingers('touchMove',[(width*(.5+.1*step/8),height*(.6+.05*step/8))])
+    fingers('touchEnd',[])
+   else:
+    page.mouse.move(width*.5,height*.6);page.mouse.down(button='right' if inspect else 'left')
+    page.mouse.move(width*.6,height*.65,steps=8);page.mouse.up(button='right' if inspect else 'left')
+
   def click(group,key):
    print('ACTION',width,group,key,flush=True)
    page.wait_for_function('(v)=>window.__TELANICO_STATE[v[0]][v[1]] !== undefined',arg=[group,key],polling=250,timeout=30000)
@@ -50,13 +62,13 @@ with sync_playwright() as pw:
   page.wait_for_function("window.__TELANICO_STATE.current==='tube_e' && window.__TELANICO_STATE.state==='IDLE'",polling=250,timeout=120000)
   assert state()['last_trip']['kind']=='tube' and state()['last_trip']['minutes']==3
   click('ui','Outside')
-  click('ui','Explore');assert state()['inspect'];click('ui','Explore');assert not state()['inspect']
-  old=state()['camera_target'];page.mouse.move(width*.5,height*.6);page.mouse.down();page.mouse.move(width*.6,height*.65,steps=8);page.mouse.up();page.wait_for_function('(old)=>JSON.stringify(window.__TELANICO_STATE.camera_target)!==JSON.stringify(old)',arg=old,polling=250,timeout=30000)
+  click('ui','Explore');assert state()['inspect'];drag_camera(True)
+  page.wait_for_function('Math.abs(window.__TELANICO_STATE.yaw)>0.01',polling=250,timeout=30000)
+  click('ui','Explore');assert not state()['inspect']
+  old=state()['camera_target'];drag_camera();page.wait_for_function('(old)=>JSON.stringify(window.__TELANICO_STATE.camera_target)!==JSON.stringify(old)',arg=old,polling=250,timeout=30000)
   assert state()['camera_target']!=old
   click('ui','Reset');assert state()['camera_size']==124
   if touch:
-   cdp=context.new_cdp_session(page)
-   def fingers(kind,points):cdp.send('Input.dispatchTouchEvent',{'type':kind,'touchPoints':[{'x':x,'y':y,'id':i} for i,(x,y) in enumerate(points)]})
    fingers('touchStart',[(width*.45,height*.55),(width*.55,height*.55)])
    fingers('touchMove',[(width*.35,height*.55),(width*.65,height*.55)])
    fingers('touchEnd',[]);page.wait_for_function('window.__TELANICO_STATE.camera_size<124',polling=250,timeout=30000)
