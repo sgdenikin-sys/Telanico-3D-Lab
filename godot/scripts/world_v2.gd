@@ -560,7 +560,11 @@ func _unhandled_input(event: InputEvent) -> void:
     elif event is InputEventScreenDrag and touches.has(event.index):
         if touches.size()==1:
             if pointer_start.distance_to(event.position)>8: pointer_dragged = true
-            _pan(event.position-touches[event.index])
+            var drag: Vector2 = event.position-touches[event.index]
+            if inspect_mode:
+                camera_yaw = clampf(camera_yaw-drag.x*.004,-.8,.8)
+                camera_elevation = clampf(camera_elevation+drag.y*.1,45,75)
+            else: _pan(drag)
         elif touches.size()==2:
             var keys := touches.keys()
             var other = touches[keys[1] if keys[0]==event.index else keys[0]]
@@ -606,7 +610,7 @@ func _publish_probe() -> void:
         projected[ident] = [point.x,point.y]
     var ui: Dictionary = {}
     for key in buttons:
-        if buttons[key].visible:
+        if panel.visible and buttons[key].visible:
             var centre: Vector2 = buttons[key].global_position+buttons[key].size/2
             ui[key] = [centre.x,centre.y]
     for key in top_buttons:

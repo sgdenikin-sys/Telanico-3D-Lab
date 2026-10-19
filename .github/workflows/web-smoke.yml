@@ -2,6 +2,8 @@ name: Godot Web playable
 
 on:
   workflow_dispatch:
+  push:
+    branches: [codex/telanico-overworld-v2]
   pull_request:
     paths:
       - 'blender/scripts/**'
