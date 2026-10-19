@@ -2,6 +2,8 @@ name: Godot Web playable
 
 on:
   workflow_dispatch:
+  push:
+    branches: [codex/telanico-overworld-v2]
   pull_request:
     paths:
       - 'blender/scripts/**'
@@ -15,8 +17,10 @@ permissions:
 jobs:
   web:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
+      BUILD_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      BUILD_SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
       GODOT_VERSION: '4.6.3'
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +56,7 @@ jobs:
           python -m pip install playwright==1.58.0
           python -m playwright install --with-deps chromium
       - name: Test WebGL, touch controls and landscape in browser
-        run: python tools/test_web_browser.py build/web
+        run: python tools/test_v2_browser.py build/web
       - name: Upload playable Web build
         uses: actions/upload-artifact@v4
         with:
@@ -68,6 +72,8 @@ jobs:
             blender/generated/overworld.blend
             godot/assets/generated/overworld.glb
             blender/generated/overworld_layout.json
+            blender/generated/courier.blend
+            godot/assets/generated/courier.glb
           if-no-files-found: error
           retention-days: 14
       - name: Upload test logs and screenshots
