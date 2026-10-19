@@ -320,6 +320,16 @@ func _top_action(name: String) -> void:
 
 func _process(delta: float) -> void:
     elapsed_real += delta
+    if test_mode and OS.has_feature("web"):
+        var command = JavaScriptBridge.eval("JSON.stringify(window.__TELANICO_COMMAND || null)")
+        if command != "null":
+            var request = JSON.parse_string(str(command))
+            JavaScriptBridge.eval("window.__TELANICO_COMMAND=null")
+            if request is Dictionary:
+                if request.has("rate"): simulation_rate = clampf(float(request.rate),1,12)
+                if request.has("focus") and sites.has(request.focus): camera_target = graph.vec(sites[request.focus].position)
+                if request.has("size"): camera.size = clampf(float(request.size),MIN_ZOOM,MAX_ZOOM)
+                if request.has("elevation"): camera_elevation = clampf(float(request.elevation),45,75)
     if follow_character: camera_target = camera_target.lerp(actor.position, minf(delta*3,1))
     _camera_pose()
     _layout_ui()
@@ -483,8 +493,18 @@ func _transport_tick(delta: float) -> void:
     var peer := ("dock_" if kind=="boat" else "tube_")+("e" if west_to_east else "w")
     if kind=="boat":
         var start_x := -9.0 if west_to_east else 9.0
-        ferry.position = Vector3(lerpf(start_x,-start_x,smoothstep(0,1,t)),0.2,0)
-        actor.position = ferry.position+Vector3(2,1.3,0)
+        var sailing := clampf((t-.18)/.64,0,1)
+        ferry.position = Vector3(lerpf(start_x,-start_x,smoothstep(0,1,sailing)),0.2,0)
+        var deck := ferry.position+Vector3(2,1.3,0)
+        if t<.18:
+            actor.position = graph.nodes[current_node].lerp(deck,t/.18)
+            _animate(true)
+        elif t>.82:
+            actor.position = deck.lerp(graph.nodes[peer],(t-.82)/.18)
+            _animate(true)
+        else:
+            actor.position = deck
+            _animate(false)
         actor.visible = true
     else:
         fade.color.a = sin(t*PI)*0.8
@@ -495,6 +515,7 @@ func _transport_tick(delta: float) -> void:
         story_minutes += cost
         actor.position = graph.nodes[peer]
         actor.visible = true
+        _animate(false)
         actor.collision_mask = 1
         fade.color.a = 0
         current_node = peer

@@ -20,18 +20,20 @@ with sync_playwright() as pw:
   def state():return page.evaluate('window.__TELANICO_STATE')
   def click(group,key):
    print('ACTION',width,group,key,flush=True);s=state();x,y=s[group][key];v=s['viewport'];r=page.locator('#canvas').bounding_box();x=r['x']+x/v[0]*r['width'];y=r['y']+y/v[1]*r['height']
-   (page.touchscreen.tap if touch else page.mouse.click)(x,y);page.wait_for_timeout(1000)
+   (page.touchscreen.tap if touch else page.mouse.click)(x,y);page.wait_for_timeout(100 if key=='Walk' else 700)
    if group=='sites':page.wait_for_function('(id)=>window.__TELANICO_STATE.selected===id',arg=key,timeout=20000)
   assert len(state()['sites'])==15
   page.screenshot(timeout=120000,path=str(out/f'world-{width}.png'))
   click('sites','finance');assert state()['selected']=='finance',state()
   assert 'Walk' in state()['ui'];click('ui','Cancel');assert state()['story_minutes']==0
+  page.evaluate('window.__TELANICO_COMMAND={rate:3}')
   click('sites','finance');click('ui','Walk')
   page.wait_for_function("window.__TELANICO_STATE.state==='WALKING'",polling=250)
   assert 'Walking' in state()['animation']
   page.screenshot(timeout=120000,path=str(out/f'walking-{width}.png'))
   page.wait_for_function("window.__TELANICO_STATE.current==='finance' && window.__TELANICO_STATE.state==='IDLE'",polling=250,timeout=90000)
   assert state()['story_minutes']>0 and 'Idle' in state()['animation']
+  page.evaluate('window.__TELANICO_COMMAND={rate:12}')
   assert 'Enter' in state()['ui'];click('ui','Enter');click('ui','Return')
   # The same browser input path exercises slow and fast crossings.
   click('sites','dock_e');click('ui','Walk')
