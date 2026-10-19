@@ -30,7 +30,7 @@ def run(directory, executable=None):
                       '--enable-unsafe-swiftshader'],
             )
             context = browser.new_context(viewport={'width': 844, 'height': 390},
-                                          device_scale_factor=2, is_mobile=True, has_touch=True)
+                                          device_scale_factor=1, is_mobile=True, has_touch=True)
             page = context.new_page()
             page.set_default_timeout(15000)
             print('BROWSER: loading WebGL build', flush=True)
@@ -109,6 +109,7 @@ def run(directory, executable=None):
                     touch('touchMove', [(1, width * (0.4-delta), y), (2, width * (0.6+delta), y)])
                 touch('touchEnd', [])
                 page.wait_for_timeout(500)
+                print('BROWSER: after pinch', page.evaluate('window.telanicoViewport()'), flush=True)
                 assert shot('pinched') != rotated, (prefix, 'Pinch failed')
                 page.touchscreen.tap(hud['x'] + hud['width']/2, hud['y'] + hud['height']/2)
                 page.wait_for_timeout(500)
@@ -148,8 +149,26 @@ def run(directory, executable=None):
             assert not errors, errors
             assert not failed_requests, failed_requests
             (screenshots / 'layout-evidence.json').write_text(json.dumps(results, indent=2))
+            context.close()
+            # Check the actual WebGL layout at high DPI as well, without making
+            # the full screenshot/gesture matrix depend on software-GPU throughput.
+            retina = browser.new_context(viewport={'width': 844, 'height': 390},
+                                         device_scale_factor=2, is_mobile=True, has_touch=True)
+            retina_page = retina.new_page()
+            retina_page.on('pageerror', lambda error: errors.append(str(error)))
+            retina_page.goto(f'http://127.0.0.1:{server.server_port}/index.html')
+            retina_page.wait_for_selector('#status', state='detached', timeout=120000)
+            retina_page.wait_for_timeout(1000)
+            retina_size = retina_page.evaluate("""() => {
+                const c = document.getElementById('canvas');
+                return {width:c.width, height:c.height, hud:window.telanicoHUD};
+            }""")
+            assert retina_size['width'] == 1688 and retina_size['height'] == 780, retina_size
+            assert 47 <= retina_size['hud']['height'] <= 50, retina_size
+            assert not errors, errors
+            retina.close()
             browser.close()
-            print('BROWSER_OK: WebGL; six landscape sizes at DPR 2; canvas aspect; drag/pinch/reset; simulated safe areas; portrait recovery')
+            print('BROWSER_OK: WebGL; six landscape sizes at DPR 1 plus DPR 2 startup/layout; canvas aspect; drag/pinch/reset; simulated safe areas; portrait recovery')
     finally:
         faulthandler.cancel_dump_traceback_later()
         server.shutdown()
