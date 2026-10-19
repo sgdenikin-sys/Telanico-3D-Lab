@@ -1,4 +1,4 @@
-name: Blender smoke test
+name: Blender overworld blockout
 
 on:
   workflow_dispatch:
@@ -6,6 +6,7 @@ on:
     paths:
       - 'blender/scripts/**'
       - 'tools/validate_glb.py'
+      - 'tools/validate_overworld.py'
       - '.github/workflows/blender-smoke.yml'
 
 permissions:
@@ -24,15 +25,18 @@ jobs:
           blender --version
           blender --background --python-exit-code 1 --python-expr "import numpy; print('NumPy available:', numpy.__version__)"
       - name: Build editable Blender scene and GLB
-        run: blender --background --python-exit-code 1 --python blender/scripts/build_smoke_test.py
-      - name: Validate GLB
-        run: python3 tools/validate_glb.py godot/assets/generated/smoke_test.glb
+        run: blender --background --python-exit-code 1 --python blender/scripts/build_overworld.py
+      - name: Validate layout and GLB
+        run: |
+          python3 tools/validate_overworld.py
+          python3 tools/validate_glb.py godot/assets/generated/overworld.glb
       - name: Upload models
         uses: actions/upload-artifact@v4
         with:
-          name: telanico-smoke-test-models
+          name: telanico-overworld-models
           path: |
-            blender/generated/smoke_test.blend
-            godot/assets/generated/smoke_test.glb
+            blender/generated/overworld.blend
+            godot/assets/generated/overworld.glb
+            blender/generated/overworld_layout.json
           if-no-files-found: error
           retention-days: 7

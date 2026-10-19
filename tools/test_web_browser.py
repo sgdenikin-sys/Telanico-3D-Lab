@@ -49,7 +49,14 @@ def run(directory, executable=None):
                 return page.screenshot(path=str(screenshots / name),
                                        clip={'x': 0, 'y': 60, 'width': 844, 'height': 330})
 
+            page.screenshot(path=str(screenshots / 'viewer.png'))
             before = landscape_shot('landscape.png')
+            page.touchscreen.tap(640, 26)
+            page.wait_for_timeout(300)
+            assert landscape_shot('labels-hidden.png') != before, 'Landmarks toggle must hide names'
+            page.touchscreen.tap(640, 26)
+            page.wait_for_timeout(300)
+            assert landscape_shot('labels-restored.png') == before, 'Landmarks toggle must restore names'
             session = context.new_cdp_session(page)
 
             def touch(kind, points):
@@ -94,7 +101,7 @@ def run(directory, executable=None):
             assert not errors, errors
             assert not failed_requests, failed_requests
             browser.close()
-            print('BROWSER_OK: WebGL startup; no isolation headers; touch drag/pinch/reset; portrait recovery')
+            print('BROWSER_OK: WebGL startup; no isolation headers; touch drag/pinch/reset; landmark labels; portrait recovery')
     finally:
         server.shutdown()
         server.server_close()

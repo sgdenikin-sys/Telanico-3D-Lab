@@ -2,6 +2,30 @@
 
 An isolated experiment for replacing **only the world map** of Telanico Trading with a soft, tabletop-style 3D diorama. The established indoor story quests, dialogue, invoice UI, and game rules are deliberately out of scope.
 
+## Current overworld blockout
+
+The current preview uses the first two-island overworld: settlements/support in
+the west, operations/documents in the east, a central ferry channel, one north
+pedestrian bridge, and matching pneumatic towers. See
+[layout decisions, rendered views and travel calibration](docs/overworld/README.md).
+
+```bash
+blender --background --factory-startup --python-exit-code 1 --python blender/scripts/build_overworld.py
+python3 tools/validate_overworld.py
+python3 tools/validate_glb.py godot/assets/generated/overworld.glb
+```
+
+Open `godot/project.godot` to view it; drag, pinch and Reset remain available, plus
+**Landmarks** for names. `bash tools/build_web.sh` now generates this overworld
+before exporting the Web preview. In Actions, **Blender overworld blockout**
+uploads `telanico-overworld-models`; **Godot Web playable** uploads the Web build,
+source models and layout JSON. Select `codex/two-island-overworld` for this pass.
+No deployment or branch merge is configured.
+
+The smoke-test instructions below document the earlier single-island prototype.
+Its generator remains available for regression/reference; its asset paths are
+not the ones used by the current Godot preview.
+
 ## Principles
 
 - Visual direction: **Kenney+ / premium tabletop diorama**: soft, restrained colors, readable silhouettes, tasteful bevels, warm light, and an adult-proportioned Cooper honey badger.

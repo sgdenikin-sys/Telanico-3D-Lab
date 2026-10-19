@@ -6,10 +6,10 @@ You are working in the isolated Telanico-3D-Lab experiment. Never edit the exist
 The objective is to prototype a 3D **overworld map only**. Indoor offices, 2D character dialogue, story quests, invoice UI, and game-time logic are preserved for eventual integration.
 
 ## Visual direction
-- Style: **Kenney+ / soft premium tabletop board-game diorama**. Compact miniature environments, soft beveled edges, restrained material colors, intentional composition, pleasant lighting.
+- Style: **Telanico premium stylized tabletop diorama**. Broad readable masses, soft bevels, restrained colors and distinct department silhouettes. Kenney is a readability reference, not a style to clone. Keep the first overworld pass simple and spacious.
 - Not photorealistic and not children's toy-plastic. Avoid excessive saturated colors, realistic metropolitan street layouts, or unnecessarily detailed interiors.
 - Preserve the two-island map concept with named office buildings as navigational destinations.
-- NO road network unless the user subsequently authorizes it; movement can use bare ground/pathfinding.
+- Pedestrian pale-stone promenades, smaller stone paths, and dirt/gravel shortcuts are authorized for the overworld blockout. No asphalt, car streets, or vehicular road network.
 - Cooper is an **adult honey-badger / European-badger-inspired anthropomorphic character**, not a childlike or grotesque mascot. Consistent face, strong silhouette, clothing. Do not redesign established IP without explicit approval.
 
 ## Technical contract

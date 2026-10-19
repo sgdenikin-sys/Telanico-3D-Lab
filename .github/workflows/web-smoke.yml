@@ -65,8 +65,9 @@ jobs:
         with:
           name: telanico-web-source-models
           path: |
-            blender/generated/smoke_test.blend
-            godot/assets/generated/smoke_test.glb
+            blender/generated/overworld.blend
+            godot/assets/generated/overworld.glb
+            blender/generated/overworld_layout.json
           if-no-files-found: error
           retention-days: 14
       - name: Upload test logs and screenshots
