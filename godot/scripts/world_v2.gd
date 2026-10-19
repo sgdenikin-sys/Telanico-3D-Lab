@@ -103,7 +103,7 @@ func _ready() -> void:
     add_child(selection_ring)
     _make_ui()
     _camera_pose()
-    get_viewport().size_changed.connect(func(): _layout_ui(true))
+    get_viewport().size_changed.connect(_resize_view)
     _layout_ui()
     print("TELANICO_V2_READY imported world, animated courier, 15 sites")
 
@@ -194,7 +194,16 @@ func _camera_pose() -> void:
     camera.position = camera_target+Vector3(sin(camera_yaw)*cos(e),sin(e),cos(camera_yaw)*cos(e))*230
     camera.look_at(camera_target,Vector3.UP)
 
+func _resize_view() -> void:
+    touches.clear()
+    ui_touches.clear()
+    pointer_dragged = true
+    touch_multi = true
+    _layout_ui(true)
+
 func reset_view() -> void:
+    inspect_mode = false
+    if top_buttons.has("Explore"): top_buttons.Explore.text = "Explore"
     camera_target = Vector3(0,2,0)
     camera_yaw = 0
     camera_elevation = 60

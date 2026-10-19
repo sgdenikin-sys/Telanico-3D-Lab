@@ -59,6 +59,11 @@ with sync_playwright() as pw:
    fingers('touchMove',[(width*.35,height*.55),(width*.65,height*.55)])
    fingers('touchEnd',[]);page.wait_for_timeout(500)
    assert state()['camera_size']<124
+   page.set_viewport_size({'width':height,'height':width});page.wait_for_timeout(800)
+   page.screenshot(timeout=120000,path=str(out/f'portrait-{width}.png'))
+   page.set_viewport_size({'width':width,'height':height});page.wait_for_timeout(800)
+   click('ui','Reset');assert state()['camera_size']==124
+   page.screenshot(timeout=120000,path=str(out/f'landscape-recovered-{width}.png'))
   assert not errors,errors
   context.close()
  browser.close()
