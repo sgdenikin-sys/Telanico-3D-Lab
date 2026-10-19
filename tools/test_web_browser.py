@@ -14,9 +14,53 @@ class QuietHandler(SimpleHTTPRequestHandler):
         pass
 
 
+def png_pixel(data, x, y):
+    """Read one RGB/RGBA screenshot pixel using only the Python standard library."""
+    import struct
+    import zlib
+    offset, payload = 8, bytearray()
+    while offset < len(data):
+        length = struct.unpack_from('>I', data, offset)[0]
+        kind = data[offset+4:offset+8]
+        chunk = data[offset+8:offset+8+length]
+        if kind == b'IHDR':
+            width, height, depth, color, _, _, interlace = struct.unpack('>IIBBBBB', chunk)
+        elif kind == b'IDAT':
+            payload.extend(chunk)
+        offset += length + 12
+    assert depth == 8 and color in (2, 6) and interlace == 0
+    bpp = 3 if color == 2 else 4
+    stride = width * bpp
+    raw = zlib.decompress(payload)
+    previous = bytearray(stride)
+    for row_index in range(y+1):
+        start = row_index * (stride+1)
+        mode, row = raw[start], bytearray(raw[start+1:start+1+stride])
+        for i in range(stride):
+            a = row[i-bpp] if i >= bpp else 0
+            b = previous[i]
+            c = previous[i-bpp] if i >= bpp else 0
+            if mode == 1:
+                predictor = a
+            elif mode == 2:
+                predictor = b
+            elif mode == 3:
+                predictor = (a+b)//2
+            elif mode == 4:
+                p = a+b-c
+                distances = [abs(p-a), abs(p-b), abs(p-c)]
+                predictor = [a, b, c][distances.index(min(distances))]
+            else:
+                assert mode == 0
+                predictor = 0
+            row[i] = (row[i]+predictor) & 255
+        previous = row
+    return list(previous[x*bpp:x*bpp+3])
+
+
 def run(directory, executable=None):
     # Bound driver/browser shutdown too, so a hung WASM page leaves diagnostics.
-    faulthandler.dump_traceback_later(300, exit=True)
+    faulthandler.dump_traceback_later(480, exit=True)
     server = ThreadingHTTPServer(('127.0.0.1', 0), partial(QuietHandler, directory=str(directory)))
     threading.Thread(target=server.serve_forever, daemon=True).start()
     screenshots = directory.parent / 'screenshots'
@@ -67,7 +111,9 @@ def run(directory, executable=None):
                     return {x:r.x, y:r.y, width:r.width, height:r.height,
                         bufferWidth:c.width, bufferHeight:c.height, hud:window.telanicoHUD,
                         scrollWidth:document.documentElement.scrollWidth,
-                        background:getComputedStyle(document.body).backgroundColor};
+                        background:getComputedStyle(document.body).backgroundColor,
+                        layers:['html','body','#game','#canvas'].map(s =>
+                            getComputedStyle(document.querySelector(s)).backgroundColor)};
                 }""")
                 assert abs(evidence['x']) < 1 and abs(evidence['y']) < 1, evidence
                 assert abs(evidence['width'] - width) < 1, evidence
@@ -76,9 +122,13 @@ def run(directory, executable=None):
                 assert abs(evidence['bufferWidth'] / evidence['bufferHeight'] - width / height) < 0.01, evidence
                 assert evidence['background'] == 'rgb(31, 43, 56)', evidence
                 hud = evidence['hud']
-                assert 111 <= hud['width'] <= 114 and 47 <= hud['height'] <= 50, evidence
-                assert hud['x'] >= safe and hud['y'] >= 11, evidence
-                assert width - hud['x'] - hud['width'] >= safe + 11, evidence
+                assert 91 <= hud['width'] <= 94 and 33 <= hud['height'] <= 36, evidence
+                assert hud['x'] >= safe and hud['y'] >= 9, evidence
+                assert width - hud['x'] - hud['width'] >= safe + 9, evidence
+                assert len(set(evidence['layers'])) == 1, evidence
+                assert 10 <= hud['instruction_font'] <= 12, evidence
+                assert hud['instruction_x'] >= safe + 9, evidence
+                assert hud['instruction_x'] + hud['instruction_width'] + 12 < hud['x'], evidence
                 results.append(evidence)
                 return hud
 
@@ -114,7 +164,10 @@ def run(directory, executable=None):
                 page.touchscreen.tap(hud['x'] + hud['width']/2, hud['y'] + hud['height']/2)
                 page.wait_for_timeout(500)
                 assert shot('reset') == before, (prefix, 'Reset failed')
-                page.screenshot(path=str(screenshots / f'{prefix}-full.png'))
+                full = page.screenshot(path=str(screenshots / f'{prefix}-full.png'))
+                edge = png_pixel(full, 3, height-4)
+                assert all(abs(a-b) <= 1 for a, b in zip(edge, [31,43,56])), (prefix, 'Rendered edge/background mismatch', edge)
+                results[-1]['rendered_edge_rgb'] = edge
 
             # Chromium does not emulate a notch. Inject resolved CSS insets to
             # exercise the same bridge/layout code; real env() values need iPhone.
@@ -125,7 +178,7 @@ def run(directory, executable=None):
                 s.setProperty('--safe-bottom', '21px'); s.setProperty('--safe-top', '8px');
             }""")
             hud = check_layout(844, 390, 48)
-            assert hud['y'] >= 19
+            assert hud['y'] >= 17
             before = page.screenshot(clip={'x': 0, 'y': 100, 'width': 844, 'height': 290})
             touch('touchStart', [(1, 300, 230)])
             touch('touchMove', [(1, 500, 230)])
@@ -134,6 +187,33 @@ def run(directory, executable=None):
             page.wait_for_timeout(500)
             assert page.screenshot(clip={'x': 0, 'y': 100, 'width': 844, 'height': 290}) == before
             page.screenshot(path=str(screenshots / 'simulated-safe-area.png'))
+
+            # Conservative resolved notch insets for both landscape orientations.
+            # Chromium does not supply iOS env() values: exercise the same bridge
+            # with 47/59-pixel profiles at real iPhone CSS viewport dimensions.
+            for width, height, inset in [(812,375,47), (844,390,47), (852,393,59), (932,430,59)]:
+                page.set_viewport_size({'width': width, 'height': height})
+                page.evaluate("""value => {
+                    const s = document.documentElement.style;
+                    s.setProperty('--safe-left', value+'px');
+                    s.setProperty('--safe-right', value+'px');
+                }""", inset)
+                check_layout(width, height, inset)
+                page.screenshot(path=str(screenshots / f'notch-{width}x{height}.png'))
+            page.set_viewport_size({'width': 844, 'height': 390})
+            page.evaluate("""() => {
+                const s = document.documentElement.style;
+                s.setProperty('--safe-left','48px'); s.setProperty('--safe-right','48px');
+                // Regression: a visual-viewport offset must not be added twice
+                // to a container that is already fixed to the page.
+                Object.defineProperty(window.visualViewport, 'offsetLeft', {configurable:true, value:48});
+                window.visualViewport.dispatchEvent(new Event('scroll'));
+            }""")
+            check_layout(844, 390, 48)
+            page.evaluate("""() => {
+                delete window.visualViewport.offsetLeft;
+                window.visualViewport.dispatchEvent(new Event('scroll'));
+            }""")
 
             page.set_viewport_size({'width': 390, 'height': 844})
             page.wait_for_timeout(1000)
@@ -164,7 +244,7 @@ def run(directory, executable=None):
                 return {width:c.width, height:c.height, hud:window.telanicoHUD};
             }""")
             assert retina_size['width'] == 1688 and retina_size['height'] == 780, retina_size
-            assert 47 <= retina_size['hud']['height'] <= 50, retina_size
+            assert 33 <= retina_size['hud']['height'] <= 36, retina_size
             assert not errors, errors
             retina.close()
             browser.close()
