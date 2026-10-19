@@ -19,6 +19,12 @@ python3 tools/stamp_build.py --before
 # Godot can log script errors without returning nonzero: require the test marker.
 timeout 60 "$godot_bin" --headless --path godot --script res://tests/test_v2.gd \
   2>&1 | tee build/logs/viewer.log
+# An assertion in an awaited helper can abort that helper while its caller
+# continues. Reject every script error, even if a later test marker is printed.
+if rg -n 'SCRIPT ERROR:|Assertion failed' build/logs/import.log build/logs/viewer.log; then
+  echo 'Godot script/import assertion failed' >&2
+  exit 1
+fi
 rg -q 'TELANICO_TEST_OK' build/logs/viewer.log
 "$godot_bin" --headless --path godot --export-release Web ../build/web/index.html \
   2>&1 | tee build/logs/export.log
