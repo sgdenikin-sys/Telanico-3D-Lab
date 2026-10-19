@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#1f2b38">
+<title>$GODOT_PROJECT_NAME</title>
+<style>
+:root {
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  background: #1f2b38;
+}
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+  overscroll-behavior: none; background: #1f2b38; }
+#game { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; height: 100dvh; }
+#canvas { display: block; width: 100%; height: 100%; border: 0; outline: none; touch-action: none; }
+#status { position: absolute; inset: 0; display: grid; place-content: center; gap: 12px;
+  background: #1f2b38; color: #eee9db; font: 16px system-ui, sans-serif; text-align: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+</style>
+$GODOT_HEAD_INCLUDE
+</head>
+<body>
+<div id="game">
+  <canvas id="canvas" tabindex="0" aria-label="Telanico tabletop diorama"></canvas>
+  <div id="status" role="status"><span id="notice">Loading Telanico…</span><progress id="progress"></progress></div>
+</div>
+<noscript>JavaScript is required to view the diorama.</noscript>
+<script src="$GODOT_URL"></script>
+<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const canvas = document.getElementById('canvas');
+const game = document.getElementById('game');
+// The backing buffer and CSS rectangle use the same aspect ratio. Godot then
+// recalculates its camera projection; the rendered image is never stretched.
+function resizeGame() {
+  const viewport = window.visualViewport;
+  const width = viewport ? viewport.width : window.innerWidth;
+  const height = viewport ? viewport.height : window.innerHeight;
+  game.style.width = width + 'px';
+  game.style.height = height + 'px';
+  game.style.left = (viewport ? viewport.offsetLeft : 0) + 'px';
+  game.style.top = (viewport ? viewport.offsetTop : 0) + 'px';
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(width * ratio);
+  canvas.height = Math.round(height * ratio);
+}
+window.addEventListener('resize', resizeGame);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', resizeGame);
+  window.visualViewport.addEventListener('scroll', resizeGame);
+}
+resizeGame();
+// CSS safe-area values also drive the Godot HUD in its own logical coordinates.
+// Called on resize and periodically for Safari toolbar/inset changes.
+window.telanicoViewport = () => {
+  const style = getComputedStyle(document.documentElement);
+  const rect = canvas.getBoundingClientRect();
+  const inset = side => parseFloat(style.getPropertyValue('--safe-' + side)) || 0;
+  return JSON.stringify({width: rect.width, height: rect.height,
+    left: inset('left'), right: inset('right'), top: inset('top'), bottom: inset('bottom')});
+};
+const engine = new Engine(GODOT_CONFIG);
+const notice = document.getElementById('notice');
+const progress = document.getElementById('progress');
+const missing = Engine.getMissingFeatures({threads: GODOT_THREADS_ENABLED});
+if (missing.length) {
+  notice.textContent = 'This browser needs: ' + missing.join(', ');
+} else {
+  engine.startGame({canvas, onProgress: (current, total) => {
+    if (total > 0) { progress.max = total; progress.value = current; }
+  }}).then(() => {
+    document.getElementById('status').remove();
+    canvas.focus();
+  }).catch(error => {
+    notice.textContent = 'Unable to load Telanico: ' + error.message;
+    console.error(error);
+  });
+}
+</script>
+</body>
+</html>
