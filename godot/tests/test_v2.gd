@@ -11,6 +11,7 @@ func travel(target):
     while game.state != "IDLE" and frames<1800:
         await physics_frame
         frames+=1
+        assert(game.actor.position.y>0,"Character fell below land/bridge surface")
         if frames%300==0:
             print("WALK_PROGRESS ",target," ",game.actor.position," waypoint ",game.walk_index," next ",game.walk_points[game.walk_index])
             for n in range(game.actor.get_slide_collision_count()): print("COLLIDER ",game.actor.get_slide_collision(n).get_collider().get_parent().name, " normal ",game.actor.get_slide_collision(n).get_normal())

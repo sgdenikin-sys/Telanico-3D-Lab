@@ -60,8 +60,11 @@ var last_probe := 0.0
 var build_info: Dictionary = {}
 var test_mode := false
 var transition_clock := 0.0
+var layout_timer := 0.0
+var last_layout := ""
 
 func _ready() -> void:
+    Engine.max_fps = 30
     data = JSON.parse_string(FileAccess.get_file_as_string("res://assets/generated/world_v2.json"))
     if FileAccess.file_exists("res://assets/generated/build_info.json"):
         build_info = JSON.parse_string(FileAccess.get_file_as_string("res://assets/generated/build_info.json"))
@@ -100,7 +103,7 @@ func _ready() -> void:
     add_child(selection_ring)
     _make_ui()
     _camera_pose()
-    get_viewport().size_changed.connect(_layout_ui)
+    get_viewport().size_changed.connect(func(): _layout_ui(true))
     _layout_ui()
     print("TELANICO_V2_READY imported world, animated courier, 15 sites")
 
@@ -279,7 +282,7 @@ func _make_ui() -> void:
     hud.add_child(fade)
     fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-func _layout_ui() -> void:
+func _layout_ui(force := false) -> void:
     if hud == null: return
     var viewport := get_viewport().get_visible_rect().size
     var units := 1.0
@@ -295,6 +298,9 @@ func _layout_ui() -> void:
             right = float(layout.get("right",0))*units
             top = float(layout.get("top",0))*units
             bottom = float(layout.get("bottom",0))*units
+    var signature := str([viewport,left,right,top,bottom,units])
+    if not force and signature==last_layout: return
+    last_layout = signature
     var index := 0
     for name in top_buttons:
         var button: Button = top_buttons[name]
@@ -321,7 +327,7 @@ func _top_action(name: String) -> void:
 
 func _process(delta: float) -> void:
     elapsed_real += delta
-    if test_mode and OS.has_feature("web"):
+    if test_mode and OS.has_feature("web") and last_probe==0:
         var command = JavaScriptBridge.eval("JSON.stringify(window.__TELANICO_COMMAND || null)")
         if command != "null":
             var request = JSON.parse_string(str(command))
@@ -333,7 +339,10 @@ func _process(delta: float) -> void:
                 if request.has("elevation"): camera_elevation = clampf(float(request.elevation),45,75)
     if follow_character: camera_target = camera_target.lerp(actor.position, minf(delta*3,1))
     _camera_pose()
-    _layout_ui()
+    layout_timer += delta
+    if layout_timer>.5:
+        layout_timer = 0
+        _layout_ui()
     var minutes := 12*60+story_minutes
     status.text = "%02d:%02d · V2 %s\n%s" % [minutes/60,minutes%60,String(build_info.get("commit","local")).left(7),
         "Courier · temporary rig" if state=="IDLE" else state.capitalize()]
@@ -386,6 +395,7 @@ func _show_actions(names: Array) -> void:
     panel.visible = true
     for name in buttons: buttons[name].visible = names.has(name)
     panel.reset_size()
+    _layout_ui.call_deferred(true)
 
 func _action(name: String) -> void:
     match name:
@@ -653,7 +663,7 @@ func _publish_probe() -> void:
     for key in top_buttons:
         var centre: Vector2 = top_buttons[key].global_position+top_buttons[key].size/2
         ui[key] = [centre.x,centre.y]
-    var probe := {"ready":true,"state":state,"current":current_node,"selected":selected,"island":current_island,
+    var probe := {"ready":true,"fps":Engine.get_frames_per_second(),"state":state,"current":current_node,"selected":selected,"island":current_island,
         "story_minutes":story_minutes,"position":[actor.position.x,actor.position.y,actor.position.z],
         "animation":animation.current_animation if animation else "", "animation_position":animation.current_animation_position if animation else 0,
         "last_trip":last_trip,"sites":projected,"ui":ui,"view":get_viewport().get_visible_rect().size,

@@ -27,3 +27,14 @@ Default is north-up Explore at 60 degrees: drag pans, pinch/wheel zooms, Follow 
 ![70 degree comparison](v2/world-70.png)
 
 Private Actions artifacts include source Blender scenes, self-contained world/character GLBs, layout JSON, browser screenshots and test logs. Asset budgets are enforced by `validate_v2.py`; the current world is roughly 83k position vertices, well below 300k. One composed variant was developed instead of splitting effort across alternative maps.
+
+## Runtime close-ups
+
+These are actual V2 WebGL development-build captures (HUD identifies their source commit), not concept mockups. Final release identity is verified separately by the publisher.
+
+![West institutional district](v2/west.png)
+![East district and Trader](v2/east.png)
+![Outer west tube](v2/tube-west.png)
+![Outer east tube](v2/tube-east.png)
+![Central channel, docks and bridge](v2/channel.png)
+![Temporary courier at Settlements](v2/cooper-temporary.png)
