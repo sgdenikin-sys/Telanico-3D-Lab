@@ -25,6 +25,8 @@ with sync_playwright() as pw:
    (page.touchscreen.tap if touch else page.mouse.click)(x,y);page.wait_for_timeout(100 if key=='Walk' else 700)
    if group=='sites':page.wait_for_function('(id)=>window.__TELANICO_STATE.selected===id',arg=key,polling=250,timeout=30000)
    if key=='Enter':page.wait_for_function('window.__TELANICO_STATE.ui.Return !== undefined',polling=250,timeout=30000)
+   if key=='Explore':page.wait_for_function('(old)=>window.__TELANICO_STATE.inspect !== old',arg=s['inspect'],polling=250,timeout=30000)
+   if key=='Reset':page.wait_for_function('window.__TELANICO_STATE.camera_size===124 && window.__TELANICO_STATE.yaw===0',polling=250,timeout=30000)
   assert len(state()['sites'])==15
   page.screenshot(timeout=120000,path=str(out/f'world-{width}.png'))
   click('sites','finance');assert state()['selected']=='finance',state()
@@ -49,7 +51,7 @@ with sync_playwright() as pw:
   assert state()['last_trip']['kind']=='tube' and state()['last_trip']['minutes']==3
   click('ui','Outside')
   click('ui','Explore');assert state()['inspect'];click('ui','Explore');assert not state()['inspect']
-  old=state()['camera_target'];page.mouse.move(width*.5,height*.6);page.mouse.down();page.mouse.move(width*.6,height*.65,steps=8);page.mouse.up();page.wait_for_timeout(400)
+  old=state()['camera_target'];page.mouse.move(width*.5,height*.6);page.mouse.down();page.mouse.move(width*.6,height*.65,steps=8);page.mouse.up();page.wait_for_function('(old)=>JSON.stringify(window.__TELANICO_STATE.camera_target)!==JSON.stringify(old)',arg=old,polling=250,timeout=30000)
   assert state()['camera_target']!=old
   click('ui','Reset');assert state()['camera_size']==124
   if touch:
@@ -57,7 +59,7 @@ with sync_playwright() as pw:
    def fingers(kind,points):cdp.send('Input.dispatchTouchEvent',{'type':kind,'touchPoints':[{'x':x,'y':y,'id':i} for i,(x,y) in enumerate(points)]})
    fingers('touchStart',[(width*.45,height*.55),(width*.55,height*.55)])
    fingers('touchMove',[(width*.35,height*.55),(width*.65,height*.55)])
-   fingers('touchEnd',[]);page.wait_for_timeout(500)
+   fingers('touchEnd',[]);page.wait_for_function('window.__TELANICO_STATE.camera_size<124',polling=250,timeout=30000)
    assert state()['camera_size']<124
    page.set_viewport_size({'width':height,'height':width});page.wait_for_timeout(800)
    page.screenshot(timeout=120000,path=str(out/f'portrait-{width}.png'))
