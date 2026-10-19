@@ -49,6 +49,11 @@ def height(x,y):
     for _,_,_,_,(cx,cy),(w,d),kind in SITES:
         if kind=='boat':continue
         distance=max(abs(x-cx)-w/2-1.2,abs(y-cy)-d/2-1.2,0)
+        if kind=='office':
+            # The paved entrance court is part of the level terrace, not a
+            # floating disc above an unrelated hillside.
+            court=max(math.hypot(x-cx,y-(cy-d/2-1))-max(w*.4,3),0)
+            distance=min(distance,court)
         if distance<10:
             t=min(1,distance/10);t=t*t*(3-2*t)
             h=base_height(cx,cy)*(1-t)+h*t

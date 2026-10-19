@@ -26,7 +26,7 @@ Default is north-up Explore at 60 degrees: drag pans, pinch/wheel zooms, Follow 
 ![Primary 60 degree overview](v2/world-60.png)
 ![70 degree comparison](v2/world-70.png)
 
-Private Actions artifacts include source Blender scenes, self-contained world/character GLBs, layout JSON, browser screenshots and test logs. Asset budgets are enforced by `validate_v2.py`; the current world is roughly 83k position vertices, well below 300k. One composed variant was developed instead of splitting effort across alternative maps.
+Private Actions artifacts include source Blender scenes, self-contained world/character GLBs, layout JSON, browser screenshots and test logs. Asset budgets are enforced by `validate_v2.py`; the current world is roughly 91k position vertices, well below 300k. One composed variant was developed instead of splitting effort across alternative maps.
 
 ## Runtime close-ups
 
@@ -40,3 +40,7 @@ These are actual V2 WebGL development-build captures (HUD identifies their sourc
 ![Temporary courier at Settlements](v2/cooper-temporary.png)
 
 ![Actual walking animation near Settlements, temporary courier](v2/courier-walking.png)
+
+Terrain is graded below promenades, and complete circular entrance courts are included in each level terrace. Blender ray-casts all 1,306 road top triangles against the actual terrain mesh; the current minimum clearance exceeds 0.4 units. Forecourts have real walk-surface collisions. This gate prevents grass poking through pavement between differently triangulated meshes.
+
+![Phone landscape runtime and animated walking](v2/phone-landscape.png)

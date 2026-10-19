@@ -111,14 +111,32 @@ def boundary(side,angle):
     return best+.35*math.sin(angle*11)+.2*math.cos(angle*17)
 
 
+ROAD_BUCKETS={}
+def road_subgrade(x,y):
+    # Grade the soil below the paved surface. Different triangle diagonals in
+    # terrain and road meshes must never poke grass through the promenade.
+    if not ROAD_BUCKETS:
+        for edge in L.route_data():
+            if edge['kind']=='bridge':continue
+            radius=2.5 if edge['kind']=='main' else 1.5 if edge['kind']=='stone' else .8
+            for px,py,_ in edge['points']:
+                ROAD_BUCKETS.setdefault((math.floor(px/8),math.floor(py/8)),[]).append((px,py,radius))
+    bx,by=math.floor(x/8),math.floor(y/8);distance=99
+    for dx in (-1,0,1):
+        for dy in (-1,0,1):
+            for px,py,radius in ROAD_BUCKETS.get((bx+dx,by+dy),[]):
+                distance=min(distance,math.hypot(x-px,y-py)-radius)
+    t=max(0,min(1,(distance-.8)/2))
+    return .55*(1-t*t*(3-2*t))
+
 def terrain(side):
-    cx=-49 if side=='west' else 49;sectors=160;rings=30
-    vertices=[(cx,0,L.height(cx,0))]
+    cx=-49 if side=='west' else 49;sectors=192;rings=45
+    vertices=[(cx,0,L.height(cx,0)-road_subgrade(cx,0))]
     for ring in range(1,rings+1):
         t=ring/rings
         for i in range(sectors):
             a=math.tau*i/sectors;r=boundary(side,a)*t;x=cx+r*math.cos(a);y=r*math.sin(a)
-            vertices.append((x,y,L.height(x,y)))
+            vertices.append((x,y,L.height(x,y)-road_subgrade(x,y)))
     faces=[(0,1+i,1+(i+1)%sectors) for i in range(sectors)]
     for ring in range(rings-1):
         a=1+ring*sectors;b=a+sectors
@@ -139,12 +157,30 @@ def terrain(side):
         o=bpy.data.objects.new(side+' '+name,me);bpy.context.collection.objects.link(o);o.data.materials.append(mat)
 
 
+def validate_surface_clearance():
+    from mathutils.bvhtree import BVHTree
+    bpy.context.view_layer.update()
+    depsgraph=bpy.context.evaluated_depsgraph_get()
+    trees={side:BVHTree.FromObject(bpy.data.objects[side+' Island Terrain'],depsgraph) for side in ('west','east')}
+    checked=0;minimum=99
+    for obj in bpy.data.objects:
+        if not obj.name.startswith('Path WalkSurface'):continue
+        obj.data.calc_loop_triangles();half=len(obj.data.vertices)//2
+        for triangle in obj.data.loop_triangles:
+            if any(v>=half for v in triangle.vertices):continue
+            centre=sum((obj.data.vertices[v].co for v in triangle.vertices),Vector((0,0,0)))/3
+            hit,_,_,_=trees['west' if centre.x<0 else 'east'].ray_cast(Vector((centre.x,centre.y,100)),Vector((0,0,-1)))
+            if hit is not None:
+                gap=centre.z-hit.z;minimum=min(minimum,gap);checked+=1
+                assert gap>.025,('Terrain intersects promenade',obj.name,tuple(centre),gap)
+    print('SURFACE_CLEARANCE_OK',checked,'triangles; minimum clearance',minimum)
+
 def build_site(site):
     ident,name,side,model,(x,y),(w,d),kind=site;z=L.height(x,y)
     root=empty('Site_'+ident,(x,y,z));before=set(bpy.data.objects)
     if model not in ('tube','dock'):
         obj,h=asset(model,(x,y,z+.18),(w,d))
-        cylinder(name+' forecourt',(x,y-d/2-1,z+.08),max(w*.4,3),.16,M['stone'],48)
+        cylinder(name+' WalkSurface forecourt',(x,y-d/2-1,z+.08),max(w*.4,3),.16,M['stone'],48)
         # Distinct departmental additions complement the imported architecture.
         if ident=='archive':
             cylinder('Archive bronze drum',(x,y,z+h*.78),w*.34,.7,M['bronze'],48)
@@ -233,15 +269,16 @@ def main():
     for i,e in enumerate(edges):
         kind=e['kind'];width=5 if kind in ('main','bridge') else 3 if kind=='stone' else 1.6
         pts=[(x,y,z+i*.0005) for x,y,z in e['points']]
-        road=ribbon(('Bridge WalkSurface' if kind=='bridge' else 'Path WalkSurface')+str(i),pts,width,M['dirt'] if kind=='trail' else M['stone'],.15)
+        road=ribbon(('Bridge WalkSurface' if kind=='bridge' else 'Path WalkSurface')+str(i),pts,width,M['dirt'] if kind=='trail' else M['stone'],.70)
         if kind!='bridge':
             for vertex in road.data.vertices:
                 old=vertex.co.z
                 # Conform both edges to terrain; flat cross-sections create
                 # tall side walls where sloping promenades meet.
-                vertex.co.z=L.height(vertex.co.x,vertex.co.y)+.265-(.15 if vertex.index>=len(road.data.vertices)//2 else 0)
+                vertex.co.z=L.height(vertex.co.x,vertex.co.y)+.265-(.70 if vertex.index>=len(road.data.vertices)//2 else 0)
         if kind=='bridge':
             for side in (-1,1):ribbon('Bridge stone parapet',[(x,y+side*2.7,z+.8) for x,y,z in pts],.35,M['cliff'],.8)
+    validate_surface_clearance()
     sites=[build_site(site) for site in L.SITES]
     rng=random.Random(19)
     for i in range(24):
