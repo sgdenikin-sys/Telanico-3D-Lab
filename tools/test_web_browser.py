@@ -1,5 +1,6 @@
 """Test the actual WebGL build across landscape sizes, safe insets and gestures."""
 import argparse
+import faulthandler
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
@@ -14,6 +15,8 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 
 def run(directory, executable=None):
+    # Bound driver/browser shutdown too, so a hung WASM page leaves diagnostics.
+    faulthandler.dump_traceback_later(300, exit=True)
     server = ThreadingHTTPServer(('127.0.0.1', 0), partial(QuietHandler, directory=str(directory)))
     threading.Thread(target=server.serve_forever, daemon=True).start()
     screenshots = directory.parent / 'screenshots'
@@ -29,6 +32,8 @@ def run(directory, executable=None):
             context = browser.new_context(viewport={'width': 844, 'height': 390},
                                           device_scale_factor=2, is_mobile=True, has_touch=True)
             page = context.new_page()
+            page.set_default_timeout(15000)
+            print('BROWSER: loading WebGL build', flush=True)
             errors, messages, failed_requests = [], [], []
             page.on('pageerror', lambda error: errors.append(str(error)))
             page.on('console', lambda message: (
@@ -81,6 +86,7 @@ def run(directory, executable=None):
             for width, height in [(667, 375), (812, 375), (844, 390), (852, 393),
                                   (932, 430), (844, 320)]:
                 page.set_viewport_size({'width': width, 'height': height})
+                print(f'BROWSER: checking {width}x{height}', flush=True)
                 hud = check_layout(width, height, 0)
                 prefix = f'{width}x{height}'
                 # Ignore GUI focus/hover highlights when comparing the scene.
@@ -145,6 +151,7 @@ def run(directory, executable=None):
             browser.close()
             print('BROWSER_OK: WebGL; six landscape sizes at DPR 2; canvas aspect; drag/pinch/reset; simulated safe areas; portrait recovery')
     finally:
+        faulthandler.cancel_dump_traceback_later()
         server.shutdown()
         server.server_close()
 
