@@ -62,16 +62,17 @@ func _build_hud() -> void:
     var hud := CanvasLayer.new()
     add_child(hud)
     instructions = Label.new()
-    instructions.text = "TELANICO 3D LAB\nDrag to rotate · Pinch to zoom"
+    instructions.text = "Drag to rotate · Pinch to zoom"
     instructions.position = Vector2(24, 18)
-    instructions.add_theme_font_size_override("font_size", 28)
+    instructions.add_theme_font_size_override("font_size", 11)
+    instructions.modulate = Color(1, 1, 1, 0.65)
     instructions.mouse_filter = Control.MOUSE_FILTER_IGNORE
     hud.add_child(instructions)
 
     reset = Button.new()
     reset.text = "Reset view"
-    reset.custom_minimum_size = Vector2(224, 88)
-    reset.add_theme_font_size_override("font_size", 24)
+    reset.custom_minimum_size = Vector2(92, 34)
+    reset.add_theme_font_size_override("font_size", 13)
     hud.add_child(reset)
     reset.set_anchors_preset(Control.PRESET_TOP_RIGHT)
     reset.offset_left = -248
@@ -119,22 +120,25 @@ func _layout_hud() -> void:
                 safe_left = float(layout.get("left", 0)) * units
                 safe_right = float(layout.get("right", 0)) * units
                 safe_top = float(layout.get("top", 0)) * units
-    # Screen-pixel sizing keeps the tap target at 112 x 48 CSS pixels even
+    # Screen-pixel sizing keeps the tap target at 92 x 34 CSS pixels even
     # when canvas_items expands the logical viewport on a wide iPhone.
-    var margin := 12.0 * units
-    reset.custom_minimum_size = Vector2(112, 48) * units
-    reset.add_theme_font_size_override("font_size", roundi(16 * units))
-    reset.offset_left = -safe_right - margin - 112 * units
+    var margin := 10.0 * units
+    reset.custom_minimum_size = Vector2(92, 34) * units
+    reset.add_theme_font_size_override("font_size", roundi(13 * units))
+    reset.offset_left = -safe_right - margin - 92 * units
     reset.offset_right = -safe_right - margin
     reset.offset_top = safe_top + margin
-    reset.offset_bottom = safe_top + margin + 48 * units
+    reset.offset_bottom = safe_top + margin + 34 * units
     instructions.position = Vector2(safe_left + margin, safe_top + margin)
-    instructions.add_theme_font_size_override("font_size", roundi(16 * units))
+    instructions.add_theme_font_size_override("font_size", roundi(11 * units))
     if OS.has_feature("web"):
         # Read-only layout evidence for browser tests of the canvas-rendered HUD.
         var rect := reset.get_global_rect()
         var evidence := {"x": rect.position.x / units, "y": rect.position.y / units,
-                         "width": rect.size.x / units, "height": rect.size.y / units}
+                         "width": rect.size.x / units, "height": rect.size.y / units,
+                         "instruction_x": instructions.position.x / units,
+                         "instruction_width": instructions.size.x / units,
+                         "instruction_font": instructions.get_theme_font_size("font_size") / units}
         JavaScriptBridge.eval("window.telanicoHUD = " + JSON.stringify(evidence))
 
 
