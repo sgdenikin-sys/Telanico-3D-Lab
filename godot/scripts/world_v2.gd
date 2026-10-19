@@ -62,6 +62,8 @@ var test_mode := false
 var transition_clock := 0.0
 var layout_timer := 0.0
 var last_layout := ""
+var panel_left := 10.0
+var panel_bottom := 10.0
 
 func _ready() -> void:
     Engine.max_fps = 30
@@ -319,7 +321,14 @@ func _layout_ui(force := false) -> void:
         index += 1
     status.position = Vector2(left+10*units,top+9*units)
     status.add_theme_font_size_override("font_size",roundi(12*units))
-    panel.position = Vector2(left+10*units,viewport.y-bottom-panel.size.y-10*units)
+    panel_left = left+10*units
+    panel_bottom = bottom+10*units
+    title.add_theme_font_size_override("font_size",roundi(16*units))
+    info.add_theme_font_size_override("font_size",roundi(14*units))
+    for button in buttons.values():
+        button.custom_minimum_size = Vector2(88,44)*units
+        button.add_theme_font_size_override("font_size",roundi(14*units))
+    panel.position = Vector2(panel_left,viewport.y-panel.size.y-panel_bottom)
     portrait.visible = viewport.y>viewport.x
 
 func _top_action(name: String) -> void:
@@ -352,6 +361,8 @@ func _process(delta: float) -> void:
     if layout_timer>.5:
         layout_timer = 0
         _layout_ui()
+    # Container minimum sizes can settle after opening a different action row.
+    panel.position = Vector2(panel_left,get_viewport().get_visible_rect().size.y-panel.size.y-panel_bottom)
     var minutes := 12*60+story_minutes
     status.text = "%02d:%02d · V2 %s\n%s" % [minutes/60,minutes%60,String(build_info.get("commit","local")).left(7),
         "Courier · temporary rig" if state=="IDLE" else state.capitalize()]
