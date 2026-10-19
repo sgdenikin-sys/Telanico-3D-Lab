@@ -38,3 +38,6 @@ Thumbs.db
 
 # Downloadable Web build (GitHub Actions artifact)
 /build/
+
+# Generated playable V2 manifests and licenses (recreated by build)
+/godot/assets/generated/

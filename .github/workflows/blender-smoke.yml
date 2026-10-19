@@ -7,6 +7,9 @@ on:
       - 'blender/scripts/**'
       - 'tools/validate_glb.py'
       - 'tools/validate_overworld.py'
+      - 'tools/fetch_assets.py'
+      - 'tools/assets.lock.json'
+      - 'tools/validate_v2.py'
       - '.github/workflows/blender-smoke.yml'
 
 permissions:
@@ -25,10 +28,12 @@ jobs:
           blender --version
           blender --background --python-exit-code 1 --python-expr "import numpy; print('NumPy available:', numpy.__version__)"
       - name: Build editable Blender scene and GLB
-        run: blender --background --python-exit-code 1 --python blender/scripts/build_overworld.py
+        run: |
+          python3 tools/fetch_assets.py
+          blender --background --python-exit-code 1 --python blender/scripts/build_world_v2.py
       - name: Validate layout and GLB
         run: |
-          python3 tools/validate_overworld.py
+          python3 tools/validate_v2.py
           python3 tools/validate_glb.py godot/assets/generated/overworld.glb
       - name: Upload models
         uses: actions/upload-artifact@v4
