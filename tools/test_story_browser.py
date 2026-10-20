@@ -157,7 +157,11 @@ def exercise(browser, url, output, width, height, touch, full):
             click('button_menu.png')
             wait("window.__TELANICO_STORY.modal==='menu'")
             shot('menu')
-            click('RETURN TO GAME')
+            click('SOUND EFFECTS')
+            wait('!window.VorGunAudio.diagnostic().sfxEnabled')
+            click('SOUND EFFECTS')
+            wait('window.VorGunAudio.diagnostic().sfxEnabled')
+            click('RESUME GAME')
         audio=page.evaluate('window.VorGunAudio.diagnostic()')
         assert audio['musicStarts']==1, audio
         assert not errors,errors

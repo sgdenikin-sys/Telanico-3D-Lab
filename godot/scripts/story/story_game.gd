@@ -302,6 +302,7 @@ func show_menu() -> void:
     _label(col,"MENU",26)
     var music_toggle := CheckButton.new()
     music_toggle.text = "MUSIC"
+    music_toggle.custom_minimum_size.y = 44
     music_toggle.button_pressed = music_on
     col.add_child(music_toggle)
     music_toggle.toggled.connect(func(value):
@@ -319,6 +320,7 @@ func show_menu() -> void:
         _audio_settings())
     var sfx_toggle := CheckButton.new()
     sfx_toggle.text = "SOUND EFFECTS"
+    sfx_toggle.custom_minimum_size.y = 44
     sfx_toggle.button_pressed = sfx_on
     col.add_child(sfx_toggle)
     sfx_toggle.toggled.connect(func(value):
@@ -334,7 +336,8 @@ func show_menu() -> void:
     sfx_slider.value_changed.connect(func(value):
         sfx_volume = value
         _audio_settings())
-    _button(col,"RETURN TO GAME",close_modal)
+    _button(modal_footer,"RESUME GAME",close_modal).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    _button(modal_footer,"RESTART GAME",restart).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 func _audio_settings() -> void:
     if OS.has_feature("web"):

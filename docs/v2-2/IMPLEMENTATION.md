@@ -18,7 +18,13 @@ VorGun `fc5e861`; see MIGRATION.md for the unchanged canonical inventory.
   Operations -> Contracts -> Trader -> VAT -> FX -> LC Desk -> Settlements, using
   the matching tubes when faster. The historical itinerary fails here; no walking
   speed, geography, deadline, financial prerequisite or lunch window was changed.
-- Native landscape UI/invoice, deadline, Game Over and actual scene restart pass.
+- All nine canonical office mappings are exercised through physical journeys:
+  seven in the winning route, plus a 36-assertion Trade Finance/repeat visit and
+  Compliance/chocolate/training/assistant integration test.
+- Native landscape UI/invoice, menu/audio controls, deadline, Game Over and actual
+  scene restart pass. Browser inspection corrected CSS-sized touch controls
+  inside the unchanged stretched viewport, and deferred GUI button destruction
+  until pressed callbacks unwind (Godot 4.6.3).
 - Original browser audio singleton and lifecycle mock suite reused. Original MP3
   reconstructed losslessly from source chunks, SHA-256
   `dc0869cab4b4843c02f3428ab429e826794e4866bed9d1fbcfafffb6a080cef5`.

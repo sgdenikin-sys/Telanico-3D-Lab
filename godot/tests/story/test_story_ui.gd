@@ -18,6 +18,15 @@ func run():
         game.show_invoice()
         assert(game.invoice_document.applied_state.cargo=="High Quality Energy (Physical Oil)")
         game.close_modal()
+    game.show_menu()
+    var toggles=game.modal_column.find_children("*","CheckButton",true,false)
+    for toggle in toggles:toggle.button_pressed=false
+    assert(not game.music_on and not game.sfx_on)
+    for toggle in toggles:toggle.button_pressed=true
+    var sliders=game.modal_column.find_children("*","HSlider",true,false)
+    for slider in sliders:slider.value=0.3
+    assert(is_equal_approx(game.music_volume,0.3) and is_equal_approx(game.sfx_volume,0.3))
+    game.close_modal()
     assert(game.adapter.enter("settlements"))
     assert(game.clock_face.get_parent()==game.ui and game.clock_face.is_visible_in_tree())
     assert(game.office.get_node("OfficeMenu").is_visible_in_tree())
