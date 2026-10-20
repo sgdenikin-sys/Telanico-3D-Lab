@@ -11,6 +11,7 @@ func attach(target) -> void:
     assert(world == null, "Adapter must only attach once")
     world = target
     world.story_adapter = self
+    world._layout_ui(true)
     session.changed.connect(_sync)
     session.office_left.connect(_leave)
     _sync()
@@ -19,6 +20,10 @@ func _sync() -> void:
     if world == null: return
     world.story_minutes = session.quest_minutes
     world.navigation_locked = modal_active or not session.current_landmark.is_empty() or session.quest_failed or session.invoice_issued
+    # Full-screen story layers obscure the diorama. Avoid rendering its meshes
+    # behind them on iPhone/CPU WebGL; collisions and authored geometry persist.
+    world.world.visible = not world.navigation_locked
+    if world.state == "IDLE": world.actor.visible = not world.navigation_locked
     if world.navigation_locked:
         world.touches.clear()
         world.pointer_dragged = false

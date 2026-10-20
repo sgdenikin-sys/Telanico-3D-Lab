@@ -104,7 +104,7 @@ func _label(parent: Node, text: String, font_size := 20) -> Label:
 func _button(parent: Node, text: String, action: Callable) -> Button:
     var button := Button.new()
     button.text = text
-    button.custom_minimum_size = Vector2(0,44)
+    button.custom_minimum_size = Vector2(100,44)
     button.add_theme_font_size_override("font_size",18)
     button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     var style := StyleBoxFlat.new()
@@ -268,8 +268,11 @@ func show_invoice() -> void:
     scroll.custom_minimum_size.y = maxf(180,get_viewport().get_visible_rect().size.y-160)
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     col.add_child(scroll)
+    var center := CenterContainer.new()
+    center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    scroll.add_child(center)
     invoice_document = Invoice.new()
-    scroll.add_child(invoice_document)
+    center.add_child(invoice_document)
     invoice_document.apply_state(session.invoice_state())
     invoice_document.set_fit_width(minf(620,get_viewport().get_visible_rect().size.x-72))
 
@@ -364,9 +367,12 @@ func _build_office() -> void:
     style.set_content_margin_all(12)
     dialogue_card.add_theme_stylebox_override("panel",style)
     office.add_child(dialogue_card)
+    var frame := VBoxContainer.new()
+    dialogue_card.add_child(frame)
     var scroll := ScrollContainer.new()
+    scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-    dialogue_card.add_child(scroll)
+    frame.add_child(scroll)
     var col := VBoxContainer.new()
     col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     col.add_theme_constant_override("separation",8)
@@ -376,7 +382,7 @@ func _build_office() -> void:
     choice_list = VBoxContainer.new()
     col.add_child(choice_list)
     var actions := HBoxContainer.new()
-    col.add_child(actions)
+    frame.add_child(actions)
     _button(actions,"LEAVE OFFICE",func(): session.leave_office())
     _art_button(actions,"hud_invoice_button.png",show_invoice).custom_minimum_size = Vector2(100,44)
     _art_button(actions,"button_assistant.png",show_assistant).custom_minimum_size = Vector2(100,44)
@@ -506,7 +512,12 @@ func _publish_probe() -> void:
         for button in control_root.find_children("*","Button",true,false):
             if button.is_visible_in_tree():
                 var rect: Rect2 = button.get_global_rect()
-                controls.append({"text":button.text,"action":button.get_meta("dialogue_action",""),"art":button.get_meta("artwork",""),"rect":[rect.position.x,rect.position.y,rect.size.x,rect.size.y],"disabled":button.disabled})
+                var clip: Rect2 = Rect2(Vector2.ZERO,get_viewport().get_visible_rect().size)
+                var parent: Node = button.get_parent()
+                while parent is Control:
+                    if parent.clip_contents: clip = clip.intersection(parent.get_global_rect())
+                    parent = parent.get_parent()
+                controls.append({"clip":[clip.position.x,clip.position.y,clip.size.x,clip.size.y],"text":button.text,"action":button.get_meta("dialogue_action",""),"art":button.get_meta("artwork",""),"rect":[rect.position.x,rect.position.y,rect.size.x,rect.size.y],"disabled":button.disabled})
     var data := {"frame":Engine.get_process_frames(),"viewport":[get_viewport().get_visible_rect().size.x,get_viewport().get_visible_rect().size.y],"controls":controls,"screen":screen,"modal":modal_kind,"office":session.current_landmark,"time":session.quest_minutes,"invoice":session.invoice_state(),"failed":session.quest_failed,"won":session.invoice_issued,"choices":choices,"line_index":line_index,"lines":lines.size(),"locked":world.navigation_locked,"hud":rects}
     JavaScriptBridge.eval("window.__TELANICO_STORY="+JSON.stringify(data))
 

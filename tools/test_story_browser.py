@@ -29,10 +29,29 @@ def exercise(browser, url, output, width, height, touch, full):
             const s=window.__TELANICO_STORY;
             const b=s?.controls?.find(b=>!b.disabled&&(b.action===key||b.text===key||b.art===key));
             if(b&&s.frame!==frame){const next=JSON.stringify(b.rect);stable=next===signature?stable+1:0;signature=next;frame=s.frame;
-              if(stable>=1){const r=document.querySelector('#canvas').getBoundingClientRect();return {x:r.x+(b.rect[0]+b.rect[2]/2)/s.viewport[0]*r.width,y:r.y+(b.rect[1]+b.rect[3]/2)/s.viewport[1]*r.height};}}
+              if(stable>=1){const r=document.querySelector('#canvas').getBoundingClientRect();return {x:r.x+(b.rect[0]+b.rect[2]/2)/s.viewport[0]*r.width,y:r.y+(b.rect[1]+b.rect[3]/2)/s.viewport[1]*r.height,clip:b.clip.map((n,i)=>n/(i%2?s.viewport[1]:s.viewport[0])*(i%2?r.height:r.width))};}}
             await new Promise(r=>setTimeout(r,150));
           }throw Error('Missing or unstable story control '+key);
         }""",key)
+        clip=point.get('clip')
+        if clip and not (clip[1]+8 <= point['y'] <= clip[1]+clip[3]-8):
+            # Scroll the real Godot ScrollContainer; never invoke an offscreen button.
+            x=clip[0]+clip[2]*0.6
+            y=clip[1]+clip[3]*0.6
+            direction=1 if point['y']>clip[1]+clip[3] else -1
+            before=story()['frame']
+            if touch:
+                cdp=context.new_cdp_session(page)
+                cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':x,'y':y,'id':0}]})
+                for step in range(1,5):
+                    cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x,'y':y-direction*clip[3]*0.45*step/4,'id':0}]})
+                cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+                cdp.detach()
+            else:
+                page.mouse.move(x,y)
+                page.mouse.wheel(0,direction*max(100,clip[3]*0.6))
+            wait('(before)=>window.__TELANICO_STORY.frame>before',before)
+            return click(key)
         before=story()['frame']
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])
         wait('(before)=>window.__TELANICO_STORY.frame>before',before)
@@ -100,7 +119,6 @@ def exercise(browser, url, output, width, height, touch, full):
         wait("!window.__TELANICO_STORY.locked")
         page.evaluate('window.__TELANICO_COMMAND={rate:12}')
         shot('story-world')
-        await_menu=False
         # The exact existing gesture handler is also exercised by the V2.1 suite.
         if touch:
             cdp=context.new_cdp_session(page)
