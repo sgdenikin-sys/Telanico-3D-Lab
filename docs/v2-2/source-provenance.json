@@ -1,0 +1,286 @@
+{
+  "repository": "sgdenikin-sys/VorGun-Godot-Clean-Test",
+  "commit": "fc5e861f0c899ae5925625ff2191a41d7043d957",
+  "source_main_sha256": "3719fe4f61580d7e97b326b5990affa70a2a7051daf892c61538ef870a96f01e",
+  "unchanged_methods": {
+    "_format_quest_time": "03c313b1b29f3ae062287672a29ca44a7160bbd26e67bf1c5089f1fb39026393",
+    "_boat_wait_minutes": "0400c2210ea54b5fe1231c4ce5e5f3fd57453a5faac2dfe8361fac229f2a50ef",
+    "_assistant_context_stage": "bd832bb63d0f68bd40427d6f127ffa400282fb4fd9e4ce8c58745a894c16bf2e",
+    "_assistant_verified_fact_map": "00611903d84dbf1e5c60e12311685e04a4988f50b8ff0c7e406b14a4f7d85419",
+    "_assistant_newly_verified": "b55f1b41bd301a60c0548b0f0dc0e865ede6e933401835d85b313420c1e21a20",
+    "_assistant_hint": "e48d6c2124062f227fff8f068f8396cd633ccf1d5247392fcaa10f21d40caa45",
+    "_assistant_open_fields_short": "7889d4f2f8c6c3e9dcbd811181cc8a75a005e1d4460abdf14db1a8262841fbe7",
+    "_assistant_success_line": "ba7b5f9a34589bf1c9f2301261803d10f12365985d4c31c7d5984b8580788b89",
+    "_assistant_status_lines": "a9acc3d04fe0e3a40f227f41a6dc5104cca741546528263e551e5f4742dea538",
+    "_office_schedule": "6d4b1dd42d41f4600465286384a6d1a8dbf1ee09769aa02b564ecf8bc4aae4aa",
+    "_office_is_closed": "6760156619ccc08cb8dd1cef31883188e693bb60206c704b8548f16b11ecc4e2",
+    "_show_closed_office": "fb95d07b5127f2b7e85375997867a61a44e84e6aeebf9d4eda71e59ac4a0864a",
+    "_wait_for_office_return": "068a26842a8afc5f07d0863d2ac311c00556d175a362bb6be14f9bbff6f4da7a",
+    "_office_greeting_options": "d09ab9ec9d5bcc0ca7b8031a8e9ade1611cdb8327b0a561e69b1a39030c362bd",
+    "_office_greeting": "58e1a2d943864f714c00a219d3723f39cf23af28977b16c621a6aca1154ff1a5",
+    "_greeting_reply": "1a9411ad6cdba7b75e9696c14b2992e3cd273d3dd94cff9c9e6de1b5ba167c2b",
+    "_dialogue_options": "30085222cec8804260b13b6573a5fe1d8ad327da71c4a496880cb329b7c01c0f",
+    "_ops_density_answer_options": "6fbee8ab4c6b953fa26eb8c09ed7ef77bd57dfcaae6ab7afc6c84cdb0ca0c816",
+    "_release_blockers": "d02e8b9cc9df0422b58d23248a02b90456ed5cabc90083357b608041685e2f81"
+  },
+  "adapted_methods": [
+    "_choose_dialogue",
+    "_refresh_invoice",
+    "_spend_minutes",
+    "_open_arrival_interaction",
+    "_close_interaction"
+  ],
+  "note": "No changes made to source repository; canonical text and rule branches retained. Presentation and renderer dependencies removed.",
+  "approved_assets": [
+    {
+      "path": "assets/ui/HUD/RUNTIME/button_assistant.png",
+      "bytes": 36244,
+      "sha256": "98ccc864996e0c053116443bdea4fe5d3a5f7752361b829534522c7dab6b0907"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/button_close_invoice.png",
+      "bytes": 32259,
+      "sha256": "13cb9555147b50ba440f4329d565cd44ab8d5b7af62ead450d8968c5432951a1"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/button_diorama_view.png",
+      "bytes": 48807,
+      "sha256": "8af60f6f170835e1f2092b67100d3c5860d342c7402fa482113137d145695999"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/button_menu.png",
+      "bytes": 33056,
+      "sha256": "2d372408bda970d008c341e2c3e38ee2b24739c03e97b06fa0d5130fa9ff3a9f"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/clock_analog_blue.png",
+      "bytes": 119729,
+      "sha256": "307716fa11503e945c1c82a38ce782590bde5dd18cb74920f430852e22b8fa8e"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/clock_analog_bright_blue.png",
+      "bytes": 120451,
+      "sha256": "2d21ad02a3aa591e6946687fa3946535b2aed7ec59a89b2f6baa521fb2be9f3f"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/clock_analog_large.png",
+      "bytes": 153080,
+      "sha256": "a798fa7abaf13a52db9ea7d6231a91aa8c322ad6a76d910bd5f877d00258b4c4"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/clock_analog_orange.png",
+      "bytes": 120270,
+      "sha256": "16caedf2f66db48740dfaa753b59c576365e67d9681792f81ff4840a9802ae88"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/hud_assistant_button.png",
+      "bytes": 118486,
+      "sha256": "da0efc0e886d32bee04b292390b2f06a2e98d8de1af9e317606c9a69c86347e3"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/hud_assistant_rabbit_background_square.png",
+      "bytes": 1017329,
+      "sha256": "4ac655f67fd4a04de61ccd863288e185fe1e44e213f389a50ba07352bea6138a"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/hud_assistant_static_cutout.png",
+      "bytes": 423935,
+      "sha256": "5b0e2897782949035f96d8ef3c37dd5effe5a380d3f802a2cbccf60326d4d1f7"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/hud_assistant_video_frame.png",
+      "bytes": 797864,
+      "sha256": "9bd75b441c016b3be3dbf58afacc5dae17f8572ae883b1ebfd3dda4282b0b0c7"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/hud_clock_blank.png",
+      "bytes": 175812,
+      "sha256": "3161b26e5ffe576dd6d8489a906f4f1e19887a6dd43415bf0cd2371ae983f4e2"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/hud_diorama_button.png",
+      "bytes": 117211,
+      "sha256": "e72a965b759175d8803810d4fae547ed758d948ca289730d3b201d4ab8244b05"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/hud_invoice_button.png",
+      "bytes": 117198,
+      "sha256": "a94fbc2a923146bc585df8f5ccd63d59fc50da1becc3b4423764def24b46d4ea"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/hud_menu_button.png",
+      "bytes": 109029,
+      "sha256": "6a1bb745a4a0de4951c0ae1a541a705610dc8e7eaefde68fbeddb898435c9541"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/rabbit_approval.png",
+      "bytes": 247128,
+      "sha256": "ddef894d7d302038375c0335260f5ed30844865879025db09f85fade2eed147d"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/rabbit_carrot.png",
+      "bytes": 242962,
+      "sha256": "4d86349f656201ef0cb56d7cee0daf26e684bf7e1a46ed2740a45df3f6d96747"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/rabbit_clock.png",
+      "bytes": 270235,
+      "sha256": "0b83d292056b1c298c660ff6a9e94b824ed5818e42975b0c1e171b038ef37493"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/rabbit_documents.png",
+      "bytes": 261620,
+      "sha256": "98bec426404cb9b241ea3050ecfb2117163f0de6a7841fdb70cb8b82c4520a5f"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/rabbit_greeting.png",
+      "bytes": 210808,
+      "sha256": "1dbaac881d51216b9e0c7e933af4c04ca0896d34e7a4d34aaca0a0ef0a112e00"
+    },
+    {
+      "path": "assets/ui/HUD/RUNTIME/rabbit_thinking.png",
+      "bytes": 236468,
+      "sha256": "4eb88c3c6fe878310af5604c0727cf146b9028da61dc0c4ff1b46f07e8c1b7c7"
+    },
+    {
+      "path": "assets/ui/INVOICE/RUNTIME/invoice_blank_base.png",
+      "bytes": 2449670,
+      "sha256": "064d64596e733fd5a87ea91ce5dcd96193de3f5f9c4955a8a27e5c0325c8691c"
+    },
+    {
+      "path": "assets/ui/INVOICE/RUNTIME/invoice_company_stamp_blue_mockup.png",
+      "bytes": 1771038,
+      "sha256": "a6df47a0c426bc8069cb966707609f39faa2f84ebf9b8a19aea6a86b6b92d8a7"
+    },
+    {
+      "path": "assets/ui/INVOICE/RUNTIME/invoice_markup_red_check.png",
+      "bytes": 446057,
+      "sha256": "9f317e530d7da726148e2edd9762e62efdb3a89c0df95443e3a34e8b41f1bcb1"
+    },
+    {
+      "path": "assets/ui/INVOICE/RUNTIME/invoice_markup_red_circle.png",
+      "bytes": 325159,
+      "sha256": "28731617de09a644a91b32f6170c8c8c3c58305546bc7aba213682322fc6fe9f"
+    },
+    {
+      "path": "assets/ui/INVOICE/RUNTIME/invoice_markup_red_question.png",
+      "bytes": 282717,
+      "sha256": "6b79b8c74f2ad8b8f6f57ba8f08d1b3d28efc2f8e18750541971277b29b7fc54"
+    },
+    {
+      "path": "assets/ui/INVOICE/RUNTIME/invoice_signature_blue_sample.png",
+      "bytes": 383202,
+      "sha256": "1fbeb18744bfd164c694845fa9c409506e7b0ac706595581e73113b3d4ab643d"
+    },
+    {
+      "path": "assets/story_scenes/background_archive_hall.png",
+      "bytes": 3762032,
+      "sha256": "a88c16650356108d87b1d28188c9f67410b2e5420717637cf93cbe53968eaaea"
+    },
+    {
+      "path": "assets/story_scenes/background_harbor_office.png",
+      "bytes": 3861432,
+      "sha256": "0bce0f158e90e2c8a7268be28d3e42209270f41cb215e1811cf4da1a03b94674"
+    },
+    {
+      "path": "assets/story_scenes/foreground_counter_a.png",
+      "bytes": 3673983,
+      "sha256": "3fccdc794a3fcb38d8d6834865e7ab9fcf0fcfeb760a857ff077f276f1441fac"
+    },
+    {
+      "path": "assets/story_scenes/foreground_counter_b.png",
+      "bytes": 1732181,
+      "sha256": "6240351e89d765bcf680e941ff355c1fda7c706ccef1855cefacac29c37a31f9"
+    },
+    {
+      "path": "assets/story_scenes/foreground_counter_c.png",
+      "bytes": 1764771,
+      "sha256": "543fe990d7a200af59d79eb2c058840d8b6698a1538c20a95230efd84c670624"
+    },
+    {
+      "path": "assets/story_scenes/grand_fantasy_contracts_hall.png",
+      "bytes": 2663588,
+      "sha256": "660bd92157b2e1a18aa4b21e2d83ee56549cae6d0a80d2d7a5e115f404d2d3aa"
+    },
+    {
+      "path": "assets/story_scenes/grand_neo_classical_compliance_hall.png",
+      "bytes": 2639239,
+      "sha256": "de513be63d28551ebc2ccb15ba723545ec6a94d138cc4d603b33c25b9f022e54"
+    },
+    {
+      "path": "assets/story_scenes/navy_and_gold_harbor_hall.png",
+      "bytes": 2842745,
+      "sha256": "ce091c0f11a785580a49a7ca97394362cee3e62b428b3de73a2ad935f81e96ee"
+    },
+    {
+      "path": "assets/story_scenes/opulent_compass_treasury_study.png",
+      "bytes": 2672810,
+      "sha256": "efd238c076599d54891885ae469d98b85e95624b9128b55198a2a6043aeb644f"
+    },
+    {
+      "path": "assets/story_scenes/ornate_nautical_steampunk_reception_desk.png",
+      "bytes": 2006533,
+      "sha256": "c84dc3ca637d97c16fb21652c979282a9fe021a6dcc346dd0eebf3e1fcbbdd95"
+    },
+    {
+      "path": "assets/story_scenes/ornate_navy_and_gold_executive_desk.png",
+      "bytes": 1968845,
+      "sha256": "89d32c18541f42a8ee0ea6ba77d5d2ba7668407925cc7ac6ed75b86f6ea2d527"
+    },
+    {
+      "path": "assets/story_scenes/ornate_navy_and_gold_reception_desk.png",
+      "bytes": 1750757,
+      "sha256": "4ec8dd6393c38585299391b81948bb76ec30af742b6398803a9519986efba126"
+    },
+    {
+      "path": "assets/story_scenes/ornate_navy_finance_reception_desk.png",
+      "bytes": 1946340,
+      "sha256": "13e84538571312e75dcc15c89df0f3ad7ada87e968cdf3e4f73b0a507b392483"
+    },
+    {
+      "path": "assets/mascots/confident_wolf_in_leather_and_denim.png",
+      "bytes": 1840915,
+      "sha256": "4efc2d1d23c41804f441a9ea162f1390a94c3e5b6b42622ec6c901fbe0de027f"
+    },
+    {
+      "path": "assets/mascots/fennec_fox_business_professional.png",
+      "bytes": 1731086,
+      "sha256": "8676a314b92c0788538a2639f66754640008c4eae804d1be76f56d43f7ba03c5"
+    },
+    {
+      "path": "assets/mascots/professional_beaver_tax_advisor.png",
+      "bytes": 2040339,
+      "sha256": "c4d0f82ffea58c79065449fd81715172277ef0d2279aa2569421d2ce860ad7c4"
+    },
+    {
+      "path": "assets/mascots/professional_otter_finance_consultant.png",
+      "bytes": 1718627,
+      "sha256": "1d1f2b86a9f1434ae3a21be40f19eaf753f6e2702f1a55b6dd57e14b067dc5bb"
+    },
+    {
+      "path": "assets/mascots/suited_bald_eagle_welcoming_gesture.png",
+      "bytes": 1959210,
+      "sha256": "f2920e2ca089d759305d437b679e8067a67937132db5406544efc45bcc10424d"
+    },
+    {
+      "path": "assets/mascots/professional_tortoise_consultant_with_laptop.png",
+      "bytes": 2113513,
+      "sha256": "4eb3e6ade35df8410bd09182801fb76aac76a2ba8459e1f835235ee369c8ebf4"
+    },
+    {
+      "path": "assets/mascots/professional_red_panda_archivist.png",
+      "bytes": 2010647,
+      "sha256": "b264087d14e7131baf84bc9f5cdd18b5bea005981cf63ad57e0920f92f4daaba"
+    },
+    {
+      "path": "assets/mascots/friendly_badger_in_denim_and_sneakers.png",
+      "bytes": 1988696,
+      "sha256": "78ffa74bb89fadbcd15194053a68aec31d26b9165e5c989f6968cbfb176147e7"
+    },
+    {
+      "path": "assets/mascots/professional_sloth_with_binder.png",
+      "bytes": 2011361,
+      "sha256": "aa3a4274c3495d3014bfcf4e948e49808daad2dd8d03cb06a84b9dae128f79ea"
+    }
+  ]
+}

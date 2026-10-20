@@ -1,0 +1,2059 @@
+{
+  "cases": [
+    {
+      "initial_minutes": 0,
+      "name": "source_scenario_bot",
+      "records": [
+        {
+          "action": "ops_qty",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Cooper: Can you confirm the final delivered quantity for High Quality Energy (Physical Oil)?\nWolf: Eight thousand four hundred and seventy metric tons. Not the estimate.\nWolf: Anything else? I've got another delivery waiting.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "ops_report",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": true,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 2,
+            "reply": "Wolf: Final report verified. Density is cargo documentation only; it does not change the fixed price agreed by Trader.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "ops_full_documents",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 3,
+            "reply": "Cooper: Could I check the complete discharge and customs movement papers?\nWolf: Rotterdam, Netherlands. Customs movement status T1. Both are in the supporting documents.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "trader_price",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "Thanks. I'll take it from here.",
+                "trader_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": true,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 4,
+            "reply": "Cooper: What fixed price did you agree?\nEagle: USD 612.50 per MT. I have not passed the confirmation to Benny yet. Density cannot change this price.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "contract_entity",
+          "expected": {
+            "blockers": [
+              "price decimals",
+              "FX rate/date",
+              "payment terms",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": true,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 5,
+            "reply": "Benny: VorGun Trading is the invoicing entity. The trade price is in USD. Now, Cooper. Did you come for the answer, or did you come to understand the contract?",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "contract_verified_precision",
+          "expected": {
+            "blockers": [
+              "FX rate/date",
+              "payment terms",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 6,
+            "reply": "Benny: Ten decimal places in the signed amendment. Not ten if you feel like it. Ten because we agreed.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "contract_fixing",
+          "expected": {
+            "blockers": [
+              "FX rate/date",
+              "payment terms",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 7,
+            "reply": "Benny: Previous business day. It's written in the signed terms, not in the stars.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "contract_terms",
+          "expected": {
+            "blockers": [
+              "FX rate/date",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 8,
+            "reply": "Benny: Letter of credit. If you're looking for the bank's documentary requirements, Riley has them.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "lc_terms",
+          "expected": {
+            "blockers": [
+              "FX rate/date",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": true,
+            "known_lc_requirements": false,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 9,
+            "reply": "Riley: TreeBank letter of credit. The bank won't pay because your invoice looks convincing. It has to match the LC.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "lc_docs",
+          "expected": {
+            "blockers": [
+              "FX rate/date",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": true,
+            "known_lc_requirements": true,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 10,
+            "reply": "Riley: Original bill of lading, certificates, transport documents, and a signed and stamped invoice.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "lc_match",
+          "expected": {
+            "blockers": [
+              "FX rate/date",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": true,
+            "known_lc_bank": true,
+            "known_lc_requirements": true,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 11,
+            "reply": "Riley: Fixed price confirmed by Trader, delivered quantity and price precision verified. The LC reconciles. Density does not affect pricing.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "vat_treatment",
+          "expected": {
+            "blockers": [
+              "FX rate/date",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": true,
+            "known_lc_bank": true,
+            "known_lc_requirements": true,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": true,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 12,
+            "reply": "Nora: I need the exact discharge location and customs movement status.\nCooper: Rotterdam, Netherlands. T1. I've brought the documents.\nNora: Excellent. Actual evidence. How unusual.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "fx_rate",
+          "expected": {
+            "blockers": [
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": true,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": true,
+            "known_lc_bank": true,
+            "known_lc_requirements": true,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": false,
+            "known_unit_price": true,
+            "known_vat_treatment": true,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 13,
+            "reply": "Fiona: You have a USD invoice and a EUR payment deadline. Which contractual fixing date applies?\nCooper: Previous business day, as stated in the signed contract.\nFiona: Perfect. Now we can use the correct reference rate: 1.0834.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "lc_original",
+          "expected": {
+            "blockers": [],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": true,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": true,
+            "known_lc_bank": true,
+            "known_lc_requirements": true,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": true,
+            "known_unit_price": true,
+            "known_vat_treatment": true,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": true,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 14,
+            "reply": "Riley: Everything matches. I'll have the authorised original signed and stamped.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "settlements_check",
+          "expected": {
+            "blockers": [],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": true,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": true,
+            "known_lc_bank": true,
+            "known_lc_requirements": true,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": true,
+            "known_unit_price": true,
+            "known_vat_treatment": true,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": true,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 15,
+            "reply": "Invoice Team: The invoice is complete, signed and stamped. Ready to send.",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        },
+        {
+          "action": "settlements_release",
+          "expected": {
+            "blockers": [],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": true,
+            "known_compliance_clearance": false,
+            "known_currency": true,
+            "known_customs_status": true,
+            "known_density": true,
+            "known_discharge_location": true,
+            "known_escalation_clause": false,
+            "known_final_quantity": true,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": true,
+            "known_fx_rate_date": true,
+            "known_invoice_date": false,
+            "known_lc_amount_match": true,
+            "known_lc_bank": true,
+            "known_lc_requirements": true,
+            "known_legal_entity": true,
+            "known_payment_currency": false,
+            "known_payment_terms": true,
+            "known_price_currency": true,
+            "known_price_precision": true,
+            "known_signature": true,
+            "known_unit_price": true,
+            "known_vat_treatment": true,
+            "ops_full_pack_requested": true,
+            "original_pack_prepared": true,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 16,
+            "reply": "Invoice Team: Send it.\n✓ INVOICE ISSUED & SENT — 12:16",
+            "trader_price_obtained": true,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_ops_estimate",
+      "records": [
+        {
+          "action": "ops_estimate",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Cooper: Is the estimated quantity close enough?\nWolf: Close enough for a guess. Not for an invoice.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_vat_treatment",
+      "records": [
+        {
+          "action": "vat_treatment",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Nora: I need the exact discharge location and customs movement status.\nCooper: The cargo was delivered. Isn't that enough?\nNora: For Operations, perhaps. For VAT, no.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": true,
+            "vat_requested_discharge_location": true
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_lc_match",
+      "records": [
+        {
+          "action": "lc_match",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Riley: We still need Trader-fixed price, final quantity, agreed decimals and documentary terms. There is no density escalation.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_lc_original",
+      "records": [
+        {
+          "action": "lc_original",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": true,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Riley: We can prepare the document pack. The authorised signatory signs the verified original, not a guess.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_fx_rate",
+      "records": [
+        {
+          "action": "fx_rate",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Fiona: You have a USD invoice and a EUR payment deadline. Which contractual fixing date applies?\nCooper: Today's rate?\nFiona: Today's rate is very interesting. Unfortunately, your contract doesn't care.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_contract_guess_two",
+      "records": [
+        {
+          "action": "contract_guess_two",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Benny: Wrong. Your bank account has more digits than that. Try reading the signed amendment.\n⚠ WRONG PRICE PRECISION — 1 MIN LOST.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_contract_guess_eight",
+      "records": [
+        {
+          "action": "contract_guess_eight",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Benny: Still wrong. This is an excellent way to meet the customer rejection team.\n⚠ WRONG PRICE PRECISION — 1 MIN LOST.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_compliance_chocolate",
+      "records": [
+        {
+          "action": "compliance_chocolate",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": true,
+            "compliance_warning_pending": true,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 45,
+            "reply": "Compliance Officer: Cooper, offering chocolate for approval is a bribe. You have just been assigned mandatory compliance training — forty-five minutes.\nCooper: Forty-five?!\nCompliance Officer: Yes. And the invoice is still unfinished.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_compliance_training",
+      "records": [
+        {
+          "action": "compliance_training",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 0,
+            "reply": "Compliance Officer: No training was requested.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_contract_price",
+      "records": [
+        {
+          "action": "contract_price",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Benny: Eagle fixed the price, but has not provided his confirmation to Contracts. Get it from Trader. I can verify decimals and FX fixing.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_tf_adjustment",
+      "records": [
+        {
+          "action": "tf_adjustment",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Finance Specialist: The Trader fixed the unit price. Verify quantity, precision and LC amount with Riley; the FX conversion is a separate check.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_finance_lc_amount",
+      "records": [
+        {
+          "action": "finance_lc_amount",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Riley (LC desk): Does the invoice amount match the LC?\nCooper: Of course. Approximately?\nRiley: No. Fix quantity, price precision and LC wording. Then we'll talk.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_finance_fluctuation",
+      "records": [
+        {
+          "action": "finance_fluctuation",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Riley: Reconcile the fixed-price amount against the LC first. Then verify FX conversion separately.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 0,
+      "name": "initial_settlements_release",
+      "records": [
+        {
+          "action": "settlements_release",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [
+              [
+                "The invoice looks good. Can we sign and stamp it?",
+                "settlements_check"
+              ],
+              [
+                "Check it and SEND THE INVOICE.",
+                "settlements_release"
+              ],
+              [
+                "I'll return when the documents are ready.",
+                "settlements_exit"
+              ]
+            ],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": false,
+            "quest_minutes": 1,
+            "reply": "Invoice Team: Cooper, go finish the invoice first.",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    },
+    {
+      "initial_minutes": 119,
+      "name": "deadline",
+      "records": [
+        {
+          "action": "settlements_release",
+          "expected": {
+            "blockers": [
+              "invoicing entity",
+              "final quantity",
+              "discharge location",
+              "Trader-confirmed fixed unit price",
+              "price decimals",
+              "currency",
+              "FX rate/date",
+              "payment terms",
+              "customs status",
+              "LC documents",
+              "LC amount match",
+              "VAT treatment",
+              "signed/stamped original"
+            ],
+            "choices": [],
+            "compliance_training_offered": false,
+            "compliance_warning_pending": false,
+            "invoice_issued": false,
+            "known_compliance_clearance": false,
+            "known_currency": false,
+            "known_customs_status": false,
+            "known_density": false,
+            "known_discharge_location": false,
+            "known_escalation_clause": false,
+            "known_final_quantity": false,
+            "known_fluctuation_clause": false,
+            "known_fx_rate": false,
+            "known_fx_rate_date": false,
+            "known_invoice_date": false,
+            "known_lc_amount_match": false,
+            "known_lc_bank": false,
+            "known_lc_requirements": false,
+            "known_legal_entity": false,
+            "known_payment_currency": false,
+            "known_payment_terms": false,
+            "known_price_currency": false,
+            "known_price_precision": false,
+            "known_signature": false,
+            "known_unit_price": false,
+            "known_vat_treatment": false,
+            "ops_full_pack_requested": false,
+            "original_pack_prepared": false,
+            "original_signature_required": false,
+            "quest_failed": true,
+            "quest_minutes": 120,
+            "reply": "",
+            "trader_price_obtained": false,
+            "vat_requested_customs_status": false,
+            "vat_requested_discharge_location": false
+          }
+        }
+      ]
+    }
+  ],
+  "source_commit": "fc5e861f0c899ae5925625ff2191a41d7043d957"
+}
