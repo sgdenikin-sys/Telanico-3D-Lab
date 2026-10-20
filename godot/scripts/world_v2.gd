@@ -683,7 +683,7 @@ func _publish_probe() -> void:
     for key in top_buttons:
         var centre: Vector2 = top_buttons[key].global_position+top_buttons[key].size/2
         ui[key] = [centre.x,centre.y]
-    var probe := {"ready":true,"fps":Engine.get_frames_per_second(),"state":state,"current":current_node,"selected":selected,"island":current_island,
+    var probe := {"frame":Engine.get_process_frames(),"ready":true,"fps":Engine.get_frames_per_second(),"state":state,"current":current_node,"selected":selected,"island":current_island,
         "story_minutes":story_minutes,"position":[actor.position.x,actor.position.y,actor.position.z],
         "animation":animation.current_animation if animation else "", "animation_position":animation.current_animation_position if animation else 0,
         "last_trip":last_trip,"sites":projected,"ui":ui,"view":get_viewport().get_visible_rect().size,

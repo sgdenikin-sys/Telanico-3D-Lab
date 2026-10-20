@@ -18,6 +18,13 @@ func travel(target):
     assert(game.state=="IDLE", "Walking stalled: "+target)
     assert(game.current_node==target)
     assert(game.actor.position.distance_to(game.graph.nodes[target])<1)
+func settle_follow():
+    # Follow eases by real delta; a fixed number of process frames is not a
+    # duration and fails on fast headless runners before the camera arrives.
+    for i in range(300):
+        await physics_frame
+        if game.camera_target.distance_to(game.actor.position+Vector3(0,2,3))<.5:return
+    assert(false,"Follow camera did not converge within five physics seconds")
 func run():
     game=load("res://scenes/main.tscn").instantiate()
     root.add_child(game)
@@ -32,7 +39,7 @@ func run():
     await physics_frame
     assert(game.actor.test_move(game.actor.global_transform,Vector3(0,0,-8)), "Entrance wall must block courier")
     game._top_action("Follow")
-    for i in range(12):await process_frame
+    await settle_follow()
     assert(game.follow_character and game.camera.size==30 and game.camera_elevation==40)
     assert(game.camera.is_position_in_frustum(game.actor.position+Vector3.UP))
     game.reset_view()
