@@ -16,6 +16,18 @@ python3 tools/validate_v2.py
 python3 tools/validate_glb.py godot/assets/generated/overworld.glb
 python3 tools/stamp_build.py --before
 "$godot_bin" --headless --path godot --editor --import 2>&1 | tee build/logs/import.log
+# V2.2 foundation is isolated from the playable V2.1 scene until migration completes.
+for story_test in test_story_session test_source_parity; do
+  timeout 30 "$godot_bin" --headless --path godot \
+    --script "res://tests/story/${story_test}.gd" \
+    2>&1 | tee "build/logs/${story_test}.log"
+done
+rg -q 'TELANICO_STORY_SESSION_PASS' build/logs/test_story_session.log
+rg -q 'TELANICO_SOURCE_PARITY_PASS' build/logs/test_source_parity.log
+if rg -n 'SCRIPT ERROR:|Assertion failed|ERROR:' build/logs/test_story_session.log build/logs/test_source_parity.log; then
+  echo 'Story session/parity regression failed' >&2
+  exit 1
+fi
 # Godot can log script errors without returning nonzero: require the test marker.
 timeout 120 "$godot_bin" --headless --path godot --script res://tests/test_v2.gd \
   2>&1 | tee build/logs/viewer.log
