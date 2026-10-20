@@ -17,7 +17,11 @@ The recovery reproduction reached and passed Finance selection/cancellation.
 Browser coordinate synchronization now counts distinct Godot telemetry frames,
 rather than repeated polls of one potentially stale UI position. This is test
 instrumentation only. Failure state JSON, screenshots, Playwright traces and
-console/HTTP errors are retained in the private evidence artifact. `--case 1920`
+console/HTTP errors are retained in the private evidence artifact.
+The persisted recovery run then exposed a wheel-input timeout: its failure
+probe already showed the expected 106.64 zoom, delivered after the old 30-second
+wall-clock deadline by SwiftShader. Input waits now allow a bounded 90 seconds;
+the event, target value and assertions are unchanged. `--case 1920`
 is available to reproduce that viewport alone.
 
 No approved mobile UI, viewport layout, gesture handler, production game,

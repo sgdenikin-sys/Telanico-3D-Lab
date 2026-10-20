@@ -49,7 +49,10 @@ def exercise(browser, url, width, height, touch, output):
     def state():
         return page.evaluate('window.__TELANICO_STATE')
 
-    def wait(expression, *, arg=None, timeout=30000):
+    # At 1920px SwiftShader can acknowledge a queued wheel/button event only
+    # after 30s. The saved failure probe showed the expected zoom arriving just
+    # after that deadline. Keep the same assertions with a bounded CPU budget.
+    def wait(expression, *, arg=None, timeout=90000):
         page.wait_for_function(expression, arg=arg, polling=250, timeout=timeout)
 
     def click(group, key):
