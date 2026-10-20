@@ -1,6 +1,6 @@
 """Asset-first Telanico V2. Reviewed source bytes are fetched by fetch_assets.py.
 Headless generation: blender -b --python-exit-code 1 --python .../build_world_v2.py
-Optional -- --render emits 55/60/70-degree CPU review frames.
+Optional -- --render emits comparable 30/38/40/45/55-degree CPU review frames.
 """
 from pathlib import Path
 import sys,json,math,struct,random
@@ -118,7 +118,7 @@ def road_subgrade(x,y):
     if not ROAD_BUCKETS:
         for edge in L.route_data():
             if edge['kind']=='bridge':continue
-            radius=2.5 if edge['kind']=='main' else 1.5 if edge['kind']=='stone' else .8
+            radius=1.9 if edge['kind']=='main' else 1.3 if edge['kind']=='stone' else .8
             for px,py,_ in edge['points']:
                 ROAD_BUCKETS.setdefault((math.floor(px/8),math.floor(py/8)),[]).append((px,py,radius))
     bx,by=math.floor(x/8),math.floor(y/8);distance=99
@@ -143,10 +143,26 @@ def terrain(side):
         faces += [(a+i,b+i,b+(i+1)%sectors,a+(i+1)%sectors) for i in range(sectors)]
     mesh=bpy.data.meshes.new(side+' continuous height terrain');mesh.from_pydata(vertices,[],faces);mesh.update()
     obj=bpy.data.objects.new(side+' Island Terrain',mesh);bpy.context.collection.objects.link(obj);obj.data.materials.append(M['grass'])
+    for key in ('meadow','grass_light'):obj.data.materials.append(M[key])
+    # Broad mottled meadow patches follow the land; no added texture payload.
+    for p in obj.data.polygons:
+        centre=sum((obj.data.vertices[i].co for i in p.vertices),Vector())/len(p.vertices)
+        variation=math.sin(centre.x*.17)+math.cos(centre.y*.14)+.5*math.sin((centre.x+centre.y)*.22)
+        p.material_index=1 if variation>1.1 else 2 if variation<-.9 else 0
     for p in obj.data.polygons:p.use_smooth=True
-    rim=vertices[-sectors:];v=rim+[(x,y,-1.8) for x,y,z in rim]
-    mesh=bpy.data.meshes.new(side+' rocky coast');mesh.from_pydata(v,[],[(i,(i+1)%sectors,(i+1)%sectors+sectors,i+sectors) for i in range(sectors)])
-    coast=bpy.data.objects.new(side+' Cliff',mesh);bpy.context.collection.objects.link(coast);coast.data.materials.append(M['cliff'])
+    rim=vertices[-sectors:];v=[]
+    # Four uneven coastal strata expose meaningful vertical depth at 40 degrees.
+    for level in range(4):
+        for i,(x,y,z) in enumerate(rim):
+            dx,dy=x-cx,y;length=math.hypot(dx,dy)
+            offset=(0,.6,1.3,.5)[level]*(1+.3*math.sin(i*.27))
+            h=(z-.18,z*.64-.8,z*.22-1.1,-1.8)[level]
+            v.append((x+dx/length*offset,y+dy/length*offset,h))
+    faces=[(j*sectors+i,j*sectors+(i+1)%sectors,(j+1)*sectors+(i+1)%sectors,(j+1)*sectors+i) for j in range(3) for i in range(sectors)]
+    mesh=bpy.data.meshes.new(side+' rocky coast');mesh.from_pydata(v,[],faces)
+    coast=bpy.data.objects.new(side+' Cliff',mesh);bpy.context.collection.objects.link(coast)
+    for key in ('cliff','cliff_light','cliff_dark'):coast.data.materials.append(M[key])
+    for p in mesh.polygons:p.material_index=(p.index//sectors+p.index//11)%3
     # Shallow coastal band, rather than a rectangular water tray.
     for name,inner,outer,z,mat in [('Lagoon',.2,7,-.11,M['lagoon']),('Foam',.2,1,-.07,M['foam'])]:
         verts=[]
@@ -179,7 +195,16 @@ def build_site(site):
     ident,name,side,model,(x,y),(w,d),kind=site;z=L.height(x,y)
     root=empty('Site_'+ident,(x,y,z));before=set(bpy.data.objects)
     if model not in ('tube','dock'):
-        obj,h=asset(model,(x,y,z+.18),(w,d))
+        cube(name+' foundation terrace',(x,y,z+.28),(w+.7,d+.7,.65),M['cliff_light'],.22)
+        obj,h=asset(model,(x,y,z+.65),(w,d))
+        prominence=.90 if ident=='archive' else 1.30 if ident in ('settlements','operations','trader') else 1.12
+        obj.scale.z*=prominence;h=h*prominence+.65
+        # Kit-derived rear pavilion, contained by the reserved collision footprint.
+        if ident in ('settlements','operations','trader'):
+            wing,wh=asset('tower_B' if ident=='settlements' else 'home_B',(x-w*.27,y+d*.18,z+.65),(w*.28,d*.40))
+            wing.scale.z*=1.35
+        for step in range(3):
+            cube(name+' entrance step',(x,y-d/2-.45-step*.43,z+.12+(2-step)*.16),(w*.42,.65,.24+(2-step)*.32),M['stone'],.08)
         cylinder(name+' WalkSurface forecourt',(x,y-d/2-1,z+.08),max(w*.4,3),.16,M['stone'],48)
         # Distinct departmental additions complement the imported architecture.
         if ident=='archive':
@@ -194,20 +219,24 @@ def build_site(site):
             for dx in (-2.5,2.5):
                 cube('Coffee bench',(x+dx,y-4,z+.8),(2.1,.7,.3),M['wood'],.12)
         if ident in ('settlements','operations','trader'):
-            cube(name+' civic portico',(x,y-d/2-.5,z+3),(w*.55,2,.35),M['bronze'],.15)
-            for dx in (-w*.22,w*.22):cylinder('Ivory civic pier',(x+dx,y-d/2-1,z+1.5),.25,3,M['ivory'],20)
+            cube(name+' civic portico',(x,y-d/2-.5,z+4.0),(w*.55,2,.4),M['bronze'],.15)
+            for dx in (-w*.22,w*.22):cylinder('Ivory civic pier',(x+dx,y-d/2-1,z+2),.30,4,M['ivory'],20)
     elif model=='tube':
-        h=10
+        h=13
         cylinder(name+' platform',(x,y,z+.2),4.2,.4,M['stone'],48)
-        cylinder(name+' ivory core',(x,y,z+4.8),1.65,9.2,M['ivory'],48)
-        for level in (1,4.2,8.5):torus(name+' bronze pressure ring',(x,y,z+level),1.8,.22,M['bronze'])
-        cylinder(name+' teal cap',(x,y,z+9.6),2.0,.7,M['teal'],48)
+        cylinder(name+' ivory core',(x,y,z+6.3),1.65,12.2,M['ivory'],48)
+        for level in (1,5.5,11.5):torus(name+' bronze pressure ring',(x,y,z+level),1.8,.22,M['bronze'])
+        cylinder(name+' teal cap',(x,y,z+12.6),2.0,.7,M['teal'],48)
         direction=1 if side=='west' else -1
-        cube(name+' inward nozzle',(x+direction*2,y,z+8),(3,1.3,1.2),M['bronze'],.4)
-        for dx in (-.9,.9):cylinder(name+' pressure pipe',(x+dx,y-.9,z+4.8),.22,8,M['teal'],24)
+        cube(name+' inward nozzle',(x+direction*2,y,z+11),(3,1.3,1.2),M['bronze'],.4)
+        for dx in (-.9,.9):cylinder(name+' pressure pipe',(x+dx,y-.9,z+6.3),.22,11,M['teal'],24)
     else:
         h=3
         cube(name+' WalkSurface',(x,y,z-.08),(14,9,.45),M['wood'],.2)
+        direction=1 if side=='west' else -1
+        for step in range(6):
+            height=max(.5,z-(step+1)*.35)
+            cube('Harbor waterside stair',(x+direction*(step+.5),y-4.9,height/2),(1.15,1.5,height),M['cliff_light'],.08)
         for dy in (-3.6,3.6):
             for dx in (-5,5):cylinder('Harbor bollard',(x+dx,y+dy,z+.6),.22,1.5,M['bronze'],16)
         cube(name+' launch sign',(x,y+3.8,z+1.8),(2.5,.3,2),M['teal'],.15)
@@ -249,25 +278,25 @@ def report(sites,edges):
 
 
 def reviews():
-    out=ROOT/'docs/v2';out.mkdir(parents=True,exist_ok=True);scene=bpy.context.scene
+    out=ROOT/'docs/v2-1';out.mkdir(parents=True,exist_ok=True);scene=bpy.context.scene
     scene.render.engine='CYCLES';scene.cycles.device='CPU';scene.cycles.samples=16;scene.cycles.use_denoising=False
     scene.render.resolution_x=1440;scene.render.resolution_y=900;scene.render.resolution_percentage=100
-    for elevation in (55,60,70):
+    for elevation in (30,38,40,45,55):
         angle=math.radians(elevation);cam=scene.camera;cam.location=(0,-180*math.cos(angle),180*math.sin(angle))
-        cam.rotation_euler=(Vector((0,0,2))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=200
+        cam.rotation_euler=(Vector((0,0,5))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=200
         scene.render.filepath=str(out/f'world-{elevation}.png');bpy.ops.render.render(write_still=True)
 
 
 def main():
     OUT.mkdir(parents=True,exist_ok=True);ASSETS.mkdir(parents=True,exist_ok=True)
     courier()
-    for name,color in dict(grass=(.33,.46,.29),cliff=(.48,.48,.39),water=(.055,.25,.30),lagoon=(.16,.43,.44),foam=(.60,.72,.65),
-        stone=(.76,.72,.59),ivory=(.79,.75,.64),teal=(.12,.29,.32),bronze=(.58,.40,.21),wood=(.37,.27,.18),dirt=(.52,.43,.29)).items():M[name]=material('Telanico '+name,color)
+    for name,color in dict(grass=(.19,.29,.13),meadow=(.21,.31,.14),grass_light=(.23,.33,.16),cliff=(.34,.33,.26),cliff_light=(.42,.39,.30),cliff_dark=(.28,.30,.25),water=(.025,.10,.12),lagoon=(.06,.23,.23),foam=(.30,.47,.41),
+        stone=(.50,.46,.36),ivory=(.62,.57,.46),teal=(.12,.29,.32),bronze=(.58,.40,.21),wood=(.37,.27,.18),dirt=(.52,.43,.29)).items():M[name]=material('Telanico '+name,color)
     M['atlas']=atlas_material()
     cylinder('Open teal water',(0,0,-.35),230,.4,M['water'],160)
     terrain('west');terrain('east');edges=L.route_data()
     for i,e in enumerate(edges):
-        kind=e['kind'];width=5 if kind in ('main','bridge') else 3 if kind=='stone' else 1.6
+        kind=e['kind'];width=5 if kind=='bridge' else 3.8 if kind=='main' else 2.6 if kind=='stone' else 1.6
         pts=[(x,y,z+i*.0005) for x,y,z in e['points']]
         road=ribbon(('Bridge WalkSurface' if kind=='bridge' else 'Path WalkSurface')+str(i),pts,width,M['dirt'] if kind=='trail' else M['stone'],.70)
         if kind!='bridge':
@@ -277,6 +306,12 @@ def main():
                 # tall side walls where sloping promenades meet.
                 vertex.co.z=L.height(vertex.co.x,vertex.co.y)+.265-(.70 if vertex.index>=len(road.data.vertices)//2 else 0)
         if kind=='bridge':
+            # Deep curved spandrels reveal the opening instead of a thin strip.
+            for side in (-1,1):
+                ribbon('Bridge arch spandrel',[(x,y+side*2.35,z-.25) for x,y,z in pts],.65,M['cliff_light'],1.55)
+            for px in (-19,19):
+                pz=L.height(px,43)
+                cube('Bridge abutment',(px,43,pz/2),(3.0,6.3,pz+1.1),M['cliff'],.25)
             for side in (-1,1):ribbon('Bridge stone parapet',[(x,y+side*2.7,z+.8) for x,y,z in pts],.35,M['cliff'],.8)
     validate_surface_clearance()
     sites=[build_site(site) for site in L.SITES]
@@ -292,7 +327,7 @@ def main():
     for i,(x,y) in enumerate([(-79,22),(-80,27),(-76,30),(-78,-40),(-75,-46),(80,32),(82,27),(78,46),(77,-41),(73,-47)]):
         asset('rock_single_B' if i%2 else 'rock_single_C',(x,y,L.height(x,y)-1),(3.5,4),'nature')
     ferry();report(sites,edges)
-    bpy.ops.object.camera_add(location=(0,-100,173));cam=bpy.context.object;cam.name='V2 60 degree review';cam.rotation_euler=(Vector((0,0,2))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=200;bpy.context.scene.camera=cam
+    bpy.ops.object.camera_add(location=(0,-200*math.cos(math.radians(40)),5+200*math.sin(math.radians(40))));cam=bpy.context.object;cam.name='V2.1 40 degrees ABOVE HORIZONTAL';cam.rotation_euler=(Vector((0,0,5))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=200;bpy.context.scene.camera=cam
     bpy.ops.object.light_add(type='AREA',location=(-60,-80,130));light=bpy.context.object;light.data.energy=180000;light.data.size=95
     world=bpy.context.scene.world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.65,.72,.75,1);world.node_tree.nodes['Background'].inputs['Strength'].default_value=.5
     bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'overworld.blend'))

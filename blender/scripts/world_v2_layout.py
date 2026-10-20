@@ -39,25 +39,50 @@ def inside(x,y,side):
     return result
 
 def base_height(x,y):
-    h=2.2+.35*math.sin(x*.065)*math.cos(y*.07)
-    for cx,cy,amp,r in [(-71,23,5.4,17),(67,34,5.8,18),(71,-32,3.6,15)]:
+    h=3.0+.55*math.sin(x*.065)*math.cos(y*.07)
+    for cx,cy,amp,r in [(-68,25,9.0,32),(65,34,10.0,33),(71,-32,6.5,30)]:
         h+=amp*math.exp(-((x-cx)**2+(y-cy)**2)/(r*r))
     return h
 
+# A small deterministic heightfield blends level districts simultaneously.
+# Sequential per-site flattening can tilt an earlier entrance court when a later
+# site's blend reaches it. Fixed terrace samples + relaxation avoid that seam.
+_HEIGHT_GRID=None
+_GRID_STEP=1.5
+_GRID_X=-100.0
+_GRID_Y=-70.0
+_GRID_W=135
+_GRID_H=95
+
+def _height_grid():
+    global _HEIGHT_GRID
+    base=[];fixed={}
+    for j in range(_GRID_H):
+        y=_GRID_Y+j*_GRID_STEP
+        for i in range(_GRID_W):
+            x=_GRID_X+i*_GRID_STEP;index=len(base);base.append(base_height(x,y))
+            candidates=[]
+            for _,_,_,_,(cx,cy),(w,d),kind in SITES:
+                if kind=='boat':continue
+                pad=abs(x-cx)<w/2+1.5 and abs(y-cy)<d/2+1.5
+                court=kind=='office' and math.hypot(x-cx,y-(cy-d/2-1))<max(w*.4,3)+2.5
+                if pad or court:candidates.append((math.hypot(x-cx,y-cy),base_height(cx,cy)))
+            if candidates:fixed[index]=min(candidates)[1]
+    values=base[:]
+    for _ in range(240):
+        new=values[:]
+        for j in range(1,_GRID_H-1):
+            for i in range(1,_GRID_W-1):
+                k=j*_GRID_W+i
+                new[k]=fixed[k] if k in fixed else .99*(values[k-1]+values[k+1]+values[k-_GRID_W]+values[k+_GRID_W])*.25+.01*base[k]
+        values=new
+    _HEIGHT_GRID=values
+
 def height(x,y):
-    h=base_height(x,y)
-    for _,_,_,_,(cx,cy),(w,d),kind in SITES:
-        if kind=='boat':continue
-        distance=max(abs(x-cx)-w/2-1.2,abs(y-cy)-d/2-1.2,0)
-        if kind=='office':
-            # The paved entrance court is part of the level terrace, not a
-            # floating disc above an unrelated hillside.
-            court=max(math.hypot(x-cx,y-(cy-d/2-1))-max(w*.4,3),0)
-            distance=min(distance,court)
-        if distance<10:
-            t=min(1,distance/10);t=t*t*(3-2*t)
-            h=base_height(cx,cy)*(1-t)+h*t
-    return h
+    if _HEIGHT_GRID is None:_height_grid()
+    u=max(0,min(_GRID_W-1.001,(x-_GRID_X)/_GRID_STEP));v=max(0,min(_GRID_H-1.001,(y-_GRID_Y)/_GRID_STEP))
+    i=int(u);j=int(v);a=u-i;b=v-j;k=j*_GRID_W+i
+    return (1-b)*((1-a)*_HEIGHT_GRID[k]+a*_HEIGHT_GRID[k+1])+b*((1-a)*_HEIGHT_GRID[k+_GRID_W]+a*_HEIGHT_GRID[k+_GRID_W+1])
 
 def xyz(x,y):return (x,y,height(x,y)+.24)
 
@@ -108,7 +133,7 @@ def sample_edge(a,b,via,kind):
     smooth=[points[0]]
     for i in range(1,len(points)-1):
         p,q,r=points[i-1:i+2]
-        d1=math.dist(p,q);d2=math.dist(q,r);radius=min(2,d1*.2,d2*.2)
+        d1=math.dist(p,q);d2=math.dist(q,r);radius=min(3.5,d1*.43,d2*.43)
         u=tuple(q[j]+(p[j]-q[j])*radius/d1 for j in range(2))
         v=tuple(q[j]+(r[j]-q[j])*radius/d2 for j in range(2))
         smooth.append(u)

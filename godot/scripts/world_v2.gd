@@ -30,9 +30,10 @@ var simulation_rate := 1.0
 var elapsed_real := 0.0
 var trip_real := 0.0
 var last_trip: Dictionary = {}
-var camera_target := Vector3(0, 2, 0)
+var camera_target := Vector3(0, 5, 0)
 var camera_yaw := 0.0
-var camera_elevation := 60.0
+const DEFAULT_ELEVATION := 40.0 # Degrees ABOVE HORIZONTAL.
+var camera_elevation := DEFAULT_ELEVATION
 var inspect_mode := false
 var follow_character := false
 var show_names := false
@@ -79,6 +80,8 @@ func _ready() -> void:
     for item in data.landmarks: sites[item.id] = item
     for node in world.find_children("*", "MeshInstance3D", true, false):
         var name_text := String(node.name)
+        if name_text.contains("water") or name_text.contains("Foam") or name_text.contains("Lagoon"):
+            node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
         if name_text.contains("Terrain") or name_text.contains("WalkSurface"):
             node.create_trimesh_collision()
             if name_text.contains("Terrain"):
@@ -170,29 +173,35 @@ func _make_camera_lighting() -> void:
     camera = Camera3D.new()
     camera.projection = Camera3D.PROJECTION_ORTHOGONAL
     camera.size = OVERVIEW_ZOOM
+    camera.fov = 32.0 # Long-lens comparison; shipped projection remains orthographic.
     camera.current = true
     camera.far = 800
     add_child(camera)
     var sun := DirectionalLight3D.new()
-    sun.rotation_degrees = Vector3(-52,-30,0)
-    sun.light_energy = 0.95
-    sun.shadow_enabled = not OS.has_feature("web")
-    sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
-    sun.directional_shadow_max_distance = 350
+    sun.rotation_degrees = Vector3(-38,-38,0)
+    sun.light_energy = 0.78
+    sun.light_specular = 0.25
+    sun.shadow_enabled = true
+    sun.shadow_bias = 0.20
+    sun.shadow_opacity = 0.55
+    sun.shadow_normal_bias = 2.0
+    sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+    sun.directional_shadow_max_distance = 320
     add_child(sun)
     var environment := WorldEnvironment.new()
     var settings := Environment.new()
     settings.background_mode = Environment.BG_COLOR
     settings.background_color = Color(0.065,0.22,0.25)
     settings.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-    settings.ambient_light_color = Color(0.84,0.88,0.87)
-    settings.ambient_light_energy = 0.55
+    settings.ambient_light_color = Color(0.76,0.83,0.88)
+    settings.ambient_light_energy = 0.32
     environment.environment = settings
     add_child(environment)
 
 func _camera_pose() -> void:
     var e := deg_to_rad(camera_elevation)
-    camera.position = camera_target+Vector3(sin(camera_yaw)*cos(e),sin(e),cos(camera_yaw)*cos(e))*230
+    var distance := camera.size/(2*tan(deg_to_rad(camera.fov)/2)) if camera.projection == Camera3D.PROJECTION_PERSPECTIVE else 230.0
+    camera.position = camera_target+Vector3(sin(camera_yaw)*cos(e),sin(e),cos(camera_yaw)*cos(e))*distance
     camera.look_at(camera_target,Vector3.UP)
 
 func _resize_view() -> void:
@@ -202,11 +211,12 @@ func _resize_view() -> void:
     _layout_ui(true)
 
 func reset_view() -> void:
+    camera.projection = Camera3D.PROJECTION_ORTHOGONAL
     inspect_mode = false
     if top_buttons.has("Explore"): top_buttons.Explore.text = "Explore"
-    camera_target = Vector3(0,2,0)
+    camera_target = Vector3(0,5,0)
     camera_yaw = 0
-    camera_elevation = 60
+    camera_elevation = DEFAULT_ELEVATION
     camera.size = OVERVIEW_ZOOM
     follow_character = false
     touches.clear()
@@ -337,8 +347,12 @@ func _top_action(name: String) -> void:
             top_buttons.Explore.text = "Inspect" if inspect_mode else "Explore"
             if not inspect_mode:
                 camera_yaw = 0
-                camera_elevation = 60
-        "Follow": follow_character = not follow_character
+                camera_elevation = DEFAULT_ELEVATION
+        "Follow":
+            follow_character = not follow_character
+            camera.size = 30.0 if follow_character else OVERVIEW_ZOOM
+            camera_elevation = DEFAULT_ELEVATION
+            camera_yaw = 0
         "Names": show_names = not show_names
 
 func _process(delta: float) -> void:
@@ -350,10 +364,12 @@ func _process(delta: float) -> void:
             JavaScriptBridge.eval("window.__TELANICO_COMMAND=null")
             if request is Dictionary:
                 if request.has("rate"): simulation_rate = clampf(float(request.rate),1,12)
+                if request.has("target"): camera_target = graph.vec(request.target)
                 if request.has("focus") and sites.has(request.focus): camera_target = graph.vec(sites[request.focus].position)
                 if request.has("size"): camera.size = clampf(float(request.size),MIN_ZOOM,MAX_ZOOM)
-                if request.has("elevation"): camera_elevation = clampf(float(request.elevation),45,75)
-    if follow_character: camera_target = camera_target.lerp(actor.position, minf(delta*3,1))
+                if request.has("projection"): camera.projection = Camera3D.PROJECTION_PERSPECTIVE if request.projection == "perspective" else Camera3D.PROJECTION_ORTHOGONAL
+                if request.has("elevation"): camera_elevation = clampf(float(request.elevation),30,60)
+    if follow_character: camera_target = camera_target.lerp(actor.position+Vector3(0,2,3), minf(delta*3,1))
     _camera_pose()
     layout_timer += delta
     if layout_timer>.5:
@@ -362,7 +378,7 @@ func _process(delta: float) -> void:
     # Container minimum sizes can settle after opening a different action row.
     panel.position = Vector2(panel_left,get_viewport().get_visible_rect().size.y-panel.size.y-panel_bottom)
     var minutes := 12*60+story_minutes
-    status.text = "%02d:%02d · V2 %s\n%s" % [minutes/60,minutes%60,String(build_info.get("commit","local")).left(7),
+    status.text = "%02d:%02d · V2.1 %s\n%s" % [minutes/60,minutes%60,String(build_info.get("commit","local")).left(7),
         "Courier · temporary rig" if state=="IDLE" else state.capitalize()]
     var occupied: Array[Rect2] = []
     for ident in labels:
@@ -613,7 +629,7 @@ func _unhandled_input(event: InputEvent) -> void:
             var drag: Vector2 = event.position-touches[event.index]
             if inspect_mode:
                 camera_yaw = clampf(camera_yaw-drag.x*.004,-.8,.8)
-                camera_elevation = clampf(camera_elevation+drag.y*.1,45,75)
+                camera_elevation = clampf(camera_elevation+drag.y*.1,30,60)
             else: _pan(drag)
         elif touches.size()==2:
             var keys := touches.keys()
@@ -638,7 +654,7 @@ func _unhandled_input(event: InputEvent) -> void:
             if pointer_start.distance_to(event.position)>6: pointer_dragged = true
             if pointer_orbit:
                 camera_yaw = clampf(camera_yaw-event.relative.x*.004,-.8,.8)
-                camera_elevation = clampf(camera_elevation+event.relative.y*.1,45,75)
+                camera_elevation = clampf(camera_elevation+event.relative.y*.1,30,60)
             else: _pan(event.relative)
         elif state=="IDLE":
             var hit := _ray(event.position,2,true)
@@ -673,5 +689,5 @@ func _publish_probe() -> void:
         "last_trip":last_trip,"sites":projected,"ui":ui,"view":get_viewport().get_visible_rect().size,
         "viewport":[get_viewport().get_visible_rect().size.x,get_viewport().get_visible_rect().size.y],
         "camera_size":camera.size,"camera_target":[camera_target.x,camera_target.y,camera_target.z],
-        "inspect":inspect_mode,"elevation":camera_elevation,"yaw":camera_yaw,"commit":build_info.get("commit","local")}
+        "projection":camera.projection,"follow":follow_character,"inspect":inspect_mode,"elevation":camera_elevation,"yaw":camera_yaw,"commit":build_info.get("commit","local")}
     if OS.has_feature("web"): JavaScriptBridge.eval("window.__TELANICO_STATE="+JSON.stringify(probe)+";")

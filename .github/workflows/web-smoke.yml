@@ -3,7 +3,7 @@ name: Godot Web playable
 on:
   workflow_dispatch:
   push:
-    branches: [codex/telanico-overworld-v2]
+    branches: [codex/telanico-overworld-v2, codex/telanico-overworld-v2-1]
   pull_request:
     paths:
       - 'blender/scripts/**'
@@ -17,7 +17,7 @@ permissions:
 jobs:
   web:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       BUILD_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       BUILD_SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
