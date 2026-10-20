@@ -11,7 +11,8 @@ from test_v2_browser import POINT
 
 
 def exercise(browser, url, output, width, height, touch, full):
-    context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch)
+    context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch,
+        **({'user_agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'} if touch else {}))
     context.tracing.start(screenshots=False,snapshots=True,sources=False)
     page = context.new_page()
     errors=[]
@@ -19,7 +20,7 @@ def exercise(browser, url, output, width, height, touch, full):
     page.on('response',lambda r:errors.append(f'HTTP {r.status}: {r.url}') if r.status>=400 else None)
     def console(message):
         print('STORY_CONSOLE',message.type,message.text,flush=True)
-        if 'SCRIPT ERROR' in message.text or 'Parse Error' in message.text:
+        if 'SCRIPT ERROR' in message.text or 'Parse Error' in message.text or 'ERROR:' in message.text:
             errors.append(message.text)
     page.on('console',console)
     def wait(expr,arg=None,timeout=120000):

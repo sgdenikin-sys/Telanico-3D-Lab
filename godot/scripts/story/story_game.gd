@@ -172,7 +172,10 @@ func _hud_action(key: String) -> void:
 
 func _clear_modal(kind: String) -> VBoxContainer:
     for child in overlay.get_children():
-        overlay.remove_child(child)
+        # Keep bound invoice tweens inside the tree until queued destruction.
+        # Removing first makes Web's tween scheduler call can_process off-tree.
+        child.name = "RetiredModal"
+        if child is Control: child.visible = false
         child.queue_free()
     invoice_document = null
     modal_kind = kind
