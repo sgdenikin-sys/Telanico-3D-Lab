@@ -17,7 +17,7 @@ python3 tools/validate_glb.py godot/assets/generated/overworld.glb
 python3 tools/stamp_build.py --before
 "$godot_bin" --headless --path godot --editor --import 2>&1 | tee build/logs/import.log
 # Godot can log script errors without returning nonzero: require the test marker.
-timeout 60 "$godot_bin" --headless --path godot --script res://tests/test_v2.gd \
+timeout 120 "$godot_bin" --headless --path godot --script res://tests/test_v2.gd \
   2>&1 | tee build/logs/viewer.log
 # An assertion in an awaited helper can abort that helper while its caller
 # continues. Reject every script error, even if a later test marker is printed.

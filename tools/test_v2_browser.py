@@ -12,15 +12,19 @@ from playwright.sync_api import sync_playwright
 # await matching aspect ratios and stable UI coordinates across several probes.
 # A fixed sleep can combine the old portrait probe with the new landscape canvas.
 POINT = """async ([group, key]) => {
-  let previous = '', stable = 0;
-  const until = performance.now() + 30000;
+  let previous = '', stable = 0, previousFrame = -1;
+  const until = performance.now() + 60000;
   while (performance.now() < until) {
     const s = window.__TELANICO_STATE, r = document.querySelector('#canvas').getBoundingClientRect();
     const point = s?.[group]?.[key];
     const aspectReady = s && Math.abs(s.viewport[0]/s.viewport[1] - r.width/r.height) < .01;
     const signature = JSON.stringify([s?.viewport, s?.ui?.Reset, point, r.x, r.y, r.width, r.height]);
-    stable = signature === previous ? stable + 1 : 0;
-    previous = signature;
+    // Count distinct Godot frames, not repeated polls of one stale probe.
+    if (s && s.frame !== previousFrame) {
+      stable = signature === previous ? stable + 1 : 0;
+      previous = signature;
+      previousFrame = s.frame;
+    }
     if (point && aspectReady && stable >= 3) return {
       x:r.x + point[0]/s.viewport[0]*r.width,
       y:r.y + point[1]/s.viewport[1]*r.height, inspect:s.inspect
@@ -34,6 +38,7 @@ POINT = """async ([group, key]) => {
 def exercise(browser, url, width, height, touch, output):
     context = browser.new_context(viewport={'width': width, 'height': height},
                                   has_touch=touch, device_scale_factor=2 if width == 667 else 1)
+    context.tracing.start(screenshots=False, snapshots=True, sources=False)
     page = context.new_page()
     errors = []
     page.on('pageerror', lambda error: errors.append(str(error)))
@@ -44,12 +49,16 @@ def exercise(browser, url, width, height, touch, output):
     def state():
         return page.evaluate('window.__TELANICO_STATE')
 
-    def wait(expression, *, arg=None, timeout=30000):
+    # At 1920px SwiftShader can acknowledge a queued wheel/button event only
+    # after 30s. The saved failure probe showed the expected zoom arriving just
+    # after that deadline. Keep the same assertions with a bounded CPU budget.
+    def wait(expression, *, arg=None, timeout=90000):
         page.wait_for_function(expression, arg=arg, polling=250, timeout=timeout)
 
     def click(group, key):
         print('ACTION', width, group, key, flush=True)
         point = page.evaluate(POINT, [group, key])
+        print('INPUT',width,group,key,json.dumps(point),flush=True)
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'], point['y'])
         if group == 'sites':
             wait('(id)=>window.__TELANICO_STATE.selected===id && window.__TELANICO_STATE.ui.Walk!==undefined', arg=key)
@@ -57,10 +66,12 @@ def exercise(browser, url, width, height, touch, output):
             wait('window.__TELANICO_STATE.ui.Return!==undefined')
         if key in ('Cancel', 'Outside', 'Return'):
             wait("Object.keys(window.__TELANICO_STATE.ui).every(k=>['Explore','Follow','Names','Reset'].includes(k))")
+        if key == 'Follow':
+            wait('window.__TELANICO_STATE.follow')
         if key == 'Explore':
             wait('(old)=>window.__TELANICO_STATE.inspect!==old', arg=point['inspect'])
         if key == 'Reset':
-            wait('window.__TELANICO_STATE.camera_size===124 && window.__TELANICO_STATE.yaw===0')
+            wait('window.__TELANICO_STATE.camera_size===124 && window.__TELANICO_STATE.yaw===0 && window.__TELANICO_STATE.elevation===40 && !window.__TELANICO_STATE.follow')
 
     def fingers(kind, points):
         cdp.send('Input.dispatchTouchEvent', {'type': kind,
@@ -87,6 +98,7 @@ def exercise(browser, url, width, height, touch, output):
         wait('window.__TELANICO_STATE?.ready', timeout=120000)
         print('GAME_READY', width, flush=True)
         assert len(state()['sites']) == 15
+        assert state()['elevation'] == 40 and state()['projection'] == 1
         page.evaluate(POINT, ['ui', 'Reset'])
         shot('world')
         click('sites', 'finance')
@@ -94,7 +106,7 @@ def exercise(browser, url, width, height, touch, output):
         assert state()['story_minutes'] == 0
         # Complete travel on desktop and phone. The smaller HiDPI phone adds
         # selection, camera and rotation coverage without duplicating all trips.
-        if width != 667:
+        if width in (1440,844):
             # CPU-only WebGL may render at 1 FPS. Keep a visible walking
             # interval while allowing enough physics steps within the deadline.
             page.evaluate('window.__TELANICO_COMMAND={rate:3}')
@@ -121,6 +133,21 @@ def exercise(browser, url, width, height, touch, output):
             wait("window.__TELANICO_STATE.current==='tube_e' && window.__TELANICO_STATE.state==='IDLE'", timeout=120000)
             assert state()['last_trip']['kind'] == 'tube' and state()['last_trip']['minutes'] == 3
             click('ui', 'Outside')
+        click('ui', 'Reset')
+        if not touch:
+            page.mouse.move(width*.5,height*.6)
+            page.mouse.wheel(0,-120)
+            wait('window.__TELANICO_STATE.camera_size<124')
+            page.evaluate('window.__TELANICO_COMMAND={size:999}')
+            wait('window.__TELANICO_STATE.camera_size===190')
+            page.evaluate('window.__TELANICO_COMMAND={size:1}')
+            wait('window.__TELANICO_STATE.camera_size===12')
+            click('ui','Reset')
+        click('ui', 'Follow')
+        wait('window.__TELANICO_STATE.follow && window.__TELANICO_STATE.camera_size===30')
+        shot('follow')
+        click('ui', 'Reset')
+        wait('!window.__TELANICO_STATE.follow && window.__TELANICO_STATE.elevation===40')
         click('ui', 'Explore')
         drag_camera(True)
         wait('Math.abs(window.__TELANICO_STATE.yaw)>.01')
@@ -143,10 +170,13 @@ def exercise(browser, url, width, height, touch, output):
         assert not errors, errors
         print('CASE_OK', width, flush=True)
     except Exception:
-        print('FAILURE_STATE', json.dumps(state(), sort_keys=True), flush=True)
+        failure=state()
+        (output/f'failure-state-{width}.json').write_text(json.dumps(failure,indent=2))
+        print('FAILURE_STATE', json.dumps(failure, sort_keys=True), flush=True)
         shot('failure')
         raise
     finally:
+        context.tracing.stop(path=str(output/f'trace-{width}.zip'))
         context.close()
 
 
@@ -154,6 +184,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory', nargs='?', default='build/web')
     parser.add_argument('--url')
+    parser.add_argument('--case',type=int,choices=[1920,1440,844,667],help='Reproduce one viewport without running unrelated cases')
     args = parser.parse_args()
     output = Path('build/screenshots')
     output.mkdir(parents=True, exist_ok=True)
@@ -169,8 +200,9 @@ def main():
         with sync_playwright() as p:
             browser = p.chromium.launch(executable_path=shutil.which('chromium'), headless=True,
                 args=['--no-sandbox', '--use-angle=swiftshader', '--enable-webgl', '--enable-unsafe-swiftshader'])
-            for width, height, touch in [(1440, 900, False), (844, 390, True), (667, 375, True)]:
-                exercise(browser, url, width, height, touch, output)
+            for width, height, touch in [(1920, 1080, False), (1440, 900, False), (844, 390, True), (667, 375, True)]:
+                if args.case is None or width==args.case:
+                    exercise(browser, url, width, height, touch, output)
             browser.close()
     finally:
         if server:

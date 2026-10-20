@@ -20,6 +20,12 @@ def validate():
     assert math.dist(sites['tube_w']['position'],sites['tube_e']['position'])>150
     for key in ('dock_w','dock_e'):assert abs(sites[key]['position'][2])<1 and abs(sites[key]['position'][0])<20
     assert sum(e['kind']=='bridge' for e in data['edges'])==1
+    # A terrace is a walkable district, not a sloping circular obstacle.
+    for ident,_,_,_,(x,y),(w,d),kind in L.SITES:
+        if kind=='office':
+            centre=L.height(x,y)
+            assert abs(L.NODES[ident][2]-.24-centre)<.05,(ident,'entrance not on level court')
+    assert L.height(-63,24)-L.height(-30,-19)>7,'High civic terrace must read above low dispatch district'
     assert data['boat_story_minutes']==5 and data['tube_story_minutes']==3
     assert data['walk_units_per_story_minute']==1.5*data['pilot_scale']
     assert max(p[0] for poly in L.POLYGONS.values() for p in poly)-min(p[0] for poly in L.POLYGONS.values() for p in poly)>=170

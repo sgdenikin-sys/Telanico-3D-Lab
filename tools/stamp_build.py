@@ -4,7 +4,7 @@ import os,json,subprocess
 ROOT=Path(__file__).resolve().parents[1]
 commit=os.environ.get('BUILD_SOURCE_SHA') or subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
 branch=os.environ.get('BUILD_SOURCE_BRANCH') or subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()
-build=dict(version='telanico-v2',commit=commit,branch=branch,source_run_id=os.environ.get('GITHUB_RUN_ID','local'))
+build=dict(version='telanico-v2.1',camera_elevation_above_horizontal=40,camera_projection='orthographic',commit=commit,branch=branch,source_run_id=os.environ.get('GITHUB_RUN_ID','local'))
 text=json.dumps(build,sort_keys=True)
 # Runtime source metadata is stamped BEFORE export; public copy AFTER export.
 if '--before' in __import__('sys').argv:
