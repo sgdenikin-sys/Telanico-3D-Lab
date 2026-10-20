@@ -1,4 +1,6 @@
-# V2.2 migration checkpoint — not a playable V2.2 release
+# V2.2 migration inventory — historical checkpoint 33371dc
+
+Continuation status and tested implementation: [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
 ## References and preservation
 

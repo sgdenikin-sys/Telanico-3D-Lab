@@ -16,15 +16,19 @@ python3 tools/validate_v2.py
 python3 tools/validate_glb.py godot/assets/generated/overworld.glb
 python3 tools/stamp_build.py --before
 "$godot_bin" --headless --path godot --editor --import 2>&1 | tee build/logs/import.log
-# V2.2 foundation is isolated from the playable V2.1 scene until migration completes.
-for story_test in test_story_session test_source_parity; do
-  timeout 30 "$godot_bin" --headless --path godot \
+# Validate the shared rules and actual playable integration before exporting.
+for story_test in test_story_session test_source_parity test_world_integration test_playthrough test_story_ui; do
+  timeout 240 "$godot_bin" --headless --path godot \
     --script "res://tests/story/${story_test}.gd" \
     2>&1 | tee "build/logs/${story_test}.log"
 done
 rg -q 'TELANICO_STORY_SESSION_PASS' build/logs/test_story_session.log
 rg -q 'TELANICO_SOURCE_PARITY_PASS' build/logs/test_source_parity.log
-if rg -n 'SCRIPT ERROR:|Assertion failed|ERROR:' build/logs/test_story_session.log build/logs/test_source_parity.log; then
+rg -q 'TELANICO_WORLD_STORY_PASS' build/logs/test_world_integration.log
+rg -q 'TELANICO_PLAYTHROUGH_PASS' build/logs/test_playthrough.log
+rg -q 'TELANICO_STORY_UI_PASS' build/logs/test_story_ui.log
+node tools/audio_lifecycle_regression.js
+if rg -n 'SCRIPT ERROR:|Assertion failed|ERROR:' build/logs/test_story_*.log build/logs/test_source_parity.log build/logs/test_world_integration.log build/logs/test_playthrough.log; then
   echo 'Story session/parity regression failed' >&2
   exit 1
 fi
@@ -40,5 +44,9 @@ fi
 rg -q 'TELANICO_TEST_OK' build/logs/viewer.log
 "$godot_bin" --headless --path godot --export-release Web ../build/web/index.html \
   2>&1 | tee build/logs/export.log
+mkdir -p build/web/media
+cp godot/web/audio_bridge.js build/web/audio_bridge.js
+cp godot/assets/audio/music/original_theme.mp3 build/web/media/music.mp3
+cp godot/assets/audio/sfx/*.wav build/web/media/
 python3 tools/stamp_build.py
 python3 tools/validate_web.py build/web

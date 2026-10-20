@@ -3,7 +3,7 @@ name: Godot Web playable
 on:
   workflow_dispatch:
   push:
-    branches: [codex/telanico-overworld-v2, codex/telanico-overworld-v2-1]
+    branches: [codex/telanico-overworld-v2, codex/telanico-overworld-v2-1, codex/telanico-v2-2-story-integration]
   pull_request:
     paths:
       - 'blender/scripts/**'
@@ -17,7 +17,7 @@ permissions:
 jobs:
   web:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 75
     env:
       BUILD_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       BUILD_SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
@@ -57,6 +57,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Test WebGL, touch controls and landscape in browser
         run: python tools/test_v2_browser.py build/web
+      - name: Test original story UI and complete iPhone playthrough
+        run: python tools/test_story_browser.py build/web
       - name: Upload playable Web build
         uses: actions/upload-artifact@v4
         with:

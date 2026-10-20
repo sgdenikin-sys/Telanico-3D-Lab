@@ -327,13 +327,13 @@ func _layout_ui(force := false) -> void:
     var index := 0
     for name in top_buttons:
         var button: Button = top_buttons[name]
-        button.position = Vector2(viewport.x-right-(10+82*(4-index))*units,top+8*units)
+        button.position = Vector2(viewport.x-right-(10+82*(4-index))*units,(viewport.y-bottom-46*units) if story_adapter != null else top+8*units)
         button.size = Vector2(78,36)*units
         button.add_theme_font_size_override("font_size",roundi(13*units))
         index += 1
     status.position = Vector2(left+10*units,top+9*units)
     status.add_theme_font_size_override("font_size",roundi(12*units))
-    panel_left = left+10*units
+    panel_left = left+(180 if story_adapter != null else 10)*units
     panel_bottom = bottom+10*units
     title.add_theme_font_size_override("font_size",roundi(16*units))
     info.add_theme_font_size_override("font_size",roundi(14*units))
@@ -416,6 +416,12 @@ func select_site(ident: String) -> void:
     selection_ring.scale = Vector3(float(item.footprint[0])*.65,.25,float(item.footprint[1])*.65)
     title.text = item.name
     info.text = "Walk %d story min · %.0f real sec\n%s island · entrance outside building" % [walk_plan.minutes,float(walk_plan.minutes)*3,item.island.capitalize()]
+    if story_adapter != null and item.kind=="boat":
+        var origin := "dock_w" if current_island=="west" else "dock_e"
+        var approach: int = graph.route(current_node,origin).minutes
+        var departure: int = 720+story_minutes+approach
+        var wait_minutes: int = posmod((0 if current_island=="west" else 5)-departure,10)
+        info.text += "\nLaunch: %d min approach + %d wait + 5 sailing" % [approach,wait_minutes]
     _show_actions(["Walk", "Cancel"]+["Boat"] if item.kind=="boat" else ["Walk","Tube","Cancel"] if item.kind=="tube" else ["Walk","Cancel"])
 
 func select_ground(point: Vector3) -> void:
@@ -564,6 +570,8 @@ func _arrive() -> void:
     if sites.has(current_node):
         title.text = sites[current_node].name
         info.text = "Entrance reached · %d story min\nEnter the office or stay outside." % walk_plan.minutes
+        if story_adapter != null and sites[current_node].kind=="boat":
+            info.text = "HARBOR LAUNCH · %d min wait + 5 min sailing" % story_adapter.boat_wait()
         _show_actions(["Enter","Outside"] if sites[current_node].kind=="office" else ["Boat","Outside"] if sites[current_node].kind=="boat" else ["Tube","Outside"])
 
 func _transport_tick(delta: float) -> void:

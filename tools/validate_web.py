@@ -42,6 +42,14 @@ def validate(directory: Path):
             raise ValueError(f'Non-local runtime reference: {name}')
         if not path.is_file() or path.stat().st_size == 0:
             raise ValueError(f'Missing or empty runtime file: {name}')
+    if "audio_bridge.js" in html:
+        import hashlib
+        music = directory / 'media/music.mp3'
+        if not music.is_file() or hashlib.sha256(music.read_bytes()).hexdigest() != 'dc0869cab4b4843c02f3428ab429e826794e4866bed9d1fbcfafffb6a080cef5':
+            raise ValueError('Original authored music missing/changed')
+        for sample in ['cooper_chponk.wav', 'door_open_office.wav', 'tube_water_flush.wav', 'bird_takeoff_soft_purr.wav', 'door_close_soft.wav', 'select_woosh.wav', 'menu_flip.wav']:
+            if not (directory/'media'/sample).is_file():
+                raise ValueError('Missing canonical browser audio: '+sample)
     for name, size in config['fileSizes'].items():
         if (directory / name).stat().st_size != size:
             raise ValueError(f'Runtime size mismatch: {name}')
