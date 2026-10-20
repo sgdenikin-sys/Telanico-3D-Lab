@@ -20,6 +20,10 @@ var selected := ""
 var current_island := "west"
 var state := "IDLE"
 var story_minutes := 0
+var story_adapter
+var navigation_locked := false
+var ferry_wait_minutes := 0
+var ferry_wait_elapsed := 0.0
 var walk_plan: Dictionary = {}
 var walk_points: Array = []
 var walk_index := 0
@@ -340,6 +344,7 @@ func _layout_ui(force := false) -> void:
     portrait.visible = viewport.y>viewport.x
 
 func _top_action(name: String) -> void:
+    if navigation_locked: return
     match name:
         "Reset": reset_view()
         "Explore":
@@ -399,6 +404,7 @@ func _process(delta: float) -> void:
         _publish_probe()
 
 func select_site(ident: String) -> void:
+    if navigation_locked: return
     if state != "IDLE" or not sites.has(ident): return
     selected = ident
     var item: Dictionary = sites[ident]
@@ -413,6 +419,7 @@ func select_site(ident: String) -> void:
     _show_actions(["Walk", "Cancel"]+["Boat"] if item.kind=="boat" else ["Walk","Tube","Cancel"] if item.kind=="tube" else ["Walk","Cancel"])
 
 func select_ground(point: Vector3) -> void:
+    if navigation_locked: return
     if state != "IDLE": return
     var ident: String = graph.project_ground(point)
     if ident.is_empty():
@@ -432,6 +439,7 @@ func _show_actions(names: Array) -> void:
     _layout_ui.call_deferred(true)
 
 func _action(name: String) -> void:
+    if navigation_locked: return
     match name:
         "Walk": start_walk(selected)
         "Boat": start_transfer("boat")
@@ -441,11 +449,16 @@ func _action(name: String) -> void:
             route_mesh.mesh = null
             selection_ring.visible = false
         "Enter":
+            if story_adapter != null:
+                if not story_adapter.enter(selected):
+                    info.text = "No office quest at this location."
+                return
             title.text = sites[selected].name
             info.text = "Department preview only.\nOriginal interiors and quests remain unchanged."
             _show_actions(["Return"])
 
 func start_walk(target: String) -> void:
+    if navigation_locked: return
     if state != "IDLE": return
     var plan: Dictionary = graph.route(current_node,target)
     if plan.is_empty(): return
@@ -464,6 +477,7 @@ func _begin_walk(target: String,plan: Dictionary) -> void:
     if walk_points.size()<2: _arrive()
 
 func start_transfer(kind: String) -> void:
+    if navigation_locked: return
     if state != "IDLE": return
     pending_transport = kind
     var origin := ("dock_" if kind=="boat" else "tube_")+("w" if current_island=="west" else "e")
@@ -471,6 +485,7 @@ func start_transfer(kind: String) -> void:
 
 func _physics_process(delta: float) -> void:
     if actor == null: return
+    if navigation_locked and state == "IDLE": return
     if state == "WALKING":
         trip_real += delta
         if walk_index>=walk_points.size():
@@ -506,19 +521,41 @@ func _physics_process(delta: float) -> void:
     elif state == "IDLE":
         actor.velocity = Vector3(0,-3,0)
         actor.move_and_slide()
+    elif state == "FERRY_WAIT":
+        ferry_wait_elapsed += delta*(3 if test_mode else 1)
+        if ferry_wait_elapsed >= float(ferry_wait_minutes)*0.5:
+            _charge_story_time(ferry_wait_minutes, "ferry_wait")
+            if navigation_locked:
+                pending_transport = ""
+                state = "IDLE"
+                actor.collision_mask = 1
+            else:
+                state = "BOAT"
     elif state in ["BOAT","TUBE"]:
         _transport_tick(delta)
 
 func _arrive() -> void:
+    if state != "WALKING": return # Completion may only charge once.
     actor.position = graph.nodes[walk_target]
     current_node = walk_target
     current_island = "west" if actor.position.x<0 else "east"
-    story_minutes += int(walk_plan.minutes)
+    _charge_story_time(int(walk_plan.minutes), "walk")
     last_trip = {"kind":"walk", "minutes":walk_plan.minutes,"length":walk_plan.length,"real_seconds":trip_real}
     _animate(false)
     route_mesh.mesh = null
+    if navigation_locked:
+        pending_transport = ""
+        state = "IDLE"
+        return
     if not pending_transport.is_empty():
+        ferry_wait_minutes = story_adapter.boat_wait() if story_adapter != null and pending_transport == "boat" else 0
+        ferry_wait_elapsed = 0.0
         state = "BOAT" if pending_transport=="boat" else "TUBE"
+        if ferry_wait_minutes > 0:
+            state = "FERRY_WAIT"
+            title.text = "HARBOR LAUNCH"
+            info.text = "Next departure in %d min + 5 min sailing" % ferry_wait_minutes
+            _show_actions([])
         transition_clock = 0
         actor.collision_mask = 0
         return
@@ -526,7 +563,7 @@ func _arrive() -> void:
     selected = current_node
     if sites.has(current_node):
         title.text = sites[current_node].name
-        info.text = "Entrance reached · %d story min\nEnter the placeholder department or stay outside." % walk_plan.minutes
+        info.text = "Entrance reached · %d story min\nEnter the office or stay outside." % walk_plan.minutes
         _show_actions(["Enter","Outside"] if sites[current_node].kind=="office" else ["Boat","Outside"] if sites[current_node].kind=="boat" else ["Tube","Outside"])
 
 func _transport_tick(delta: float) -> void:
@@ -557,7 +594,7 @@ func _transport_tick(delta: float) -> void:
         if t>0.5: actor.position = graph.nodes[peer]
     if t>=1:
         var cost := 5 if kind=="boat" else 3
-        story_minutes += cost
+        _charge_story_time(cost, kind)
         actor.position = graph.nodes[peer]
         actor.visible = true
         _animate(false)
@@ -566,7 +603,7 @@ func _transport_tick(delta: float) -> void:
         current_node = peer
         selected = peer
         current_island = "east" if west_to_east else "west"
-        last_trip = {"kind":kind,"minutes":cost,"real_seconds":duration,"wait_minutes":0}
+        last_trip = {"kind":kind,"minutes":cost+ferry_wait_minutes,"real_seconds":duration,"wait_minutes":ferry_wait_minutes}
         pending_transport = ""
         state = "IDLE"
         title.text = sites[peer].name
@@ -611,6 +648,7 @@ func _pan(delta: Vector2) -> void:
     follow_character = false
 
 func _unhandled_input(event: InputEvent) -> void:
+    if navigation_locked: return
     if portrait.visible: return
     if event is InputEventScreenTouch:
         if event.pressed:
@@ -691,3 +729,9 @@ func _publish_probe() -> void:
         "camera_size":camera.size,"camera_target":[camera_target.x,camera_target.y,camera_target.z],
         "projection":camera.projection,"follow":follow_character,"inspect":inspect_mode,"elevation":camera_elevation,"yaw":camera_yaw,"commit":build_info.get("commit","local")}
     if OS.has_feature("web"): JavaScriptBridge.eval("window.__TELANICO_STATE="+JSON.stringify(probe)+";")
+
+func _charge_story_time(minutes: int, mode: String) -> void:
+    if story_adapter != null:
+        story_adapter.charge(minutes, mode)
+    else:
+        story_minutes += minutes # Standalone V2.1 navigation regression scene.
