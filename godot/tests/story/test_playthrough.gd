@@ -34,6 +34,12 @@ func travel(target:String):
     await walk(target)
 func finish_reply():
     while game.line_index<game.lines.size()-1: game.advance_line()
+    if game.penalty_feedback_pending:
+        var before:int = game.session.quest_minutes
+        game.show_assistant()
+        check(game.session.compliance_warning_shown,"Assistant warns about chocolate penalty")
+        game.close_modal()
+        check(game.session.quest_minutes==before,"Reading penalty feedback is free")
     if game.reward_pending:
         game.show_invoice()
         check(game.invoice_document.applied_state==game.session.invoice_state(),"Rendered invoice uses shared facts")
@@ -44,7 +50,7 @@ func answer(action:String):
     finish_reply()
     var button = null
     for candidate in game.choice_list.get_children():
-        if candidate.get_meta("dialogue_action","")==action: button=candidate
+        if candidate.is_visible_in_tree() and candidate.get_meta("dialogue_action","")==action: button=candidate
     check(button!=null,"Canonical choice visible: "+action)
     button.pressed.emit()
     if not game.session.invoice_issued: finish_reply()

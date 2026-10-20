@@ -17,7 +17,7 @@ python3 tools/validate_glb.py godot/assets/generated/overworld.glb
 python3 tools/stamp_build.py --before
 "$godot_bin" --headless --path godot --editor --import 2>&1 | tee build/logs/import.log
 # Validate the shared rules and actual playable integration before exporting.
-for story_test in test_story_session test_source_parity test_world_integration test_playthrough test_story_ui; do
+for story_test in test_story_session test_source_parity test_world_integration test_playthrough test_optional_offices test_story_ui; do
   timeout 240 "$godot_bin" --headless --path godot \
     --script "res://tests/story/${story_test}.gd" \
     2>&1 | tee "build/logs/${story_test}.log"
@@ -26,9 +26,10 @@ rg -q 'TELANICO_STORY_SESSION_PASS' build/logs/test_story_session.log
 rg -q 'TELANICO_SOURCE_PARITY_PASS' build/logs/test_source_parity.log
 rg -q 'TELANICO_WORLD_STORY_PASS' build/logs/test_world_integration.log
 rg -q 'TELANICO_PLAYTHROUGH_PASS' build/logs/test_playthrough.log
+rg -q 'TELANICO_OPTIONAL_OFFICES_PASS' build/logs/test_optional_offices.log
 rg -q 'TELANICO_STORY_UI_PASS' build/logs/test_story_ui.log
 node tools/audio_lifecycle_regression.js
-if rg -n 'SCRIPT ERROR:|Assertion failed|ERROR:' build/logs/test_story_*.log build/logs/test_source_parity.log build/logs/test_world_integration.log build/logs/test_playthrough.log; then
+if rg -n 'SCRIPT ERROR:|Assertion failed|ERROR:' build/logs/test_story_*.log build/logs/test_source_parity.log build/logs/test_world_integration.log build/logs/test_playthrough.log build/logs/test_optional_offices.log; then
   echo 'Story session/parity regression failed' >&2
   exit 1
 fi

@@ -433,7 +433,8 @@ func _render_dialogue() -> void:
     dialogue_tween = create_tween()
     dialogue_tween.tween_property(dialogue_label,"visible_characters",lines[line_index].length(),clampf(lines[line_index].length()*0.009,0.15,0.85))
     for child in choice_list.get_children():
-        choice_list.remove_child(child)
+        # A pressed button must remain in-tree until its GUI callback unwinds.
+        child.visible = false
         child.queue_free()
     if line_index<lines.size()-1:
         _button(choice_list,"CONTINUE →",advance_line)
