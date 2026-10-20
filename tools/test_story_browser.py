@@ -17,7 +17,11 @@ def exercise(browser, url, output, width, height, touch, full):
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.on('response',lambda r:errors.append(f'HTTP {r.status}: {r.url}') if r.status>=400 else None)
-    page.on('console',lambda m: print('STORY_CONSOLE',m.type,m.text,flush=True))
+    def console(message):
+        print('STORY_CONSOLE',message.type,message.text,flush=True)
+        if 'SCRIPT ERROR' in message.text or 'Parse Error' in message.text:
+            errors.append(message.text)
+    page.on('console',console)
     def wait(expr,arg=None,timeout=120000):
         page.wait_for_function(expr,arg=arg,timeout=timeout,polling=250)
     def story(): return page.evaluate('window.__TELANICO_STORY')
@@ -56,6 +60,7 @@ def exercise(browser, url, output, width, height, touch, full):
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])
         wait('(before)=>window.__TELANICO_STORY.frame>before',before)
     def nav(key,group='ui'):
+        print('STORY_NAV',width,group,key,flush=True)
         point=page.evaluate(POINT,[group,key])
         before=story()['frame']
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])

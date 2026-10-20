@@ -18,6 +18,19 @@ func run():
         game.show_invoice()
         assert(game.invoice_document.applied_state.cargo=="High Quality Energy (Physical Oil)")
         game.close_modal()
+    assert(game.adapter.enter("settlements"))
+    assert(game.clock_face.get_parent()==game.ui and game.clock_face.is_visible_in_tree())
+    assert(game.office.get_node("OfficeMenu").is_visible_in_tree())
+    game.session.leave_office()
+    # Presentation-level penalty feedback; canonical 45-minute rule is also
+    # independently covered by source parity and session regressions.
+    game.session.active_dialogue_destination = "COMPLIANCE"
+    game.session._choose_dialogue("compliance_chocolate")
+    assert(game.penalty_feedback_pending and game.session.quest_minutes==45)
+    game.show_assistant()
+    assert(game.session.compliance_warning_shown)
+    game.close_modal()
+    assert(not game.session.compliance_warning_pending and not game.penalty_feedback_pending)
     game.session.quest_minutes = 119
     game.session.charge_travel(1,"walk")
     assert(game.modal_kind=="result" and game.session.quest_failed and game.world.navigation_locked)

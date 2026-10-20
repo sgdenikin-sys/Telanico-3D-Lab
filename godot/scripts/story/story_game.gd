@@ -28,6 +28,7 @@ var lines: Array[String] = []
 var line_index := 0
 var choices: Array = []
 var reward_pending := false
+var penalty_feedback_pending := false
 var opening_draft := false
 var invoice_document
 var modal_column: VBoxContainer
@@ -73,6 +74,8 @@ func _ready() -> void:
     layer.add_child(ui)
     _build_hud()
     _build_office()
+    clock_face.reparent(ui)
+    clock_label.reparent(ui)
     overlay = Control.new()
     overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     overlay.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -252,6 +255,8 @@ func close_modal() -> void:
         opening_draft = false
         show_assistant()
     elif closed == "assistant":
+        session.compliance_warning_pending = false
+        penalty_feedback_pending = false
         reward_pending = false
         session.assistant_success_pending = false
         _render_dialogue()
@@ -278,6 +283,7 @@ func show_invoice() -> void:
 
 func show_assistant() -> void:
     var col := _clear_modal("assistant")
+    if session.compliance_warning_pending: session.compliance_warning_shown = true
     var emotion: String = session.assistant_feedback_emotion if not session.assistant_feedback_emotion.is_empty() else "greeting"
     if session.compliance_warning_pending or session.quest_minutes>=90: emotion = "clock"
     var portrait := _texture(col,"res://assets/ui/HUD/RUNTIME/rabbit_"+emotion+".png")
@@ -386,6 +392,10 @@ func _build_office() -> void:
     _button(actions,"LEAVE OFFICE",func(): session.leave_office())
     _art_button(actions,"hud_invoice_button.png",show_invoice).custom_minimum_size = Vector2(100,44)
     _art_button(actions,"button_assistant.png",show_assistant).custom_minimum_size = Vector2(100,44)
+    var menu := _art_button(office,"button_menu.png",show_menu)
+    menu.name = "OfficeMenu"
+    menu.position = Vector2(8,8)
+    menu.size = Vector2(158,48)
     office.visible = false
 
 func _open_office(_landmark: String) -> void:
@@ -409,6 +419,7 @@ func _dialogue(_destination: String, text: String, options: Array) -> void:
     line_index = 0
     choices = options.duplicate(true)
     reward_pending = session.assistant_success_pending
+    penalty_feedback_pending = session.compliance_warning_pending
     _render_dialogue()
 
 func _render_dialogue() -> void:
@@ -423,6 +434,8 @@ func _render_dialogue() -> void:
         child.queue_free()
     if line_index<lines.size()-1:
         _button(choice_list,"CONTINUE →",advance_line)
+    elif penalty_feedback_pending:
+        _button(choice_list,"CONTINUE →",show_assistant)
     elif reward_pending:
         _button(choice_list,"CONTINUE →",show_invoice)
     else:
