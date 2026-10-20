@@ -69,7 +69,7 @@ func _ready() -> void:
     layer.layer = 50
     add_child(layer)
     ui = Control.new()
-    ui.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    ui.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
     ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
     layer.add_child(ui)
     _build_hud()
@@ -231,7 +231,7 @@ func _characters() -> void:
         card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         row.add_child(card)
         var portrait := _texture(card,"res://assets/mascots/TOP_DOWN/"+spec[1]+".png")
-        portrait.custom_minimum_size = Vector2(80,minf(140,get_viewport().get_visible_rect().size.y*0.25))
+        portrait.custom_minimum_size = Vector2(80,minf(140,ui.size.y*0.25))
         if spec[0]!="COOPER": portrait.modulate = Color(0.08,0.09,0.10,0.72)
         _label(card,spec[0],18)
         _label(card,spec[2],13)
@@ -273,7 +273,7 @@ func show_invoice() -> void:
     _button(controls,"+",func(): invoice_document.set_manual_zoom(invoice_document.zoom_factor+0.25))
     _art_button(controls,"button_close_invoice.png",close_modal).custom_minimum_size = Vector2(180,44)
     var scroll := ScrollContainer.new()
-    scroll.custom_minimum_size.y = maxf(180,get_viewport().get_visible_rect().size.y-160)
+    scroll.custom_minimum_size.y = maxf(180,ui.size.y-160)
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     col.add_child(scroll)
     var center := CenterContainer.new()
@@ -282,7 +282,7 @@ func show_invoice() -> void:
     invoice_document = Invoice.new()
     center.add_child(invoice_document)
     invoice_document.apply_state(session.invoice_state())
-    invoice_document.set_fit_width(minf(620,get_viewport().get_visible_rect().size.x-72))
+    invoice_document.set_fit_width(minf(620,ui.size.x-72))
 
 func show_assistant() -> void:
     var col := _clear_modal("assistant")
@@ -476,12 +476,18 @@ func restart() -> void:
 func _layout() -> void:
     if ui==null or not is_inside_tree(): return
     var vp := get_viewport().get_visible_rect().size
+    var units := 1.0
     var safe := Vector4.ZERO
     if OS.has_feature("web"):
         var values = JSON.parse_string(str(JavaScriptBridge.eval("window.telanicoViewport?.() || '{}'")))
         if values is Dictionary and float(values.get("width",0))>0:
-            var scale_factor: float = vp.x/float(values.width)
-            safe = Vector4(float(values.get("left",0)),float(values.get("top",0)),float(values.get("right",0)),float(values.get("bottom",0)))*scale_factor
+            units = vp.x/float(values.width)
+            safe = Vector4(float(values.get("left",0)),float(values.get("top",0)),float(values.get("right",0)),float(values.get("bottom",0)))
+    # Match CSS touch sizes without changing the approved Godot/Safari viewport.
+    # Child hit rectangles and fonts scale together; world gestures stay untouched.
+    ui.scale = Vector2(units,units)
+    vp /= units
+    ui.size = vp
     for i in range(4):
         var button: Button = ui_buttons.values()[i]
         button.position = Vector2(safe.x+8,safe.y+12+i*52)
@@ -517,6 +523,7 @@ func _process(delta: float) -> void:
     if elapsed>0.25:
         elapsed = 0
         _refresh()
+        _layout()
         if test_mode and OS.has_feature("web"): _publish_probe()
 
 func _publish_probe() -> void:

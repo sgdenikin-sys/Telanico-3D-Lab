@@ -118,6 +118,9 @@ def exercise(browser, url, output, width, height, touch, full):
         wait("window.__TELANICO_STORY.modal==='invoice'")
         assert story()['time']==0 and story()['invoice']['cargo']=='High Quality Energy (Physical Oil)'
         assert story()['invoice']['quantity']=='' and story()['invoice']['total']==''
+        for control in story()['controls']:
+            if not control['disabled']:
+                assert control['rect'][3]/story()['viewport'][1]*height >= 43.5, control
         shot('initial-invoice')
         click('button_close_invoice.png')
         wait("window.__TELANICO_STORY.modal==='assistant'")
