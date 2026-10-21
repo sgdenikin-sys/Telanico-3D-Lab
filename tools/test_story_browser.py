@@ -26,8 +26,12 @@ def exercise(browser, url, output, width, height, touch, full):
     def wait(expr,arg=None,timeout=120000):
         page.wait_for_function(expr,arg=arg,timeout=timeout,polling=250)
     def story(): return page.evaluate('window.__TELANICO_STORY')
-    def click(key):
-        print('STORY_ACTION',width,key,flush=True)
+    def click(key, scroll_attempts=0):
+        print('STORY_ACTION',width,key,'scroll_attempt',scroll_attempts,flush=True)
+        if scroll_attempts >= 10:
+            controls=story().get('controls',[])
+            selected=[c for c in controls if c.get('action')==key or c.get('text')==key or c.get('art')==key]
+            raise AssertionError(f'Control {key} remains outside viewport after {scroll_attempts} scrolls: {selected}')
         point=page.evaluate("""async key=>{
           const deadline=performance.now()+120000;let frame=-1,signature='',stable=0;
           while(performance.now()<deadline){
@@ -56,7 +60,7 @@ def exercise(browser, url, output, width, height, touch, full):
                 page.mouse.move(x,y)
                 page.mouse.wheel(0,direction*max(100,clip[3]*0.6))
             wait('(before)=>window.__TELANICO_STORY.frame>before',before)
-            return click(key)
+            return click(key, scroll_attempts+1)
         before=story()['frame']
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])
         wait('(before)=>window.__TELANICO_STORY.frame>before',before)
