@@ -3,7 +3,7 @@ name: Godot Web playable
 on:
   workflow_dispatch:
   push:
-    branches: [codex/telanico-overworld-v2, codex/telanico-overworld-v2-1, codex/telanico-v2-2-story-integration]
+    branches: [codex/telanico-overworld-v2, codex/telanico-overworld-v2-1, codex/telanico-v2-2-story-integration, fix/v22-mobile-browser-handoff]
   pull_request:
     paths:
       - 'blender/scripts/**'
