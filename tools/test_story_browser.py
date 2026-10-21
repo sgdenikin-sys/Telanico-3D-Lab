@@ -87,9 +87,19 @@ def exercise(browser, url, output, width, height, touch, full):
         wait('(id)=>window.__TELANICO_STATE.current===id&&window.__TELANICO_STATE.state==="IDLE"',target)
         assert story()['time']>before
     def transfer():
+        # Tube state may last less than Playwright's polling interval on WebGL.
+        # Assert the observable completed journey rather than requiring a sampled
+        # intermediate animation frame. Keep the travel-cost assertion.
+        before=story()['time']
+        origin=page.evaluate('window.__TELANICO_STATE.current')
         nav('Tube')
-        wait("window.__TELANICO_STATE.state==='TUBE'")
-        wait("window.__TELANICO_STATE.state==='IDLE'")
+        wait("""([origin,before]) => {
+            const world=window.__TELANICO_STATE;
+            const session=window.__TELANICO_STORY;
+            return world && session && world.state==='IDLE'
+                && world.current!==origin && session.time>before;
+        }""",[origin,before])
+        assert story()['time']-before==3, 'Tube must charge exactly three minutes'
     def visit(target,actions):
         walk(target)
         assert story()['office']==''
