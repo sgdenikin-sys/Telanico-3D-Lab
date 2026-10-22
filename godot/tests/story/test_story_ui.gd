@@ -10,6 +10,8 @@ func run():
     game.close_modal()
     game.close_modal()
     for screen in [Vector2i(844,390),Vector2i(667,375),Vector2i(1920,1080)]:
+        # Exercise the same CSS-space layout used by the Web presenter.
+        root.content_scale_size = screen
         root.size = screen
         await process_frame
         game._layout()
@@ -18,6 +20,23 @@ func run():
         game.show_invoice()
         assert(game.invoice_document.applied_state.cargo=="High Quality Energy (Physical Oil)")
         game.close_modal()
+        assert(game.adapter.enter("settlements"))
+        for frame in range(3): await process_frame
+        for button_name in ["OfficeLeave","OfficeInvoice","OfficeAssistant"]:
+            var button = game.dialogue_card.find_child(button_name,true,false)
+            var rect: Rect2 = button.get_global_rect()
+            assert(rect.position.x>=0 and rect.end.x<=screen.x and rect.end.y<=screen.y,
+                "Office footer must remain reachable at %s: %s" % [screen,rect])
+            assert(rect.size.y>=44)
+        var arrows=game.dialogue_card.find_children("*","Button",true,false)
+        if game.office_scroll.get_v_scroll_bar().max_value>game.office_scroll.size.y:
+            for button in arrows:
+                if button.text=="▼":button.pressed.emit()
+            assert(game.office_scroll.scroll_vertical>0,"Office arrow must scroll actual overflowing content")
+            for button in arrows:
+                if button.text=="▲":button.pressed.emit()
+            assert(game.office_scroll.scroll_vertical==0)
+        game.session.leave_office()
     game.show_menu()
     var toggles=game.modal_column.find_children("*","CheckButton",true,false)
     for toggle in toggles:toggle.button_pressed=false
