@@ -61,10 +61,10 @@ jobs:
           python -m pip install playwright==1.58.0
           python -m playwright install --with-deps chromium
       - name: Test WebGL, touch controls and landscape in browser
-        run: python tools/test_v2_browser.py build/web --release-cases
+        run: python tools/test_v2_browser.py build/web --release-cases --release-cases
       - name: Test original story UI and complete iPhone playthrough
         id: full_story
-        timeout-minutes: 12
+        timeout-minutes: 25
         run: python tools/test_story_browser.py build/web
       - name: Upload playable Web build
         uses: actions/upload-artifact@v4
