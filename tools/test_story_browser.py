@@ -47,10 +47,10 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
             # Press the actual in-game office scroll arrow. This tests a
             # player-facing fallback that works even if iOS touch scrolling
             # is unavailable on slow WebGL frames.
-            arrow = '▼' if point['y'] > clip[1]+clip[3]-8 else '▲'
+            arrow = 'v' if point['y'] > clip[1]+clip[3]-8 else '^'
             available = any(c.get('text') == arrow and not c.get('disabled')
                             for c in story().get('controls', []))
-            if available and key not in ('▼', '▲'):
+            if available and key not in ('v', '^'):
                 button_before = next(c for c in story()['controls'] if c.get('action') == key)
                 previous_y = button_before['rect'][1]
                 click(arrow)
@@ -123,10 +123,10 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
 
     def shot(name): page.screenshot(path=str(output/f'{name}-{width}.png'),timeout=120000)
     def finish_reply():
-        while story()['line_index']<story()['lines']-1:click('CONTINUE →')
+        while story()['line_index']<story()['lines']-1:click('CONTINUE >')
         # A new verified fact is reviewed after the NPC's last line, before choices.
-        if any(c['text']=='CONTINUE →' for c in story()['controls']):
-            click('CONTINUE →')
+        if any(c['text']=='CONTINUE >' for c in story()['controls']):
+            click('CONTINUE >')
             wait("window.__TELANICO_STORY.modal==='invoice'")
             shot('verified-invoice')
             click('button_close_invoice.png')

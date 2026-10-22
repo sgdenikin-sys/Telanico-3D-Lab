@@ -402,9 +402,9 @@ func _build_office() -> void:
     _button(actions,"LEAVE OFFICE",func(): session.leave_office()).name = "OfficeLeave"
     # Always-reachable scroll controls are essential on short landscape phones.
     # They operate the real ScrollContainer, never the dialogue/session state.
-    var up := _button(actions,"▲",_scroll_office.bind(-1))
+    var up := _button(actions,"^",_scroll_office.bind(-1))
     up.custom_minimum_size = Vector2(46,44)
-    var down := _button(actions,"▼",_scroll_office.bind(1))
+    var down := _button(actions,"v",_scroll_office.bind(1))
     down.custom_minimum_size = Vector2(46,44)
     _art_button(actions,"hud_invoice_button.png",show_invoice).name = "OfficeInvoice"
     _art_button(actions,"button_assistant.png",show_assistant).name = "OfficeAssistant"
@@ -458,11 +458,11 @@ func _render_dialogue() -> void:
         child.visible = false
         child.queue_free()
     if line_index<lines.size()-1:
-        _button(choice_list,"CONTINUE →",advance_line)
+        _button(choice_list,"CONTINUE >",advance_line)
     elif penalty_feedback_pending:
-        _button(choice_list,"CONTINUE →",show_assistant)
+        _button(choice_list,"CONTINUE >",show_assistant)
     elif reward_pending:
-        _button(choice_list,"CONTINUE →",show_invoice)
+        _button(choice_list,"CONTINUE >",show_invoice)
     else:
         for option in choices:
             var action: String = option[1]

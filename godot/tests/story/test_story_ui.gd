@@ -29,12 +29,16 @@ func run():
                 "Office footer must remain reachable at %s: %s" % [screen,rect])
             assert(rect.size.y>=44)
         var arrows=game.dialogue_card.find_children("*","Button",true,false)
+        for button in arrows:
+            if button.text in ["^","v"]:
+                assert(button.get_theme_font("font").has_char(button.text.unicode_at(0)),
+                    "Scroll utility glyph must be present in bundled Web font")
         if game.office_scroll.get_v_scroll_bar().max_value>game.office_scroll.size.y:
             for button in arrows:
-                if button.text=="▼":button.pressed.emit()
+                if button.text=="v":button.pressed.emit()
             assert(game.office_scroll.scroll_vertical>0,"Office arrow must scroll actual overflowing content")
             for button in arrows:
-                if button.text=="▲":button.pressed.emit()
+                if button.text=="^":button.pressed.emit()
             assert(game.office_scroll.scroll_vertical==0)
         game.session.leave_office()
     game.show_menu()

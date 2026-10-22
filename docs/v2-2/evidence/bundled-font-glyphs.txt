@@ -1,0 +1,11 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+BUILTIN_FONT_GLYPH ▲ false
+BUILTIN_FONT_GLYPH ▼ false
+BUILTIN_FONT_GLYPH ↑ false
+BUILTIN_FONT_GLYPH ↓ false
+BUILTIN_FONT_GLYPH → false
+BUILTIN_FONT_GLYPH ^ true
+BUILTIN_FONT_GLYPH v true
+BUILTIN_FONT_GLYPH UP true
+BUILTIN_FONT_GLYPH DOWN true
