@@ -51,9 +51,14 @@ def exercise(browser, url, output, width, height, touch, full):
             before=story()['frame']
             if touch:
                 cdp=context.new_cdp_session(page)
+                # SwiftShader/WebGL frames may be slower than CDP dispatches.
+                # Without spacing, Godot sees touchStart and touchEnd in one
+                # frame and the ScrollContainer never receives a drag.
                 cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':x,'y':y,'id':0}]})
-                for step in range(1,5):
-                    cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x,'y':y-direction*clip[3]*0.45*step/4,'id':0}]})
+                page.wait_for_timeout(130)
+                for step in range(1,7):
+                    cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x,'y':y-direction*clip[3]*0.70*step/6,'id':0}]})
+                    page.wait_for_timeout(130)
                 cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
                 cdp.detach()
             else:
