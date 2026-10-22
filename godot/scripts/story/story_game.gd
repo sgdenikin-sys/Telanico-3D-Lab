@@ -19,6 +19,7 @@ var office_desk: TextureRect
 var dialogue_card: PanelContainer
 var dialogue_label: Label
 var choice_list: VBoxContainer
+var office_scroll: ScrollContainer
 var speaker: Label
 var clock_label: Label
 var clock_face
@@ -382,8 +383,11 @@ func _build_office() -> void:
     var frame := VBoxContainer.new()
     dialogue_card.add_child(frame)
     var scroll := ScrollContainer.new()
+    office_scroll = scroll
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    scroll.follow_focus = true
     frame.add_child(scroll)
     var col := VBoxContainer.new()
     col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -395,14 +399,28 @@ func _build_office() -> void:
     col.add_child(choice_list)
     var actions := HBoxContainer.new()
     frame.add_child(actions)
-    _button(actions,"LEAVE OFFICE",func(): session.leave_office())
-    _art_button(actions,"hud_invoice_button.png",show_invoice).custom_minimum_size = Vector2(100,44)
-    _art_button(actions,"button_assistant.png",show_assistant).custom_minimum_size = Vector2(100,44)
+    _button(actions,"LEAVE OFFICE",func(): session.leave_office()).name = "OfficeLeave"
+    # Always-reachable scroll controls are essential on short landscape phones.
+    # They operate the real ScrollContainer, never the dialogue/session state.
+    var up := _button(actions,"▲",_scroll_office.bind(-1))
+    up.custom_minimum_size = Vector2(46,44)
+    var down := _button(actions,"▼",_scroll_office.bind(1))
+    down.custom_minimum_size = Vector2(46,44)
+    _art_button(actions,"hud_invoice_button.png",show_invoice).name = "OfficeInvoice"
+    _art_button(actions,"button_assistant.png",show_assistant).name = "OfficeAssistant"
     var menu := _art_button(office,"button_menu.png",show_menu)
     menu.name = "OfficeMenu"
     menu.position = Vector2(8,8)
     menu.size = Vector2(158,48)
     office.visible = false
+
+func _scroll_office(direction: int) -> void:
+    if office_scroll == null or not office_scroll.is_visible_in_tree(): return
+    var bar := office_scroll.get_v_scroll_bar()
+    var limit := maxf(0.0, bar.max_value - bar.page)
+    var shift := maxf(90.0, office_scroll.size.y * 0.7)
+    office_scroll.scroll_vertical = roundi(clampf(
+        float(office_scroll.scroll_vertical) + direction * shift, 0.0, limit))
 
 func _open_office(_landmark: String) -> void:
     var art = Art.new()
@@ -512,6 +530,9 @@ func _layout() -> void:
         office_desk.position = composition.desk.position
         office_desk.size = composition.desk.size
     if dialogue_card!=null:
+        for button_name in ["OfficeLeave","OfficeInvoice","OfficeAssistant"]:
+            var button = dialogue_card.find_child(button_name,true,false)
+            if button!=null: button.custom_minimum_size=Vector2(78 if vp.x<760 else 100,44)
         dialogue_card.position = Vector2(vp.x*0.44,safe.y+62)
         dialogue_card.size = Vector2(vp.x*0.56-safe.z-12,vp.y-safe.y-safe.w-74)
 

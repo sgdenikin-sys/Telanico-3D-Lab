@@ -21,13 +21,15 @@ permissions:
 jobs:
   web:
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    timeout-minutes: 150
     env:
       BUILD_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       BUILD_SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
       GODOT_VERSION: '4.6.3'
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Install headless Blender
         run: |
           sudo apt-get update
@@ -59,10 +61,14 @@ jobs:
         run: |
           python -m pip install playwright==1.58.0
           python -m playwright install --with-deps chromium
-      - name: Test WebGL, touch controls and landscape in browser
-        run: python tools/test_v2_browser.py build/web
+      - name: Focused mobile landmark selection through the actual map
+        run: |
+          python tools/test_story_browser.py build/web --case 844 --landmarks-only
+          python tools/test_story_browser.py build/web --case 667 --landmarks-only
       - name: Test original story UI and complete iPhone playthrough
         run: python tools/test_story_browser.py build/web
+      - name: Test all existing V2.1 WebGL and touch viewport regressions
+        run: python tools/test_v2_browser.py build/web
       - name: Upload playable Web build
         uses: actions/upload-artifact@v4
         with:

@@ -327,14 +327,14 @@ func _layout_ui(force := false) -> void:
     var index := 0
     for name in top_buttons:
         var button: Button = top_buttons[name]
-        button.position = Vector2(viewport.x-right-(10+82*(4-index))*units,top+(62 if story_adapter != null else 8)*units)
+        button.position = Vector2(viewport.x-right-(10+82*(4-index))*units,(viewport.y-bottom-46*units) if story_adapter != null else top+8*units)
         button.size = Vector2(78,36)*units
         button.add_theme_font_size_override("font_size",roundi(13*units))
         index += 1
     status.position = Vector2(left+10*units,top+9*units)
     status.add_theme_font_size_override("font_size",roundi(12*units))
     panel_left = left+(180 if story_adapter != null else 10)*units
-    panel_bottom = bottom+10*units
+    panel_bottom = bottom+(54 if story_adapter != null else 10)*units
     title.add_theme_font_size_override("font_size",roundi(16*units))
     info.add_theme_font_size_override("font_size",roundi(14*units))
     for button in buttons.values():

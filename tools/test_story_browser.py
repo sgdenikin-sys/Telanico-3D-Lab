@@ -10,7 +10,7 @@ from playwright.sync_api import sync_playwright
 from test_v2_browser import POINT
 
 
-def exercise(browser, url, output, width, height, touch, full):
+def exercise(browser, url, output, width, height, touch, full, landmarks_only=False):
     context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch,
         **({'user_agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'} if touch else {}))
     context.tracing.start(screenshots=False,snapshots=True,sources=False)
@@ -26,8 +26,12 @@ def exercise(browser, url, output, width, height, touch, full):
     def wait(expr,arg=None,timeout=120000):
         page.wait_for_function(expr,arg=arg,timeout=timeout,polling=250)
     def story(): return page.evaluate('window.__TELANICO_STORY')
-    def click(key):
-        print('STORY_ACTION',width,key,flush=True)
+    def click(key, scroll_attempts=0):
+        print('STORY_ACTION',width,key,'scroll_attempt',scroll_attempts,flush=True)
+        if scroll_attempts >= 10:
+            controls=story().get('controls',[])
+            selected=[c for c in controls if c.get('action')==key or c.get('text')==key or c.get('art')==key]
+            raise AssertionError(f'Control {key} remains outside viewport after {scroll_attempts} scrolls: {selected}')
         point=page.evaluate("""async key=>{
           const deadline=performance.now()+120000;let frame=-1,signature='',stable=0;
           while(performance.now()<deadline){
@@ -40,23 +44,45 @@ def exercise(browser, url, output, width, height, touch, full):
         }""",key)
         clip=point.get('clip')
         if clip and not (clip[1]+8 <= point['y'] <= clip[1]+clip[3]-8):
-            # Scroll the real Godot ScrollContainer; never invoke an offscreen button.
+            # Press the actual in-game office scroll arrow. This tests a
+            # player-facing fallback that works even if iOS touch scrolling
+            # is unavailable on slow WebGL frames.
+            arrow = '▼' if point['y'] > clip[1]+clip[3]-8 else '▲'
+            available = any(c.get('text') == arrow and not c.get('disabled')
+                            for c in story().get('controls', []))
+            if available and key not in ('▼', '▲'):
+                button_before = next(c for c in story()['controls'] if c.get('action') == key)
+                previous_y = button_before['rect'][1]
+                click(arrow)
+                # Compare Godot-space coordinates on both sides of the check.
+                # CSS-space click positions and Godot viewport coordinates differ
+                # on retina / scaled landscape devices.
+                wait("""([name, old]) => window.__TELANICO_STORY?.controls?.some(
+                    c => c.action===name && Math.abs(c.rect[1]-old)>8)""",
+                    [key, previous_y], timeout=15000)
+                return click(key, scroll_attempts+1)
+            # Fall back to an actual touch swipe on other scrollable screens.
             x=clip[0]+clip[2]*0.6
             y=clip[1]+clip[3]*0.6
             direction=1 if point['y']>clip[1]+clip[3] else -1
             before=story()['frame']
             if touch:
                 cdp=context.new_cdp_session(page)
+                # SwiftShader/WebGL frames may be slower than CDP dispatches.
+                # Without spacing, Godot sees touchStart and touchEnd in one
+                # frame and the ScrollContainer never receives a drag.
                 cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':x,'y':y,'id':0}]})
-                for step in range(1,5):
-                    cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x,'y':y-direction*clip[3]*0.45*step/4,'id':0}]})
+                page.wait_for_timeout(130)
+                for step in range(1,7):
+                    cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x,'y':y-direction*clip[3]*0.70*step/6,'id':0}]})
+                    page.wait_for_timeout(130)
                 cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
                 cdp.detach()
             else:
                 page.mouse.move(x,y)
                 page.mouse.wheel(0,direction*max(100,clip[3]*0.6))
             wait('(before)=>window.__TELANICO_STORY.frame>before',before)
-            return click(key)
+            return click(key, scroll_attempts+1)
         before=story()['frame']
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])
         wait('(before)=>window.__TELANICO_STORY.frame>before',before)
@@ -87,9 +113,19 @@ def exercise(browser, url, output, width, height, touch, full):
         wait('(id)=>window.__TELANICO_STATE.current===id&&window.__TELANICO_STATE.state==="IDLE"',target)
         assert story()['time']>before
     def transfer():
+        # Tube state may last less than Playwright's polling interval on WebGL.
+        # Assert the observable completed journey rather than requiring a sampled
+        # intermediate animation frame. Keep the travel-cost assertion.
+        before=story()['time']
+        origin=page.evaluate('window.__TELANICO_STATE.current')
         nav('Tube')
-        wait("window.__TELANICO_STATE.state==='TUBE'")
-        wait("window.__TELANICO_STATE.state==='IDLE'")
+        wait("""([origin,before]) => {
+            const world=window.__TELANICO_STATE;
+            const session=window.__TELANICO_STORY;
+            return world && session && world.state==='IDLE'
+                && world.current!==origin && session.time>before;
+        }""",[origin,before])
+        assert story()['time']-before==3, 'Tube must charge exactly three minutes'
     def visit(target,actions):
         walk(target)
         assert story()['office']==''
@@ -135,6 +171,17 @@ def exercise(browser, url, output, width, height, touch, full):
                 cdp.send('Input.dispatchTouchEvent',{'type':kind,'touchPoints':[{'x':x,'y':y,'id':i} for i,(x,y) in enumerate(points)]})
             wait('window.__TELANICO_STATE.camera_size<124')
             nav('Reset')
+        if landmarks_only:
+            for ident in page.evaluate('Object.keys(window.__TELANICO_STATE.sites)'):
+                nav(ident,'sites')
+                wait('(id)=>window.__TELANICO_STATE.selected===id&&window.__TELANICO_STATE.ui.Walk',ident)
+                assert story()['time']==0, 'Selection must never spend story time'
+                nav('Cancel')
+                wait("!window.__TELANICO_STATE.ui.Walk")
+            shot('all-15-landmarks')
+            assert not errors,errors
+            print('STORY_LANDMARK_SELECTION_PASS',width,'all 15 through real touch/mouse with approved HUD',flush=True)
+            return
         visit('operations',['ops_qty','ops_report','ops_full_documents'] if full else ['ops_estimate','ops_qty'])
         assert story()['invoice']['quantity']=='8,470 MT'
         if full:
@@ -143,6 +190,11 @@ def exercise(browser, url, output, width, height, touch, full):
             visit('trader',['trader_price'])
             visit('vat',['vat_treatment'])
             visit('fx',['fx_rate'])
+            # The player can always use the actual Reset control to reframe the
+            # two-island map before selecting a distant tube terminal. A
+            # follow-camera close-up can place tube_e outside the viewport.
+            nav('Reset')
+            wait('window.__TELANICO_STATE.state==="IDLE" && !window.__TELANICO_STATE.follow')
             walk('tube_e');transfer()
             visit('lc',['lc_terms','lc_docs','lc_match','lc_original'])
             visit('settlements',['settlements_check','settlements_release'])
@@ -180,7 +232,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory',nargs='?',default='build/web')
     parser.add_argument('--url')
-    parser.add_argument('--case',type=int,choices=[1280,844])
+    parser.add_argument('--case',type=int,choices=[1280,844,667])
+    parser.add_argument('--landmarks-only',action='store_true')
     args=parser.parse_args()
     output=Path('build/screenshots/story');output.mkdir(parents=True,exist_ok=True)
     server=None
@@ -192,8 +245,10 @@ def main():
     try:
         with sync_playwright() as p:
             browser=p.chromium.launch(executable_path=shutil.which('chromium'),headless=True,args=['--no-sandbox','--use-angle=swiftshader','--enable-webgl','--enable-unsafe-swiftshader'])
-            for width,height,touch,full in [(1280,720,False,False),(844,390,True,True)]:
-                if args.case is None or args.case==width:exercise(browser,url,output,width,height,touch,full)
+            cases=[(1280,720,False,False),(844,390,True,True)]
+            if args.landmarks_only:cases.append((667,375,True,False))
+            for width,height,touch,full in cases:
+                if args.case is None or args.case==width:exercise(browser,url,output,width,height,touch,full,args.landmarks_only)
             browser.close()
     finally:
         if server:server.shutdown();server.server_close()
