@@ -1,0 +1,5 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_V2_READY imported world, animated courier, 15 sites
+TYPEWRITER_LAYOUT mode=0 choice_tops=[146.0, 146.0, 146.0, 177.0]
+TYPEWRITER_LAYOUT mode=1 choice_tops=[177.0, 177.0, 177.0, 177.0]

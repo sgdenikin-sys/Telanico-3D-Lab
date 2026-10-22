@@ -84,12 +84,14 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
             wait('(before)=>window.__TELANICO_STORY.frame>before',before)
             return click(key, scroll_attempts+1)
         before=story()['frame']
+        print('STORY_TAP',width,key,point['x'],point['y'],flush=True)
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])
         wait('(before)=>window.__TELANICO_STORY.frame>before',before)
     def nav(key,group='ui'):
         print('STORY_NAV',width,group,key,flush=True)
         point=page.evaluate(POINT,[group,key])
         before=story()['frame']
+        print('STORY_TAP',width,key,point['x'],point['y'],flush=True)
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])
         wait('(before)=>window.__TELANICO_STORY.frame>before',before)
     def uncover_landmark(ident):

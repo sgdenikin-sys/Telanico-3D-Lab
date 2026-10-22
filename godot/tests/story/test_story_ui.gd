@@ -22,6 +22,14 @@ func run():
         game.close_modal()
         assert(game.adapter.enter("settlements"))
         for frame in range(3): await process_frame
+        game.dialogue_tween.kill()
+        var choice_top := 0.0
+        for count in [0,12,30,-1]:
+            game.dialogue_label.visible_characters=count
+            for frame in range(3): await process_frame
+            var top: float = game.choice_list.get_global_rect().position.y
+            if count==0:choice_top=top
+            else:assert(is_equal_approx(top,choice_top),"Typewriter must not move dialogue hit targets")
         for button_name in ["OfficeLeave","OfficeInvoice","OfficeAssistant"]:
             var button = game.dialogue_card.find_child(button_name,true,false)
             var rect: Rect2 = button.get_global_rect()

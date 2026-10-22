@@ -395,6 +395,8 @@ func _build_office() -> void:
     scroll.add_child(col)
     speaker = _label(col,"",20)
     dialogue_label = _label(col,"",20)
+    # Reveal glyphs without changing wrapped height or moving dialogue choices.
+    dialogue_label.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
     choice_list = VBoxContainer.new()
     col.add_child(choice_list)
     var actions := HBoxContainer.new()
