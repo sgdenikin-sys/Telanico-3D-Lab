@@ -22,6 +22,7 @@ jobs:
   web:
     runs-on: ubuntu-24.04
     timeout-minutes: 75
+    # Owner-approved provisional V2.2 Web preview pipeline.
     env:
       BUILD_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       BUILD_SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
