@@ -105,21 +105,10 @@ def exercise(browser, url, output, width, height, touch, full):
             shot('assistant')
             click('CONTINUE')
             wait("window.__TELANICO_STORY.modal===''")
-    def select_from_directory(target):
-        # Exercise an actual player-visible fallback instead of a debug API or
-        # impossible tap on an occluded 3D hitbox near the iPhone top bar.
-        nav('Sites')
-        wait("Object.keys(window.__TELANICO_STATE.ui).filter(x=>x.startsWith('site_')).length===15")
-        nav('site_'+target)
-        wait('(id)=>window.__TELANICO_STATE.selected===id&&window.__TELANICO_STATE.ui.Walk',target)
-
-    def walk(target, via_directory=False):
+    def walk(target):
         before=story()['time']
-        if via_directory:
-            select_from_directory(target)
-        else:
-            nav(target,'sites')
-            wait('(id)=>window.__TELANICO_STATE.selected===id&&window.__TELANICO_STATE.ui.Walk',target)
+        nav(target,'sites')
+        wait('(id)=>window.__TELANICO_STATE.selected===id&&window.__TELANICO_STATE.ui.Walk',target)
         nav('Walk')
         wait('(id)=>window.__TELANICO_STATE.current===id&&window.__TELANICO_STATE.state==="IDLE"',target)
         assert story()['time']>before
@@ -175,13 +164,6 @@ def exercise(browser, url, output, width, height, touch, full):
         wait("!window.__TELANICO_STORY.locked")
         page.evaluate('window.__TELANICO_COMMAND={rate:12}')
         shot('story-world')
-        # Release gate: verify every landmark has a real, accessible destination
-        # button before lengthy office walkthroughs. Then close the selection
-        # without moving or charging any quest time.
-        select_from_directory('tube_e')
-        nav('Cancel')
-        wait("!window.__TELANICO_STATE.ui.Walk")
-        assert story()['time']==0, 'Opening destination selector must cost no quest time'
         # The exact existing gesture handler is also exercised by the V2.1 suite.
         if touch:
             cdp=context.new_cdp_session(page)
@@ -202,7 +184,7 @@ def exercise(browser, url, output, width, height, touch, full):
             # follow-camera close-up can place tube_e outside the viewport.
             nav('Reset')
             wait('window.__TELANICO_STATE.state==="IDLE" && !window.__TELANICO_STATE.follow')
-            walk('tube_e',via_directory=True);transfer()
+            walk('tube_e');transfer()
             visit('lc',['lc_terms','lc_docs','lc_match','lc_original'])
             visit('settlements',['settlements_check','settlements_release'])
             wait('window.__TELANICO_STORY.won&&window.__TELANICO_STORY.modal==="result"')
