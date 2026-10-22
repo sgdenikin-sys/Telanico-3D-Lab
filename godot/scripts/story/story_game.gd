@@ -495,7 +495,8 @@ func _result(won: bool) -> void:
     _button(modal_footer,"PLAY AGAIN",restart).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 func restart() -> void:
-    get_tree().reload_current_scene()
+    # Keep the pressed Control in-tree until GUI/touch dispatch has returned.
+    get_tree().call_deferred("reload_current_scene")
 
 func _layout() -> void:
     if ui==null or not is_inside_tree(): return

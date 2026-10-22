@@ -74,7 +74,22 @@ func run():
     game.session.quest_minutes = 119
     game.session.charge_travel(1,"walk")
     assert(game.modal_kind=="result" and game.session.quest_failed and game.world.navigation_locked)
-    game.restart()
+    # Dispatch a real GUI press/release, not a direct restart() call. Scene
+    # replacement must wait until the pressed button's input callback unwinds.
+    await process_frame
+    await process_frame
+    var restart_button: Button
+    for button in game.modal_footer.find_children("*","Button",true,false):
+        if button.text=="PLAY AGAIN":restart_button=button
+    assert(restart_button!=null)
+    var restart_point := restart_button.get_global_rect().get_center()
+    for pressed in [true,false]:
+        var event := InputEventMouseButton.new()
+        event.button_index=MOUSE_BUTTON_LEFT
+        event.pressed=pressed
+        event.position=restart_point
+        event.global_position=restart_point
+        root.push_input(event,true)
     await process_frame
     await process_frame
     var restarted = current_scene

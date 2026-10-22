@@ -13,7 +13,7 @@ from test_v2_browser import POINT
 DIALOGUE_PROGRESS = "JSON.stringify([s.time,s.modal,s.office,s.line_index,s.lines,s.invoice,s.controls.map(c=>[c.text,c.action,c.art,c.disabled])])"
 
 
-def exercise(browser, url, output, width, height, touch, full, landmarks_only=False):
+def exercise(browser, url, output, width, height, touch, full, landmarks_only=False, restart_only=False):
     context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch,
         **({'user_agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'} if touch else {}))
     context.tracing.start(screenshots=False,snapshots=True,sources=False)
@@ -211,6 +211,17 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         wait("!window.__TELANICO_STORY.locked")
         page.evaluate('window.__TELANICO_COMMAND={rate:12}')
         shot('story-world')
+        if restart_only:
+            click('button_menu.png')
+            wait("window.__TELANICO_STORY.modal==='menu'")
+            click('RESTART GAME')
+            wait("window.__TELANICO_STORY.screen==='intro'&&window.__TELANICO_STORY.time===0")
+            shot('menu-restarted')
+            audio=page.evaluate('window.VorGunAudio.diagnostic()')
+            assert audio['musicStarts']==1,audio
+            assert not errors,errors
+            print('STORY_RESTART_BROWSER_PASS',width,'real menu touch/mouse callback; no runtime errors',flush=True)
+            return
         # The exact existing gesture handler is also exercised by the V2.1 suite.
         if touch:
             cdp=context.new_cdp_session(page)
@@ -282,7 +293,10 @@ def main():
     parser.add_argument('--url')
     parser.add_argument('--case',type=int,choices=[1280,844,667])
     parser.add_argument('--landmarks-only',action='store_true')
+    parser.add_argument('--restart-only',action='store_true')
     args=parser.parse_args()
+    if args.landmarks_only and args.restart_only:
+        parser.error('choose only one focused browser test')
     if args.case==667 and not args.landmarks_only:
         parser.error('--case 667 requires --landmarks-only; the full story phone case is 844')
     output=Path('build/screenshots/story');output.mkdir(parents=True,exist_ok=True)
@@ -298,7 +312,7 @@ def main():
             cases=[(1280,720,False,False),(844,390,True,True)]
             if args.landmarks_only:cases.append((667,375,True,False))
             for width,height,touch,full in cases:
-                if args.case is None or args.case==width:exercise(browser,url,output,width,height,touch,full,args.landmarks_only)
+                if args.case is None or args.case==width:exercise(browser,url,output,width,height,touch,full,args.landmarks_only,args.restart_only)
             browser.close()
     finally:
         if server:server.shutdown();server.server_close()
