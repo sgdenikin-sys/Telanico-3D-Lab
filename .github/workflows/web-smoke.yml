@@ -64,11 +64,8 @@ jobs:
         run: python tools/test_v2_browser.py build/web
       - name: Test original story UI and complete iPhone playthrough
         id: full_story
-        continue-on-error: true # Owner-approved V2.2 preview; do not mistake for fully tested production
+        timeout-minutes: 12
         run: python tools/test_story_browser.py build/web
-      - name: Mark partial mobile validation
-        if: steps.full_story.outcome == 'failure'
-        run: echo '::warning::V2.2 preview: full iPhone story still fails; Contracts controls are not release-certified.'
       - name: Upload playable Web build
         uses: actions/upload-artifact@v4
         with:
