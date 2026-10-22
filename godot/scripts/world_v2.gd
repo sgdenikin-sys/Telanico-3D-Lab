@@ -57,10 +57,6 @@ var status: Label
 var hover_label: Label
 var buttons: Dictionary = {}
 var top_buttons: Dictionary = {}
-# Explicit destination picker: makes every department/transport terminal
-# reachable on touch screens even when perspective geometry overlaps HUD buttons.
-var destinations_panel: PanelContainer
-var destination_buttons: Dictionary = {}
 var labels: Dictionary = {}
 var portrait: ColorRect
 var fade: ColorRect
@@ -241,7 +237,7 @@ func _make_ui() -> void:
     status.add_theme_font_size_override("font_size",20)
     status.mouse_filter = Control.MOUSE_FILTER_IGNORE
     hud.add_child(status)
-    for name in ["Sites", "Explore", "Follow", "Names", "Reset"]:
+    for name in ["Explore", "Follow", "Names", "Reset"]:
         var button := Button.new()
         button.text = name
         button.add_theme_font_size_override("font_size",22)
@@ -292,7 +288,6 @@ func _make_ui() -> void:
         row.add_child(button)
         buttons[name] = button
     panel.visible = false
-    _make_destination_picker()
     portrait = ColorRect.new()
     portrait.color = Color(0.03,0.1,0.13)
     hud.add_child(portrait)
@@ -309,48 +304,6 @@ func _make_ui() -> void:
     fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
     hud.add_child(fade)
     fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-
-func _make_destination_picker() -> void:
-    destinations_panel = PanelContainer.new()
-    destinations_panel.name = "DestinationPicker"
-    destinations_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-    hud.add_child(destinations_panel)
-    var box := VBoxContainer.new()
-    box.add_theme_constant_override("separation", 5)
-    destinations_panel.add_child(box)
-    var heading := Label.new()
-    heading.text = "CHOOSE DESTINATION"
-    heading.add_theme_font_size_override("font_size", 17)
-    box.add_child(heading)
-    var grid := GridContainer.new()
-    grid.columns = 3
-    grid.add_theme_constant_override("h_separation", 4)
-    grid.add_theme_constant_override("v_separation", 4)
-    box.add_child(grid)
-    var names := {
-        "settlements": "Settlements", "operations": "Operations", "finance": "Trade Finance",
-        "lc": "LC Desk", "compliance": "Compliance", "coffee": "Coffee",
-        "tube_w": "West Tube", "dock_w": "West Dock", "trader": "Trader",
-        "contracts": "Contracts", "vat": "VAT / Tax", "fx": "FX Desk",
-        "archive": "Archive", "tube_e": "East Tube", "dock_e": "East Dock"
-    }
-    for ident in names:
-        if not sites.has(ident): continue
-        var button := Button.new()
-        button.name = "Destination_" + ident
-        button.text = names[ident]
-        button.clip_text = true
-        button.custom_minimum_size = Vector2(140, 44)
-        button.add_theme_font_size_override("font_size", 14)
-        button.pressed.connect(_select_from_destination_picker.bind(ident))
-        grid.add_child(button)
-        destination_buttons[ident] = button
-    destinations_panel.visible = false
-
-func _select_from_destination_picker(ident: String) -> void:
-    destinations_panel.visible = false
-    if navigation_locked or state != "IDLE": return
-    select_site(ident)
 
 func _layout_ui(force := false) -> void:
     if hud == null: return
@@ -374,7 +327,7 @@ func _layout_ui(force := false) -> void:
     var index := 0
     for name in top_buttons:
         var button: Button = top_buttons[name]
-        button.position = Vector2(viewport.x-right-(10+82*(top_buttons.size()-index))*units,top+(62 if story_adapter != null else 8)*units)
+        button.position = Vector2(viewport.x-right-(10+82*(4-index))*units,top+(62 if story_adapter != null else 8)*units)
         button.size = Vector2(78,36)*units
         button.add_theme_font_size_override("font_size",roundi(13*units))
         index += 1
@@ -389,24 +342,10 @@ func _layout_ui(force := false) -> void:
         button.add_theme_font_size_override("font_size",roundi(14*units))
     panel.position = Vector2(panel_left,viewport.y-panel.size.y-panel_bottom)
     portrait.visible = viewport.y>viewport.x
-    if destinations_panel != null:
-        var avail_width := viewport.x-left-right
-        destinations_panel.size = Vector2(minf(454*units, avail_width-20*units), 267*units)
-        destinations_panel.position = Vector2(viewport.x-right-destinations_panel.size.x-10*units, top+108*units)
-        if portrait.visible or destinations_panel.position.y+destinations_panel.size.y>viewport.y-bottom:
-            destinations_panel.visible = false
-        for button in destination_buttons.values():
-            button.custom_minimum_size = Vector2(140,44)*units
-            button.add_theme_font_size_override("font_size",roundi(14*units))
 
 func _top_action(name: String) -> void:
     if navigation_locked: return
     match name:
-        "Sites":
-            if destinations_panel != null:
-                destinations_panel.visible = not destinations_panel.visible
-                if destinations_panel.visible:
-                    panel.visible = false
         "Reset": reset_view()
         "Explore":
             inspect_mode = not inspect_mode
@@ -700,9 +639,6 @@ func _ray(screen: Vector2,mask: int,areas: bool) -> Dictionary:
 
 func _tap(screen: Vector2) -> void:
     if state != "IDLE" or portrait.visible: return
-    if destinations_panel != null and destinations_panel.visible:
-        destinations_panel.visible = false
-        return
     var hit := _ray(screen,2,true)
     if not hit.is_empty():
         select_site(hit.collider.get_meta("site"))
@@ -793,12 +729,6 @@ func _publish_probe() -> void:
     for key in top_buttons:
         var centre: Vector2 = top_buttons[key].global_position+top_buttons[key].size/2
         ui[key] = [centre.x,centre.y]
-    if destinations_panel != null and destinations_panel.visible:
-        for ident in destination_buttons:
-            var control: Button = destination_buttons[ident]
-            if control.is_visible_in_tree():
-                var centre: Vector2 = control.global_position+control.size/2
-                ui["site_"+ident] = [centre.x,centre.y]
     var probe := {"frame":Engine.get_process_frames(),"ready":true,"fps":Engine.get_frames_per_second(),"state":state,"current":current_node,"selected":selected,"island":current_island,
         "story_minutes":story_minutes,"position":[actor.position.x,actor.position.y,actor.position.z],
         "animation":animation.current_animation if animation else "", "animation_position":animation.current_animation_position if animation else 0,
