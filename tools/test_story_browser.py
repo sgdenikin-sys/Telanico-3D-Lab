@@ -157,6 +157,11 @@ def exercise(browser, url, output, width, height, touch, full):
             visit('trader',['trader_price'])
             visit('vat',['vat_treatment'])
             visit('fx',['fx_rate'])
+            # The player can always use the actual Reset control to reframe the
+            # two-island map before selecting a distant tube terminal. A
+            # follow-camera close-up can place tube_e outside the viewport.
+            nav('Reset')
+            wait('window.__TELANICO_STATE.state==="IDLE" && !window.__TELANICO_STATE.follow')
             walk('tube_e');transfer()
             visit('lc',['lc_terms','lc_docs','lc_match','lc_original'])
             visit('settlements',['settlements_check','settlements_release'])
