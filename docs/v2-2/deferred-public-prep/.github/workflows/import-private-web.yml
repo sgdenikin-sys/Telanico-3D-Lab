@@ -1,16 +1,11 @@
 name: Import tested 3D Web build
 on:
-  schedule:
-    - cron: '*/10 * * * *'
   workflow_dispatch:
     inputs:
       source_run_id:
         description: 'Successful private Godot Web playable run ID (optional release-pin override)'
         required: false
         type: string
-  push:
-    branches: [main]
-    paths: ['.github/workflows/import-private-web.yml', 'tools/import_preview.py', 'tools/preview-source.json']
 permissions:
   contents: write
   pages: write
@@ -81,6 +76,7 @@ jobs:
                   page=context.new_page()
                   errors=[]
                   page.on('pageerror',lambda e:errors.append(str(e)))
+                  page.on('response',lambda r:errors.append(f'HTTP {r.status}: {r.url}') if r.status>=400 else None)
                   page.on('console',lambda m:errors.append(m.text) if 'ERROR:' in m.text else None)
                   page.goto(url+'?test=1&story_test=1&build='+expected,wait_until='domcontentloaded')
                   page.wait_for_function('window.__TELANICO_STORY?.screen==="intro"',polling=250,timeout=180000)
@@ -88,7 +84,17 @@ jobs:
                   assert state['commit']==expected and len(state['sites'])==15,state
                   def press(key):
                       page.wait_for_function('(key)=>window.__TELANICO_STORY.controls.some(b=>!b.disabled&&(b.text===key||b.art===key))',arg=key,timeout=120000)
-                      point=page.evaluate("""key=>{const s=window.__TELANICO_STORY,b=s.controls.find(b=>!b.disabled&&(b.text===key||b.art===key)),r=document.querySelector('#canvas').getBoundingClientRect();return {x:r.x+(b.rect[0]+b.rect[2]/2)/s.viewport[0]*r.width,y:r.y+(b.rect[1]+b.rect[3]/2)/s.viewport[1]*r.height}}""",key)
+                      point=page.evaluate("""async key=>{
+                          let frame=-1,previous='',stable=0;
+                          const until=performance.now()+120000;
+                          while(performance.now()<until){
+                              const s=window.__TELANICO_STORY;
+                              const b=s?.controls.find(b=>!b.disabled&&(b.text===key||b.art===key));
+                              if(b&&s.frame!==frame){const next=JSON.stringify(b.rect);stable=next===previous?stable+1:0;previous=next;frame=s.frame;
+                                  if(stable>=1){const r=document.querySelector('#canvas').getBoundingClientRect();return {x:r.x+(b.rect[0]+b.rect[2]/2)/s.viewport[0]*r.width,y:r.y+(b.rect[1]+b.rect[3]/2)/s.viewport[1]*r.height};}}
+                              await new Promise(r=>setTimeout(r,150));
+                          }throw Error('Unstable hosted story control '+key);
+                      }""",key)
                       (page.touchscreen.tap if phone else page.mouse.click)(point['x'],point['y'])
                   press('CHOOSE YOUR ROLE')
                   page.wait_for_function('window.__TELANICO_STORY.screen==="characters"',timeout=120000)

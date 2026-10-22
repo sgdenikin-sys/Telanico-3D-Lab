@@ -92,6 +92,35 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         before=story()['frame']
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])
         wait('(before)=>window.__TELANICO_STORY.frame>before',before)
+    def uncover_landmark(ident):
+        # The approved left HUD overlaps part of the overview on short phones.
+        # Reframe using real existing gestures; never click through a HUD button.
+        def geometry():
+            return page.evaluate("""id=>{
+                const w=window.__TELANICO_STATE,s=window.__TELANICO_STORY,p=w.sites[id];
+                return {x:p[0],outside:p[0]<12||p[0]>w.viewport[0]-12,
+                  covered:s.controls.some(c=>!c.disabled&&c.rect[0]<=p[0]&&p[0]<=c.rect[0]+c.rect[2]&&c.rect[1]<=p[1]&&p[1]<=c.rect[1]+c.rect[3])};
+            }""",ident)
+        if geometry()['outside']:
+            nav('Reset')
+            page.evaluate(POINT,['sites',ident])
+        current=geometry()
+        if current['covered']:
+            assert touch, 'Desktop landmark unexpectedly covered by HUD'
+            print('STORY_PAN_TO_UNCOVER',width,ident,flush=True)
+            cdp=context.new_cdp_session(page)
+            x,y=width*.5,height*.8
+            cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':x,'y':y,'id':0}]})
+            page.wait_for_timeout(250)
+            for step in range(1,7):
+                cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x+width*.18*step/6,'y':y,'id':0}]})
+                page.wait_for_timeout(250)
+            cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+            cdp.detach()
+            wait('([id,old])=>window.__TELANICO_STATE.sites[id][0]>old+30',[ident,current['x']])
+            page.evaluate(POINT,['sites',ident])
+        assert not geometry()['outside'] and not geometry()['covered'], (ident,geometry())
+
     def shot(name): page.screenshot(path=str(output/f'{name}-{width}.png'),timeout=120000)
     def finish_reply():
         while story()['line_index']<story()['lines']-1:click('CONTINUE →')
@@ -173,6 +202,7 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
             nav('Reset')
         if landmarks_only:
             for ident in page.evaluate('Object.keys(window.__TELANICO_STATE.sites)'):
+                uncover_landmark(ident)
                 nav(ident,'sites')
                 wait('(id)=>window.__TELANICO_STATE.selected===id&&window.__TELANICO_STATE.ui.Walk',ident)
                 assert story()['time']==0, 'Selection must never spend story time'
@@ -220,7 +250,7 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         (output/f'story-result-{width}.json').write_text(json.dumps({'state':story(),'audio':audio,'errors':errors},indent=2))
         print('STORY_BROWSER_PASS',width,'full' if full else 'opening-office-wrong-answer',flush=True)
     except Exception:
-        (output/f'story-failure-{width}.json').write_text(json.dumps({'state':story(),'errors':errors},indent=2))
+        (output/f'story-failure-{width}.json').write_text(json.dumps({'state':story(),'world':page.evaluate('window.__TELANICO_STATE'),'errors':errors},indent=2))
         shot('story-failure')
         raise
     finally:
@@ -235,6 +265,8 @@ def main():
     parser.add_argument('--case',type=int,choices=[1280,844,667])
     parser.add_argument('--landmarks-only',action='store_true')
     args=parser.parse_args()
+    if args.case==667 and not args.landmarks_only:
+        parser.error('--case 667 requires --landmarks-only; the full story phone case is 844')
     output=Path('build/screenshots/story');output.mkdir(parents=True,exist_ok=True)
     server=None
     if args.url:url=args.url
