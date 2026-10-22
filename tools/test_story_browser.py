@@ -9,6 +9,9 @@ import threading
 from playwright.sync_api import sync_playwright
 from test_v2_browser import POINT
 
+# Ignore animation/layout-only changes when acknowledging an actual story choice.
+DIALOGUE_PROGRESS = "JSON.stringify([s.time,s.modal,s.office,s.line_index,s.lines,s.invoice,s.controls.map(c=>[c.text,c.action,c.art,c.disabled])])"
+
 
 def exercise(browser, url, output, width, height, touch, full, landmarks_only=False):
     context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch,
@@ -38,7 +41,7 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
             const s=window.__TELANICO_STORY;
             const b=s?.controls?.find(b=>!b.disabled&&(b.action===key||b.text===key||b.art===key));
             if(b&&s.frame!==frame){const next=JSON.stringify(b.rect);stable=next===signature?stable+1:0;signature=next;frame=s.frame;
-              if(stable>=1){const r=document.querySelector('#canvas').getBoundingClientRect();return {x:r.x+(b.rect[0]+b.rect[2]/2)/s.viewport[0]*r.width,y:r.y+(b.rect[1]+b.rect[3]/2)/s.viewport[1]*r.height,clip:b.clip.map((n,i)=>n/(i%2?s.viewport[1]:s.viewport[0])*(i%2?r.height:r.width))};}}
+              if(stable>=1){const r=document.querySelector('#canvas').getBoundingClientRect();return {action:b.action,x:r.x+(b.rect[0]+b.rect[2]/2)/s.viewport[0]*r.width,y:r.y+(b.rect[1]+b.rect[3]/2)/s.viewport[1]*r.height,clip:b.clip.map((n,i)=>n/(i%2?s.viewport[1]:s.viewport[0])*(i%2?r.height:r.width))};}}
             await new Promise(r=>setTimeout(r,150));
           }throw Error('Missing or unstable story control '+key);
         }""",key)
@@ -84,9 +87,17 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
             wait('(before)=>window.__TELANICO_STORY.frame>before',before)
             return click(key, scroll_attempts+1)
         before=story()['frame']
+        acknowledge=bool(point.get('action')) or key=='CONTINUE >'
+        previous=page.evaluate('()=>{const s=window.__TELANICO_STORY;return '+DIALOGUE_PROGRESS+';}') if acknowledge else None
         print('STORY_TAP',width,key,point['x'],point['y'],flush=True)
         (page.touchscreen.tap if touch else page.mouse.click)(point['x'],point['y'])
-        wait('(before)=>window.__TELANICO_STORY.frame>before',before)
+        if acknowledge:
+            # A newer telemetry frame can precede delivery of the touch event.
+            # Wait for meaningful dialogue/session state before paging its reply.
+            wait('([before,previous])=>{const s=window.__TELANICO_STORY;return s.frame>before&&'+DIALOGUE_PROGRESS+'!==previous;}',[before,previous])
+            print('STORY_DIALOGUE_ACK',width,key,story()['time'],flush=True)
+        else:
+            wait('(before)=>window.__TELANICO_STORY.frame>before',before)
     def nav(key,group='ui'):
         print('STORY_NAV',width,group,key,flush=True)
         point=page.evaluate(POINT,[group,key])
@@ -157,6 +168,11 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
                 && world.current!==origin && session.time>before;
         }""",[origin,before])
         assert story()['time']-before==3, 'Tube must charge exactly three minutes'
+        # Match the existing V2.1 player flow: dismiss the arrival card before
+        # picking a nearby department behind it. This never changes geography.
+        nav('Outside')
+        wait("!window.__TELANICO_STATE.ui.Outside")
+        assert story()['time']-before==3, 'Dismissing arrival must not charge time'
     def visit(target,actions):
         walk(target)
         assert story()['office']==''

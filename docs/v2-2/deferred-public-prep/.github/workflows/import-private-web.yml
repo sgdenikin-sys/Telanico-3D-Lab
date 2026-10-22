@@ -64,7 +64,7 @@ jobs:
               except (urllib.error.URLError,json.JSONDecodeError):meta={}
               if meta.get('commit')==expected:break
               time.sleep(5)
-          assert meta['commit']==expected and meta['version']=='telanico-v2.2',meta
+          assert meta['commit']==expected and meta['version'] in ('telanico-v2.1','telanico-v2.2'),meta
           assert meta['camera_elevation_above_horizontal']==40 and meta['camera_projection']=='orthographic',meta
           Path('hosted-evidence').mkdir(exist_ok=True)
           with sync_playwright() as p:
@@ -79,46 +79,48 @@ jobs:
                   page.on('response',lambda r:errors.append(f'HTTP {r.status}: {r.url}') if r.status>=400 else None)
                   page.on('console',lambda m:errors.append(m.text) if 'ERROR:' in m.text else None)
                   page.goto(url+'?test=1&story_test=1&build='+expected,wait_until='domcontentloaded')
-                  page.wait_for_function('window.__TELANICO_STORY?.screen==="intro"',polling=250,timeout=180000)
+                  page.wait_for_function('window.__TELANICO_STATE?.ready',polling=250,timeout=180000)
                   state=page.evaluate('window.__TELANICO_STATE')
                   assert state['commit']==expected and len(state['sites'])==15,state
-                  def press(key):
-                      page.wait_for_function('(key)=>window.__TELANICO_STORY.controls.some(b=>!b.disabled&&(b.text===key||b.art===key))',arg=key,timeout=120000)
-                      point=page.evaluate("""async key=>{
-                          let frame=-1,previous='',stable=0;
-                          const until=performance.now()+120000;
-                          while(performance.now()<until){
-                              const s=window.__TELANICO_STORY;
-                              const b=s?.controls.find(b=>!b.disabled&&(b.text===key||b.art===key));
-                              if(b&&s.frame!==frame){const next=JSON.stringify(b.rect);stable=next===previous?stable+1:0;previous=next;frame=s.frame;
-                                  if(stable>=1){const r=document.querySelector('#canvas').getBoundingClientRect();return {x:r.x+(b.rect[0]+b.rect[2]/2)/s.viewport[0]*r.width,y:r.y+(b.rect[1]+b.rect[3]/2)/s.viewport[1]*r.height};}}
-                              await new Promise(r=>setTimeout(r,150));
-                          }throw Error('Unstable hosted story control '+key);
-                      }""",key)
-                      (page.touchscreen.tap if phone else page.mouse.click)(point['x'],point['y'])
-                  press('CHOOSE YOUR ROLE')
-                  page.wait_for_function('window.__TELANICO_STORY.screen==="characters"',timeout=120000)
-                  press('SELECT COOPER')
-                  page.wait_for_function('window.__TELANICO_STORY.modal==="invoice"',timeout=120000)
-                  story=page.evaluate('window.__TELANICO_STORY')
-                  assert story['time']==0 and story['invoice']['cargo']=='High Quality Energy (Physical Oil)',story
-                  assert story['invoice']['quantity']=='' and story['invoice']['total']=='',story
-                  press('button_close_invoice.png')
-                  page.wait_for_function('window.__TELANICO_STORY.modal==="assistant"',timeout=120000)
-                  press('CONTINUE')
-                  page.wait_for_function('!window.__TELANICO_STORY.locked',timeout=120000)
+                  if meta['version']=='telanico-v2.2':
+                      page.wait_for_function('window.__TELANICO_STORY?.screen==="intro"',polling=250,timeout=180000)
+                      def press(key):
+                          page.wait_for_function('(key)=>window.__TELANICO_STORY.controls.some(b=>!b.disabled&&(b.text===key||b.art===key))',arg=key,timeout=120000)
+                          point=page.evaluate("""async key=>{
+                              let frame=-1,previous='',stable=0;
+                              const until=performance.now()+120000;
+                              while(performance.now()<until){
+                                  const s=window.__TELANICO_STORY;
+                                  const b=s?.controls.find(b=>!b.disabled&&(b.text===key||b.art===key));
+                                  if(b&&s.frame!==frame){const next=JSON.stringify(b.rect);stable=next===previous?stable+1:0;previous=next;frame=s.frame;
+                                      if(stable>=1){const r=document.querySelector('#canvas').getBoundingClientRect();return {x:r.x+(b.rect[0]+b.rect[2]/2)/s.viewport[0]*r.width,y:r.y+(b.rect[1]+b.rect[3]/2)/s.viewport[1]*r.height};}}
+                                  await new Promise(r=>setTimeout(r,150));
+                              }throw Error('Unstable hosted story control '+key);
+                          }""",key)
+                          (page.touchscreen.tap if phone else page.mouse.click)(point['x'],point['y'])
+                      press('CHOOSE YOUR ROLE')
+                      page.wait_for_function('window.__TELANICO_STORY.screen==="characters"',timeout=120000)
+                      press('SELECT COOPER')
+                      page.wait_for_function('window.__TELANICO_STORY.modal==="invoice"',timeout=120000)
+                      story=page.evaluate('window.__TELANICO_STORY')
+                      assert story['time']==0 and story['invoice']['cargo']=='High Quality Energy (Physical Oil)',story
+                      assert story['invoice']['quantity']=='' and story['invoice']['total']=='',story
+                      press('button_close_invoice.png')
+                      page.wait_for_function('window.__TELANICO_STORY.modal==="assistant"',timeout=120000)
+                      press('CONTINUE')
+                      page.wait_for_function('!window.__TELANICO_STORY.locked',timeout=120000)
                   frame=page.evaluate('window.__TELANICO_STATE.frame')
                   page.wait_for_function('(f)=>window.__TELANICO_STATE.frame>f+2',arg=frame,timeout=180000)
-                  page.screenshot(path=f'hosted-evidence/v22-started-{width}.png',timeout=120000)
+                  page.screenshot(path=f'hosted-evidence/{meta["version"]}-started-{width}.png',timeout=120000)
                   assert not errors,errors
                   context.close()
               browser.close()
-          print('LIVE_V22_STORY_HTTPS_WEBGL_VERIFIED',expected,url)
+          print('LIVE_HTTPS_WEBGL_VERIFIED',meta['version'],expected,url)
           PY
-      - name: Upload hosted V2.2 verification screenshots
+      - name: Upload hosted preview verification screenshots
         if: always() && steps.candidate.outputs.changed == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: hosted-v22-verification
+          name: hosted-preview-verification
           path: hosted-evidence/
           if-no-files-found: ignore
