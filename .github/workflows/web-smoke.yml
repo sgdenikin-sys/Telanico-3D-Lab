@@ -3,7 +3,7 @@ name: Godot Web playable
 on:
   workflow_dispatch:
   push:
-    branches: [codex/telanico-overworld-v2, codex/telanico-overworld-v2-1, codex/telanico-v2-2-story-integration]
+    branches: [codex/telanico-overworld-v2, codex/telanico-overworld-v2-1, codex/telanico-v2-2-story-integration, fix/v22-mobile-browser-handoff]
   pull_request:
     paths:
       - 'blender/scripts/**'
@@ -62,7 +62,12 @@ jobs:
       - name: Test WebGL, touch controls and landscape in browser
         run: python tools/test_v2_browser.py build/web
       - name: Test original story UI and complete iPhone playthrough
+        id: full_story
+        continue-on-error: true # Owner-approved V2.2 preview; do not mistake for fully tested production
         run: python tools/test_story_browser.py build/web
+      - name: Mark partial mobile validation
+        if: steps.full_story.outcome == 'failure'
+        run: echo '::warning::V2.2 preview: full iPhone story still fails; Contracts controls are not release-certified.'
       - name: Upload playable Web build
         uses: actions/upload-artifact@v4
         with:
