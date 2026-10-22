@@ -44,7 +44,20 @@ def exercise(browser, url, output, width, height, touch, full):
         }""",key)
         clip=point.get('clip')
         if clip and not (clip[1]+8 <= point['y'] <= clip[1]+clip[3]-8):
-            # Scroll the real Godot ScrollContainer; never invoke an offscreen button.
+            # Press the actual in-game office scroll arrow. This tests a
+            # player-facing fallback that works even if iOS touch scrolling
+            # is unavailable on slow WebGL frames.
+            arrow = '▼' if point['y'] > clip[1]+clip[3]-8 else '▲'
+            available = any(c.get('text') == arrow and not c.get('disabled')
+                            for c in story().get('controls', []))
+            if available and key not in ('▼', '▲'):
+                previous_y = point['y']
+                click(arrow)
+                wait("""([name, old]) => window.__TELANICO_STORY?.controls?.some(
+                    c => c.action===name && Math.abs(c.rect[1]+c.rect[3]/2-old)>8)""",
+                    [key, previous_y])
+                return click(key, scroll_attempts+1)
+            # Fall back to an actual touch swipe on other scrollable screens.
             x=clip[0]+clip[2]*0.6
             y=clip[1]+clip[3]*0.6
             direction=1 if point['y']>clip[1]+clip[3] else -1
