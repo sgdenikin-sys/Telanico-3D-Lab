@@ -1,0 +1,93 @@
+{
+  "candidate_commit": "4df647ed6c09d6c46ba1bde55221fb5d984e5bfa",
+  "exported_gameplay_commit": "d3f3f430ac5624891ae1d2455875b662e508de7f",
+  "environment": "cloud Chromium touch simulation; not physical iPhone Safari",
+  "public_deployment": "blocked; V2.1 retained",
+  "logs": [
+    {
+      "log": "release-d3f3f43-build.log",
+      "sha256": "891a9b1cdb4c12bb9756092f39dc9d1d1ee4d62e6b078350800a1e9a0f997910",
+      "result_lines": [
+        "TELANICO_STORY_SESSION_PASS 61 assertions",
+        "TELANICO_SOURCE_PARITY_PASS 1116 comparisons across 16 cases",
+        "TELANICO_WORLD_STORY_PASS 29 assertions; physical walking, bridge, scheduled ferry, tube, explicit office and modal lock",
+        "TELANICO_PLAYTHROUGH_PASS 104 assertions; victory at 13:54",
+        "TELANICO_OPTIONAL_OFFICES_PASS 36 assertions; actual Trade Finance/repeat and Compliance/chocolate/assistant/training",
+        "TELANICO_STORY_UI_PASS landscape HUD/invoice, deadline result and real scene restart",
+        "PASS iPhone Chrome \u2014 music resume, trusted-touch retry, independent SFX",
+        "PASS Desktop Chrome Web \u2014 music resume, trusted-touch retry, independent SFX"
+      ]
+    },
+    {
+      "log": "metadata-d3f3f43.log",
+      "sha256": "0f7412086093b03b12150f886c9c98dea9f50d991f77b6c79756982f064f7750",
+      "result_lines": []
+    },
+    {
+      "log": "story-browser-phone-d3f3f43.log",
+      "sha256": "de4921893b4336520cda411b865dfc69af3cebf6834287ee1d86da3d63ea64d8",
+      "result_lines": [
+        "STORY_BROWSER_PASS 844 full"
+      ]
+    },
+    {
+      "log": "v21-browser-all-d3f3f43.log",
+      "sha256": "f8c66752f7d1f234b08dbc93e7c900f5c7f181953c4f83e9a17fdffa74d1b93c",
+      "result_lines": [
+        "CASE_OK 1920"
+      ]
+    },
+    {
+      "log": "v21-1440-final.log",
+      "sha256": "8af83ebee8f2ec8820df4b99ad85ecd4315f0ac579296d4b780cd892a51a2c81",
+      "result_lines": [
+        "CASE_OK 1440",
+        "V2_BROWSER_OK desktop/mobile: walking, bridge, ferry, tube, animated rig, touch pan/pinch/Inspect, rotation recovery"
+      ]
+    },
+    {
+      "log": "v21-844-final.log",
+      "sha256": "0724f2c102c56e4990aaab655abd8ffb3b7fe810b5d663f0ca8e868bf9816400",
+      "result_lines": [
+        "CASE_OK 844",
+        "V2_BROWSER_OK desktop/mobile: walking, bridge, ferry, tube, animated rig, touch pan/pinch/Inspect, rotation recovery"
+      ]
+    },
+    {
+      "log": "v21-667-final.log",
+      "sha256": "14be2bbcb18d5307333e2819fa2df01d0d116a5ff4fa548f0e424ee3aed66d93",
+      "result_lines": [
+        "CASE_OK 667",
+        "V2_BROWSER_OK desktop/mobile: walking, bridge, ferry, tube, animated rig, touch pan/pinch/Inspect, rotation recovery"
+      ]
+    },
+    {
+      "log": "restart-web-after.log",
+      "sha256": "0b273c754e633f502ba2f0d40c12dc4b0b5788b77020d476a3f1e8988619018b",
+      "result_lines": [
+        "STORY_RESTART_BROWSER_PASS 844 real menu touch/mouse callback; no runtime errors"
+      ]
+    },
+    {
+      "log": "landmarks-844.log",
+      "sha256": "010bb59ee2c3bb1eb9cba94659191d2fe5dcdbbb3e3046d3493a27890c6a37e9",
+      "result_lines": [
+        "STORY_LANDMARK_SELECTION_PASS 844 all 15 through real touch/mouse with approved HUD"
+      ]
+    },
+    {
+      "log": "landmarks-667-reframed.log",
+      "sha256": "3c61d8c5a7a8f636ebf6eddc1c21f55d91abde0aa3014f1188bbcf7da8bce78d",
+      "result_lines": [
+        "STORY_LANDMARK_SELECTION_PASS 667 all 15 through real touch/mouse with approved HUD"
+      ]
+    },
+    {
+      "log": "strict-desktop-check.log",
+      "sha256": "113e2077b746fb5e24445e88735cacc81e9ec85809f642626b43fcd9ea9ebb5f",
+      "result_lines": [
+        "STORY_BROWSER_PASS 1280 opening-office-wrong-answer"
+      ]
+    }
+  ]
+}
