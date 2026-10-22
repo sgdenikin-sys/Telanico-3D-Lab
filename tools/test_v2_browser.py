@@ -13,7 +13,8 @@ from playwright.sync_api import sync_playwright
 # A fixed sleep can combine the old portrait probe with the new landscape canvas.
 POINT = """async ([group, key]) => {
   let previous = '', stable = 0, previousFrame = -1;
-  const until = performance.now() + 60000;
+  const started = performance.now(), until = started + 120000;
+  const observations = []; let samples = 0;
   while (performance.now() < until) {
     const s = window.__TELANICO_STATE, r = document.querySelector('#canvas').getBoundingClientRect();
     const point = s?.[group]?.[key];
@@ -24,14 +25,18 @@ POINT = """async ([group, key]) => {
       stable = signature === previous ? stable + 1 : 0;
       previous = signature;
       previousFrame = s.frame;
+      samples++;
+      observations.push({frame:s.frame,stable,aspectReady,point,reset:s.ui?.Reset,viewport:s.viewport,css:[r.x,r.y,r.width,r.height]});
+      if(observations.length>8) observations.shift();
     }
     if (point && aspectReady && stable >= 3) return {
       x:r.x + point[0]/s.viewport[0]*r.width,
-      y:r.y + point[1]/s.viewport[1]*r.height, inspect:s.inspect
+      y:r.y + point[1]/s.viewport[1]*r.height, inspect:s.inspect,
+      stability:{elapsed_ms:Math.round(performance.now()-started),frames:samples,observations}
     };
     await new Promise(resolve => setTimeout(resolve, 150));
   }
-  throw new Error('Viewport/UI did not settle for ' + group + '/' + key);
+  throw new Error('Viewport/UI did not settle for ' + group + '/' + key + ': ' + JSON.stringify({samples,observations}));
 }"""
 
 
@@ -49,10 +54,10 @@ def exercise(browser, url, width, height, touch, output):
     def state():
         return page.evaluate('window.__TELANICO_STATE')
 
-    # At 1920px SwiftShader can acknowledge a queued wheel/button event only
-    # after 30s. The saved failure probe showed the expected zoom arriving just
-    # after that deadline. Keep the same assertions with a bounded CPU budget.
-    def wait(expression, *, arg=None, timeout=90000):
+    # Two-core software WebGL can publish completed travel just after 120s.
+    # The saved bridge failure probe already showed dock_e/IDLE and 19 minutes.
+    # Keep every arrival/cost assertion; allow bounded GPU acknowledgement time.
+    def wait(expression, *, arg=None, timeout=240000):
         page.wait_for_function(expression, arg=arg, polling=250, timeout=timeout)
 
     def click(group, key):
@@ -115,22 +120,22 @@ def exercise(browser, url, width, height, touch, output):
             wait("window.__TELANICO_STATE.state==='WALKING'")
             assert 'Walking' in state()['animation']
             shot('walking')
-            wait("window.__TELANICO_STATE.current==='finance' && window.__TELANICO_STATE.state==='IDLE'", timeout=90000)
+            wait("window.__TELANICO_STATE.current==='finance' && window.__TELANICO_STATE.state==='IDLE'", timeout=240000)
             assert state()['story_minutes'] > 0 and 'Idle' in state()['animation']
             page.evaluate('window.__TELANICO_COMMAND={rate:12}')
             click('ui', 'Enter')
             click('ui', 'Return')
             click('sites', 'dock_e')
             click('ui', 'Walk')
-            wait("window.__TELANICO_STATE.current==='dock_e' && window.__TELANICO_STATE.state==='IDLE'", timeout=120000)
+            wait("window.__TELANICO_STATE.current==='dock_e' && window.__TELANICO_STATE.state==='IDLE'", timeout=240000)
             before = state()['story_minutes']
             click('ui', 'Boat')
-            wait("window.__TELANICO_STATE.current==='dock_w' && window.__TELANICO_STATE.state==='IDLE'", timeout=120000)
+            wait("window.__TELANICO_STATE.current==='dock_w' && window.__TELANICO_STATE.state==='IDLE'", timeout=240000)
             assert state()['story_minutes']-before == 5 and state()['last_trip']['kind'] == 'boat'
             click('ui', 'Outside')
             click('sites', 'tube_w')
             click('ui', 'Tube')
-            wait("window.__TELANICO_STATE.current==='tube_e' && window.__TELANICO_STATE.state==='IDLE'", timeout=120000)
+            wait("window.__TELANICO_STATE.current==='tube_e' && window.__TELANICO_STATE.state==='IDLE'", timeout=240000)
             assert state()['last_trip']['kind'] == 'tube' and state()['last_trip']['minutes'] == 3
             click('ui', 'Outside')
         click('ui', 'Reset')

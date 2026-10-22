@@ -21,7 +21,7 @@ permissions:
 jobs:
   web:
     runs-on: ubuntu-24.04
-    timeout-minutes: 150
+    timeout-minutes: 180
     env:
       BUILD_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       BUILD_SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
