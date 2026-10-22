@@ -185,6 +185,7 @@ def main():
     parser.add_argument('directory', nargs='?', default='build/web')
     parser.add_argument('--url')
     parser.add_argument('--case',type=int,choices=[1920,1440,844,667],help='Reproduce one viewport without running unrelated cases')
+    parser.add_argument('--release-cases', action='store_true', help='Run release desktop 1440 and mobile 844 viewports; exclude costly diagnostic resolutions')
     args = parser.parse_args()
     output = Path('build/screenshots')
     output.mkdir(parents=True, exist_ok=True)
@@ -201,7 +202,7 @@ def main():
             browser = p.chromium.launch(executable_path=shutil.which('chromium'), headless=True,
                 args=['--no-sandbox', '--use-angle=swiftshader', '--enable-webgl', '--enable-unsafe-swiftshader'])
             for width, height, touch in [(1920, 1080, False), (1440, 900, False), (844, 390, True), (667, 375, True)]:
-                if args.case is None or width==args.case:
+                if (not args.release_cases or width in (1440,844)) and (args.case is None or width==args.case):
                     exercise(browser, url, width, height, touch, output)
             browser.close()
     finally:
