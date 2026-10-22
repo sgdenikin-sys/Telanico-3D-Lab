@@ -1,0 +1,93 @@
+name: V2.2 interim release candidate — one proven phone case
+
+on:
+  push:
+    branches: [recovery/v22-release-20261022]
+    paths:
+      - '.github/workflows/v22-interim-build.yml'
+      - 'godot/**'
+      - 'blender/**'
+      - 'tools/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v22-interim-build
+  cancel-in-progress: true
+
+jobs:
+  playable:
+    name: Build native + complete 844x390 browser story
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    env:
+      GODOT_VERSION: '4.6.3'
+      BUILD_SOURCE_SHA: ${{ github.sha }}
+      BUILD_SOURCE_BRANCH: recovery/v22-release-20261022
+    steps:
+      - name: Checkout exact recovery commit
+        uses: actions/checkout@v4
+      - name: Install headless Blender and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy ripgrep
+          blender --background --python-exit-code 1 --python-expr "import numpy; print(numpy.__version__)"
+      - name: Install matching Godot Web exporter
+        shell: bash
+        run: |
+          set -euo pipefail
+          release="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable"
+          curl -fL --retry 3 "$release/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -o "$RUNNER_TEMP/godot.zip"
+          curl -fL --retry 3 "$release/Godot_v${GODOT_VERSION}-stable_export_templates.tpz" -o "$RUNNER_TEMP/templates.tpz"
+          mkdir -p "$RUNNER_TEMP/godot-bin"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot-bin"
+          chmod +x "$RUNNER_TEMP/godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+          ln -s "$RUNNER_TEMP/godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$RUNNER_TEMP/godot-bin/godot"
+          echo "$RUNNER_TEMP/godot-bin" >> "$GITHUB_PATH"
+          template_dir="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$template_dir"
+          unzip -j -q "$RUNNER_TEMP/templates.tpz" 'templates/web_nothreads_release.zip' -d "$template_dir"
+      - name: Rebuild and validate V2.2 native session, assets and Web export
+        run: bash tools/build_web.sh
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare Chromium touch environment
+        run: |
+          python -m pip install playwright==1.58.0
+          python -m playwright install --with-deps chromium
+      - name: Verify complete proven 844x390 story, victory and restart
+        run: python tools/test_story_browser.py build/web --case 844
+      - name: Validate exact source and version
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, pathlib
+          p=pathlib.Path('build/web')
+          info=json.loads((p/'build.json').read_text())
+          assert info['commit']==os.environ['BUILD_SOURCE_SHA'],info
+          assert info['version']=='telanico-v2.2',info
+          for path in ('index.html','index.js','index.pck','index.wasm','audio_bridge.js'):
+              assert (p/path).is_file() and (p/path).stat().st_size>100,path
+          assert (p/'index.pck').read_bytes()[:4]==b'GDPC'
+          print('INTERIM_V22_EXPORT_PASS',info)
+          PY
+      - name: Upload validated interim Web release
+        uses: actions/upload-artifact@v4
+        with:
+          name: telanico-3d-web
+          path: build/web/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload regression evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: telanico-v22-interim-evidence
+          path: |
+            build/logs/
+            build/screenshots/
+          if-no-files-found: warn
+          retention-days: 14
