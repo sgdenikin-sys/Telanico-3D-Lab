@@ -21,7 +21,7 @@ func run():
         await process_frame
         game._layout()
         for button in game.ui_buttons.values():
-            assert(button.size.y>=44 and button.position.x>=0 and button.position.y>=0)
+            assert(button.size.y>=54 and button.size.x>=200 and button.position.x>=0 and button.position.y>=0)
         game.show_invoice()
         game._layout()
         for frame in range(3): await process_frame
@@ -39,6 +39,20 @@ func run():
             card=game.overlay.get_node("ModalCard")
             assert(card.size.x<screen.x*0.90 and card.size.y<screen.y*0.90,
                 "%s must be compact: %s" % [kind,card.size])
+            if kind=="assistant":
+                var anchor: Button = game.ui_buttons.Assistant
+                assert(is_equal_approx(card.position.x,anchor.position.x))
+                assert(is_equal_approx(card.position.y,anchor.position.y+anchor.size.y+8),"Assistant must sit directly below its HUD button")
+                assert(card.get_global_rect().end.y<=screen.y)
+                assert(game.assistant_slot.has_node("AssistantVideoFrame"))
+                var frame: TextureRect = game.assistant_slot.get_node("AssistantVideoFrame")
+                assert(frame.texture.resource_path.ends_with("hud_assistant_video_frame.png"))
+                assert(card.find_child("RabbitSpeechBubble",true,false)!=null)
+                var runner: ColorRect = anchor.get_node("HudPerimeterRunner")
+                assert(runner.mouse_filter==Control.MOUSE_FILTER_IGNORE)
+                var start_position := runner.position
+                await create_timer(0.15).timeout
+                assert(runner.visible and runner.position!=start_position,"Active Assistant perimeter must move")
             assert(game.world.navigation_locked,"Modal must block movement")
             assert(game.world.world.visible and game.world.actor.visible,
                 "Compact windows must retain the actual 3D world behind them")
@@ -98,6 +112,34 @@ func run():
     assert(game.session.compliance_warning_shown)
     game.close_modal()
     assert(not game.session.compliance_warning_pending and not game.penalty_feedback_pending)
+    assert(game.time_titles.history[-1].minutes==45)
+    # Every time source emits exactly the real charged delta; zero and terminal
+    # actions emit nothing. Rapid events queue instead of replacing one another.
+    game.time_titles.animation.kill()
+    game.time_titles.pending.clear()
+    game.time_titles.playing=false
+    game.time_titles.show_loss(3,"TUBE")
+    assert(game.time_titles.stage=="3")
+    await create_timer(0.5).timeout
+    assert(game.time_titles.stage=="3\nMINUTES")
+    await create_timer(0.3).timeout
+    assert(game.time_titles.stage=="3\nMINUTES\nLOST!")
+    game.time_titles.show_loss(5,"BOAT")
+    assert(game.time_titles.pending.size()==1)
+    await create_timer(1.0).timeout
+    assert(game.time_titles.stage=="5")
+    var isolated = load("res://scripts/story/story_session.gd").new()
+    var charges: Array = []
+    isolated.minutes_spent.connect(func(amount,reason): charges.append([amount,reason]))
+    isolated.charge_travel(0,"WALK")
+    isolated.charge_travel(3,"TUBE")
+    isolated.charge_travel(5,"BOAT WAIT")
+    assert(charges==[[3,"TUBE"],[5,"BOAT WAIT"]])
+    isolated.quest_minutes=119
+    isolated.charge_travel(9,"WALK")
+    assert(charges[-1]==[1,"WALK"] and isolated.quest_minutes==120)
+    isolated.charge_travel(5,"BOAT")
+    assert(charges.size()==3)
     game.session.quest_minutes = 119
     game.session.charge_travel(1,"walk")
     assert(game.modal_kind=="result" and game.session.quest_failed and game.world.navigation_locked)

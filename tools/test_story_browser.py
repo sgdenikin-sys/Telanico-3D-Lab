@@ -229,6 +229,11 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         wait('window.__RABBIT_EVENTS.some(e=>e.visible)',timeout=30000)
         wait('window.__RABBIT_EVENTS.some((e,i,a)=>!e.visible&&a.slice(0,i).some(x=>x.visible))',timeout=15000)
         assert story()['assistant_png'].endswith('.png')
+        assert story()['assistant_framed']
+        state=story();anchor=state['hud']['Assistant'];card=state['modal_rect']
+        assert abs(card[0]-anchor[0])<1 and abs(card[1]-anchor[1]-anchor[3]-8)<1, (anchor,card)
+        assert all(r[2]>=200 and r[3]>=54 for r in state['hud'].values())
+        shot('framed-assistant')
         print('CANONICAL_GIF_TO_PNG_PASS',width,page.evaluate('window.__RABBIT_EVENTS'),flush=True)
         click('CONTINUE')
         wait("!window.__TELANICO_STORY.locked")
@@ -266,6 +271,9 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
             return
         visit('operations',['ops_qty','ops_report','ops_full_documents'] if full else ['ops_estimate','ops_qty'])
         assert story()['invoice']['quantity']=='8,470 MT'
+        assert story()['time_titles']['history'], 'Actual travel/dialogue must publish time-loss feedback'
+        assert all(event['minutes']>0 for event in story()['time_titles']['history'])
+        print('TIME_LOSS_EVENTS_PASS',width,story()['time_titles']['history'],flush=True)
         if full:
             walk('tube_w');transfer()
             visit('contracts',['contract_entity','contract_terms','contract_fixing','contract_verified_precision'])

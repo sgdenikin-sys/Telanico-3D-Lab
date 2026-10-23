@@ -3,6 +3,8 @@ extends Node
 const Adapter = preload("res://scripts/story/world_story_adapter.gd")
 const Art = preload("res://scripts/story/canonical_presentation.gd")
 const Invoice = preload("res://scripts/telanico_invoice_document.gd")
+const Perimeter = preload("res://scripts/story/button_perimeter.gd")
+const TimeTitles = preload("res://scripts/story/time_loss_titles.gd")
 const Clock = preload("res://scripts/story/story_clock.gd")
 const IVORY := Color("#F4EAD5")
 const BRASS := Color("#B99B59")
@@ -49,6 +51,8 @@ var last_world_state := "IDLE"
 var dialogue_tween: Tween
 var invoice_touches: Dictionary = {}
 var invoice_scroll: ScrollContainer
+var time_titles
+var assistant_slot: Control
 var assistant_portrait: TextureRect
 var assistant_backdrop: ColorRect
 var assistant_gif_open := false
@@ -65,6 +69,7 @@ func _ready() -> void:
     adapter = Adapter.new()
     add_child(adapter)
     adapter.attach(world)
+    for button in world.top_buttons.values()+world.buttons.values(): Perimeter.attach(button)
     session = adapter.session
     session.dialogue_changed.connect(_dialogue)
     session.changed.connect(_refresh)
@@ -86,6 +91,9 @@ func _ready() -> void:
     overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     overlay.mouse_filter = Control.MOUSE_FILTER_STOP
     ui.add_child(overlay)
+    time_titles = TimeTitles.new()
+    ui.add_child(time_titles)
+    session.minutes_spent.connect(time_titles.show_loss)
     sfx = AudioStreamPlayer.new()
     add_child(sfx)
     if OS.has_feature("web"):
@@ -113,8 +121,8 @@ func _label(parent: Node, text: String, font_size := 20) -> Label:
 func _button(parent: Node, text: String, action: Callable) -> Button:
     var button := Button.new()
     button.text = text
-    button.custom_minimum_size = Vector2(100,44)
-    button.add_theme_font_size_override("font_size",18)
+    button.custom_minimum_size = Vector2(100,52)
+    button.add_theme_font_size_override("font_size",20)
     button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     var style := StyleBoxFlat.new()
     style.bg_color = Color("#112A3BEA")
@@ -124,6 +132,7 @@ func _button(parent: Node, text: String, action: Callable) -> Button:
     style.set_content_margin_all(8)
     button.add_theme_stylebox_override("normal",style)
     parent.add_child(button)
+    Perimeter.attach(button)
     button.pressed.connect(func():
         _sound("select")
         action.call())
@@ -153,6 +162,7 @@ func _art_button(parent: Node, filename: String, action: Callable) -> Button:
     button.add_theme_stylebox_override("normal",StyleBoxEmpty.new())
     var image := _texture(button,"res://assets/ui/HUD/RUNTIME/"+filename)
     image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    button.move_child(button.get_node("HudPerimeterRunner"),-1)
     return button
 
 func _build_hud() -> void:
@@ -177,6 +187,7 @@ func _hud_action(key: String) -> void:
 func _clear_modal(kind: String) -> VBoxContainer:
     _hide_assistant_gif()
     assistant_portrait = null
+    assistant_slot = null
     assistant_backdrop = null
     invoice_scroll = null
     for child in overlay.get_children():
@@ -200,7 +211,7 @@ func _clear_modal(kind: String) -> VBoxContainer:
     style.border_color = BRASS
     style.set_border_width_all(2)
     style.set_corner_radius_all(12)
-    style.set_content_margin_all(12)
+    style.set_content_margin_all(6 if kind=="assistant" else 12)
     panel.add_theme_stylebox_override("panel",style)
     overlay.add_child(panel)
     var frame := VBoxContainer.new()
@@ -280,7 +291,7 @@ func show_invoice() -> void:
     col.add_child(controls)
     _button(controls,"−",func(): invoice_document.set_manual_zoom(invoice_document.zoom_factor-0.25))
     _button(controls,"+",func(): invoice_document.set_manual_zoom(invoice_document.zoom_factor+0.25))
-    _art_button(controls,"button_close_invoice.png",close_modal).custom_minimum_size = Vector2(180,44)
+    _art_button(controls,"button_close_invoice.png",close_modal).custom_minimum_size = Vector2(196,52)
     var scroll := ScrollContainer.new()
     invoice_scroll = scroll
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
@@ -300,24 +311,62 @@ func show_assistant() -> void:
     if session.compliance_warning_pending: session.compliance_warning_shown = true
     var emotion: String = session.assistant_feedback_emotion if not session.assistant_feedback_emotion.is_empty() else "greeting"
     if session.compliance_warning_pending or session.quest_minutes>=90: emotion = "clock"
+    # Reuse the canonical framed/clipped portrait and ivory speech bubble.
     var row := HBoxContainer.new()
-    row.add_theme_constant_override("separation",14)
+    row.add_theme_constant_override("separation",6)
     col.add_child(row)
-    var slot := Control.new()
-    slot.custom_minimum_size = Vector2(132,132)
-    slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-    row.add_child(slot)
+    assistant_slot = Control.new()
+    assistant_slot.name = "AssistantMediaSlot"
+    assistant_slot.custom_minimum_size = Vector2(132,132)
+    assistant_slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+    row.add_child(assistant_slot)
     assistant_backdrop = ColorRect.new()
+    assistant_backdrop.name = "RabbitPortraitBackdrop"
     assistant_backdrop.color = Color("#120e0d")
     assistant_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    slot.add_child(assistant_backdrop)
+    assistant_slot.add_child(assistant_backdrop)
     assistant_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-    assistant_portrait = _texture(slot,"res://assets/ui/HUD/RUNTIME/rabbit_"+emotion+".png")
+    assistant_backdrop.offset_left = 9
+    assistant_backdrop.offset_top = 12
+    assistant_backdrop.offset_right = -9
+    assistant_backdrop.offset_bottom = -9
+    var clip := Control.new()
+    clip.name = "RabbitArtworkClip"
+    clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    clip.clip_contents = true
+    assistant_slot.add_child(clip)
+    clip.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    clip.offset_left = 15
+    clip.offset_top = 19
+    clip.offset_right = -15
+    clip.offset_bottom = -14
+    assistant_portrait = _texture(clip,"res://assets/ui/HUD/RUNTIME/rabbit_"+emotion+".png")
+    assistant_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
     assistant_portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    var frame := _texture(assistant_slot,"res://assets/ui/HUD/RUNTIME/hud_assistant_video_frame.png")
+    frame.name = "AssistantVideoFrame"
+    frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    var speech := PanelContainer.new()
+    speech.name = "RabbitSpeechBubble"
+    speech.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    var bubble := StyleBoxFlat.new()
+    bubble.bg_color = Color("#E6EBDDF7")
+    bubble.border_color = BRASS
+    bubble.set_border_width_all(1)
+    bubble.set_corner_radius_all(10)
+    bubble.set_content_margin_all(8)
+    speech.add_theme_stylebox_override("panel",bubble)
+    row.add_child(speech)
+    var advice_scroll := ScrollContainer.new()
+    advice_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    advice_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    advice_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    speech.add_child(advice_scroll)
     var text: String = session.assistant_recent_praise if not session.assistant_recent_praise.is_empty() else session._assistant_hint()
     if session.compliance_warning_pending:
         text = "OMG, Cooper! You offered a bribe?! Now we lost 45 minutes on mandatory compliance training! No invoice data was verified. We still have to finish the real checks before 14:00."
-    var message := _label(row,text,22)
+    var message := _label(advice_scroll,text,18)
+    message.add_theme_color_override("font_color",Color("#183047"))
     message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     _button(modal_footer,"CONTINUE",close_modal).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -356,7 +405,7 @@ func show_menu() -> void:
     col.add_child(music_row)
     var music_toggle := CheckButton.new()
     music_toggle.text = "MUSIC"
-    music_toggle.custom_minimum_size.y = 44
+    music_toggle.custom_minimum_size.y = 52
     music_toggle.button_pressed = music_on
     music_toggle.custom_minimum_size.x = 170
     music_row.add_child(music_toggle)
@@ -368,7 +417,7 @@ func show_menu() -> void:
     music_slider.max_value = 1
     music_slider.step = 0.01
     music_slider.value = music_volume
-    music_slider.custom_minimum_size.y = 44
+    music_slider.custom_minimum_size.y = 52
     music_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     music_row.add_child(music_slider)
     music_slider.value_changed.connect(func(value):
@@ -378,7 +427,7 @@ func show_menu() -> void:
     col.add_child(sfx_row)
     var sfx_toggle := CheckButton.new()
     sfx_toggle.text = "SOUND EFFECTS"
-    sfx_toggle.custom_minimum_size.y = 44
+    sfx_toggle.custom_minimum_size.y = 52
     sfx_toggle.button_pressed = sfx_on
     sfx_toggle.custom_minimum_size.x = 170
     sfx_row.add_child(sfx_toggle)
@@ -390,7 +439,7 @@ func show_menu() -> void:
     sfx_slider.max_value = 1
     sfx_slider.step = 0.01
     sfx_slider.value = sfx_volume
-    sfx_slider.custom_minimum_size.y = 44
+    sfx_slider.custom_minimum_size.y = 52
     sfx_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     sfx_row.add_child(sfx_slider)
     sfx_slider.value_changed.connect(func(value):
@@ -464,15 +513,15 @@ func _build_office() -> void:
     # Always-reachable scroll controls are essential on short landscape phones.
     # They operate the real ScrollContainer, never the dialogue/session state.
     var up := _button(actions,"^",_scroll_office.bind(-1))
-    up.custom_minimum_size = Vector2(46,44)
+    up.custom_minimum_size = Vector2(52,52)
     var down := _button(actions,"v",_scroll_office.bind(1))
-    down.custom_minimum_size = Vector2(46,44)
+    down.custom_minimum_size = Vector2(52,52)
     _art_button(actions,"hud_invoice_button.png",show_invoice).name = "OfficeInvoice"
     _art_button(actions,"button_assistant.png",show_assistant).name = "OfficeAssistant"
     var menu := _art_button(office,"button_menu.png",show_menu)
     menu.name = "OfficeMenu"
     menu.position = Vector2(8,8)
-    menu.size = Vector2(158,48)
+    menu.size = Vector2(208,60)
     office.visible = false
 
 func _scroll_office(direction: int) -> void:
@@ -561,7 +610,7 @@ func _modal_size(kind: String) -> Vector2:
     var vp := ui.size
     match kind:
         "menu": return Vector2(minf(520,vp.x*0.80),minf(260,vp.y*0.82))
-        "assistant": return Vector2(minf(640,vp.x*0.82),minf(250,vp.y*0.78))
+        "assistant": return Vector2(minf(520,vp.x*0.82),minf(230,vp.y-220))
         "invoice": return Vector2(minf(680,vp.x*0.82),vp.y*0.82)
     return vp-Vector2(36,24)
 
@@ -582,17 +631,30 @@ func _layout() -> void:
     ui.size = vp
     for i in range(ui_buttons.size()):
         var button: Button = ui_buttons.values()[i]
-        button.position = Vector2(safe.x+8,safe.y+12+i*52)
-        button.size = Vector2(158,48)
+        var short := vp.y<500
+        button.position = Vector2(safe.x+8,safe.y+12+i*(60 if short else 72))
+        button.size = Vector2(200 if short else 228,54 if short else 66)
     clock_face.position = Vector2(vp.x-safe.z-280,safe.y+8)
     clock_face.size = Vector2(48,48)
     clock_label.position = Vector2(vp.x-safe.z-226,safe.y+18)
     clock_label.size = Vector2(216,32)
+    if time_titles != null: time_titles.layout(vp)
     if overlay!=null:
         var card = overlay.get_node_or_null("ModalCard")
         if card!=null:
-            card.size = _modal_size(modal_kind)
+            if modal_kind=="assistant":
+                var anchor: Button = ui_buttons.Assistant
+                var top := anchor.position.y+anchor.size.y+8
+                var height := minf(230,vp.y-safe.w-top-12)
+                # Reserve footer and margins; shrink only the portrait on short phones.
+                var side := minf(132,maxf(66,height-76))
+                assistant_slot.custom_minimum_size = Vector2(side,side)
+                card.size = Vector2(minf(520,(vp.x-safe.x-safe.z)*0.82),height)
+            else:
+                card.size = _modal_size(modal_kind)
             card.position = Vector2(safe.x,safe.y)+(vp-Vector2(safe.x+safe.z,safe.y+safe.w)-card.size)*0.5
+            if modal_kind=="assistant":
+                card.position = Vector2(ui_buttons.Assistant.position.x,ui_buttons.Assistant.position.y+ui_buttons.Assistant.size.y+8)
             if invoice_scroll != null:
                 invoice_scroll.custom_minimum_size.y = maxf(96,card.size.y-130)
             if invoice_document != null:
@@ -606,13 +668,14 @@ func _layout() -> void:
     if dialogue_card!=null:
         for button_name in ["OfficeLeave","OfficeInvoice","OfficeAssistant"]:
             var button = dialogue_card.find_child(button_name,true,false)
-            if button!=null: button.custom_minimum_size=Vector2(78 if vp.x<760 else 100,44)
+            if button!=null: button.custom_minimum_size=Vector2(78 if vp.x<760 else 100,52)
         dialogue_card.position = Vector2(vp.x*0.44,safe.y+62)
         dialogue_card.size = Vector2(vp.x*0.56-safe.z-12,vp.y-safe.y-safe.w-74)
 
 func _process(delta: float) -> void:
     if adapter==null: return
     _sync_assistant_gif(delta)
+    for key in ui_buttons: ui_buttons[key].set_meta("story_active",overlay.visible and modal_kind==key.to_lower())
     # Hide the old debug status. Camera controls and the original world gestures remain.
     world.status.visible = false
     if world.state!=last_world_state:
@@ -644,6 +707,8 @@ func _publish_probe() -> void:
     var card = overlay.get_node_or_null("ModalCard")
     var card_rect: Rect2 = card.get_global_rect() if card != null else Rect2()
     var data := {"frame":Engine.get_process_frames(),"viewport":[get_viewport().get_visible_rect().size.x,get_viewport().get_visible_rect().size.y],"controls":controls,"screen":screen,"modal":modal_kind,"office":session.current_landmark,"time":session.quest_minutes,"invoice":session.invoice_state(),"failed":session.quest_failed,"won":session.invoice_issued,"choices":choices,"line_index":line_index,"lines":lines.size(),"locked":world.navigation_locked,"hud":rects,"modal_rect":[card_rect.position.x,card_rect.position.y,card_rect.size.x,card_rect.size.y],"walk_speed":world.speed,"courier_scale":world.visual.scale.x,"clock_art":clock_face.texture.resource_path,"assistant_png":assistant_portrait.texture.resource_path if is_instance_valid(assistant_portrait) else ""}
+    data["time_titles"] = {"stage":time_titles.stage,"history":time_titles.history}
+    data["assistant_framed"] = is_instance_valid(assistant_slot) and assistant_slot.has_node("AssistantVideoFrame")
     data["world_visible"] = world.world.visible
     data["courier_visible"] = world.actor.visible
     JavaScriptBridge.eval("window.__TELANICO_STORY="+JSON.stringify(data))

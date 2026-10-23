@@ -2,6 +2,7 @@ extends RefCounted
 ## Canonical story rules extracted from VorGun main.gd at fc5e861.
 ## No scene, renderer, input or viewport ownership. See docs/v2-2/MIGRATION.md.
 signal changed
+signal minutes_spent(amount: int, reason: String)
 signal dialogue_changed(destination: String, text: String, choices: Array)
 signal office_left(landmark: String, entrance: Vector3)
 signal result_reached(won: bool)
@@ -913,14 +914,16 @@ func _show_dialogue(destination: String, text: String, choices: Array) -> void:
 func _spend_dialogue_minute() -> void:
     _spend_minutes(1, "CONVERSATION")
 
-func _spend_minutes(amount: int, _reason: String) -> void:
+func _spend_minutes(amount: int, reason: String) -> void:
     if amount <= 0 or quest_failed or invoice_issued:
         return
+    var before := quest_minutes
     if QUEST_START_MINUTES + quest_minutes + amount >= QUEST_DEADLINE_MINUTES:
         quest_minutes = QUEST_DEADLINE_MINUTES - QUEST_START_MINUTES
         quest_failed = true
     else:
         quest_minutes += amount
+    if quest_minutes>before: minutes_spent.emit(quest_minutes-before,reason)
     changed.emit()
     if quest_failed:
         result_reached.emit(false)
