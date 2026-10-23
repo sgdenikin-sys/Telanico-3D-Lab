@@ -58,3 +58,31 @@ tubes, canonical offices, victory at 13:54 and clean Restart. No runtime or HTTP
 errors; one music start. Native time-loss beats/queue and actual charged deltas
 also passed. Evidence: evidence/assistant-titles-*. Runtime snapshot staged with
 24 SHA-256 hashes; deployment status is recorded in assistant-titles-results.json.
+
+The initial sandboxed editor invocation logged a denied optional TCP listener.
+Import, native gates and export succeeded; the final network-permitted export
+was clean. This is separate from game script/runtime or HTTP-resource errors.
+
+## Verified publication
+
+Live: https://sgdenikin-sys.github.io/Telanico-3D-Web/
+Successful Pages + live validation run:
+https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/39999967009
+Public commit fab68f5de9126978c9e5ab451474178f66a6c262; game source remains
+94f261e22937086fb12a64e4d08cb03fa5fb60f2. Every one of the 24 deployed hashes
+matched the tested snapshot. Actual desktop 1280x720 and touch 844x390 opening,
+framed Assistant anchor and larger HUD passed using runner Google Chrome 155.
+Screenshots/result.json: live-validation artifact 12521517397. Logs preserved in
+evidence/assistant-titles-live-pass.log. Physical iPhone Safari remains untested.
+
+The superseded run 39998517595 spent almost eight minutes downloading Ubuntu
+dependencies/fonts. It subsequently passed both live opening checks, but its
+overall result was cancelled by the newer push. The existing workflow now reuses
+preinstalled Chrome, bounds setup to four minutes and makes no apt/browser
+downloads. Final setup took six seconds. Runtime bytes did not change.
+
+Direct Lab run 39998408773 again failed before runner assignment (0 steps);
+publication used the existing owner-authorized Web/main carrier. No new branches,
+PRs, pipeline or gameplay features were added. README/workflow instructions now
+distinguish that actual working path from the still-unverified Lab-only migration.
+Previous public commit 5bca5f8 remains available for rollback without rewriting Git.

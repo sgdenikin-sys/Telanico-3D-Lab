@@ -25,6 +25,26 @@
   "physical_iphone_safari": "not tested",
   "browser_log_sha256": "b6e623899c34115145b43f7ed3a339e9197be8b0269021e939a3ad1843cc37ad",
   "deployment": {
-    "status": "pending"
+    "status": "success; actual HTTPS file hashes and desktop/touch WebGL opening verified",
+    "run_id": 39999967009,
+    "job_id": 120573297902,
+    "public_commit": "fab68f5de9126978c9e5ab451474178f66a6c262",
+    "runtime_publication_commit": "8417639f51936af038ef73dce6d2324ab3935d8e",
+    "private_snapshot_commit": "6d23bd752a971c947581dac3dae9d5d18f4dd252",
+    "url": "https://sgdenikin-sys.github.io/Telanico-3D-Web/",
+    "live_evidence_artifact_id": 12521517397,
+    "pages_artifact_id": 12520089824,
+    "previous_public_commit": "5bca5f8a1c0599a7c3f775afbb2333fd59d1a915",
+    "superseded_run": {
+      "id": 39998517595,
+      "conclusion": "cancelled by newer publication; hashes and both opening checks passed before cancellation",
+      "setup_delay": "Ubuntu dependency/font downloads from 17:52 to 18:00; removed redundant browser/dependency install"
+    },
+    "direct_private_run": {
+      "id": 39998408773,
+      "conclusion": "failure before runner",
+      "runner_id": 0,
+      "steps": []
+    }
   }
 }

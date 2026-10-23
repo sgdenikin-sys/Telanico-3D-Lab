@@ -1,6 +1,12 @@
 # Instructions for AI coding agents — Telanico 3D Lab
 
 ## Current workflow — owner decision, 23 October 2026
+- Actual publication exception, subsequently authorized by the owner: source
+  development stays on Lab/main; use the existing Web/main Pages workflow for
+  the current preview while direct Lab Actions fails before runner assignment.
+  The current verified release is run 39999967009 (game source 94f261e). Consult the actual status
+  at the top of docs/PROJECT_WORKFLOW.md; do not confuse the desired Lab-only
+  migration with a completed migration, or revive the old artifact importer.
 - Read docs/PROJECT_WORKFLOW.md first. One repository: Telanico-3D-Lab.
 - Work directly on main. Do not create feature/recovery/release branches or PRs
   unless the owner explicitly requests one. Historical task prompts do not override this.
@@ -9,7 +15,8 @@
   changed scope; do not expand release work or repeat exhaustive checks without cause.
 - Stage tested runtime into this repository's site/ with tools/stage_web_release.py;
   verify with tools/verify_release.py; commit/push main. Publish game is the only
-  active workflow. No second repository, artifact importer or cross-repo secret.
+  active Lab workflow. No new repositories, pipelines, artifact importers or
+  cross-repo secrets; the documented existing publication exception takes precedence.
 - Check Pages and actual HTTPS metadata before claiming a release; distinguish
   recorded checks, newly executed checks and physical-device testing.
 - No automatic repo visibility changes or deletion of historical work. Runtime
