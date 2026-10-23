@@ -23,7 +23,7 @@ func _sync() -> void:
     world.navigation_locked = modal_active or not session.current_landmark.is_empty() or session.quest_failed or session.invoice_issued
     # Input locking and visibility are independent: compact windows keep the
     # campus visible. Only opaque opening/interior/result layers hide 3D meshes.
-    var obscured := (modal_active and modal_obscures_world) or not session.current_landmark.is_empty() or session.quest_failed or session.invoice_issued
+    var obscured: bool = (modal_active and modal_obscures_world) or not session.current_landmark.is_empty() or session.quest_failed or session.invoice_issued
     world.world.visible = not obscured
     if world.state == "IDLE": world.actor.visible = not obscured
     if world.navigation_locked:
