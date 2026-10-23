@@ -11,6 +11,7 @@ RUNTIME = {
     'index.audio.worklet.js', 'index.audio.position.worklet.js',
     'index.icon.png', 'index.apple-touch-icon.png', 'index.png',
     'build.json', 'LICENSES.html', 'audio_bridge.js', 'media/music.mp3',
+    'rabbit_animation_bridge.js', 'media/rabbit.gif',
 }
 RUNTIME.update('media/' + name + '.wav' for name in (
     'bird_takeoff_soft_purr', 'cooper_chponk', 'door_close_soft',

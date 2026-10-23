@@ -47,6 +47,8 @@ rg -q 'TELANICO_TEST_OK' build/logs/viewer.log
   2>&1 | tee build/logs/export.log
 mkdir -p build/web/media
 cp godot/web/audio_bridge.js build/web/audio_bridge.js
+cp godot/web/rabbit_animation_bridge.js build/web/rabbit_animation_bridge.js
+cp godot/web/rabbit.gif build/web/media/rabbit.gif
 cp godot/assets/audio/music/original_theme.mp3 build/web/media/music.mp3
 cp godot/assets/audio/sfx/*.wav build/web/media/
 python3 tools/stamp_build.py

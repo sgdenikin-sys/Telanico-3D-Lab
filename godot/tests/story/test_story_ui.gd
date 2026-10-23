@@ -9,6 +9,11 @@ func run():
     game.start_game()
     game.close_modal()
     game.close_modal()
+    assert(not game.ui_buttons.has("Diorama"))
+    assert(is_equal_approx(game.world.speed,9.375))
+    assert(game.world.visual.scale.is_equal_approx(Vector3.ONE*3))
+    assert(absf(game.clock_face.texture.get_size().aspect()-1.0)<0.1,
+        "Clock must use the round canonical dial, not a wide HUD plate")
     for screen in [Vector2i(844,390),Vector2i(667,375),Vector2i(1920,1080)]:
         # Exercise the same CSS-space layout used by the Web presenter.
         root.content_scale_size = screen
@@ -18,8 +23,27 @@ func run():
         for button in game.ui_buttons.values():
             assert(button.size.y>=44 and button.position.x>=0 and button.position.y>=0)
         game.show_invoice()
+        game._layout()
+        for frame in range(3): await process_frame
+        var card: Control = game.overlay.get_node("ModalCard")
+        assert(card.size.x<screen.x*0.90 and card.size.y<screen.y*0.90,
+            "Invoice must leave the world visible: %s" % card.size)
         assert(game.invoice_document.applied_state.cargo=="High Quality Energy (Physical Oil)")
         game.close_modal()
+        for kind in ["assistant","menu"]:
+            if kind=="assistant":game.show_assistant()
+            else:game.show_menu()
+            game._layout()
+            for frame in range(3):await process_frame
+            card=game.overlay.get_node("ModalCard")
+            assert(card.size.x<screen.x*0.90 and card.size.y<screen.y*0.90,
+                "%s must be compact: %s" % [kind,card.size])
+            assert(game.world.navigation_locked,"Modal must block movement")
+            for button in game.modal_footer.get_children():
+                var bounds: Rect2 = button.get_global_rect()
+                assert(bounds.position.x>=0 and bounds.end.x<=screen.x and bounds.end.y<=screen.y)
+                assert(bounds.size.y>=44)
+            game.close_modal()
         assert(game.adapter.enter("settlements"))
         for frame in range(3): await process_frame
         game.dialogue_tween.kill()

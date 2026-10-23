@@ -18,6 +18,13 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         **({'user_agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'} if touch else {}))
     context.tracing.start(screenshots=False,snapshots=True,sources=False)
     page = context.new_page()
+    page.add_init_script("""window.__RABBIT_EVENTS=[];
+      setInterval(()=>{const h=document.querySelector('#vorgun-rabbit-animation');
+        if(!h)return;const i=h.querySelector('img');const visible=h.style.display==='block'&&!!i?.naturalWidth;
+        const previous=window.__RABBIT_EVENTS.at(-1);
+        if(!previous||previous.visible!==visible){const r=h.getBoundingClientRect();
+          window.__RABBIT_EVENTS.push({visible,time:performance.now(),rect:[r.x,r.y,r.width,r.height]});}
+      },50);""")
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.on('response',lambda r:errors.append(f'HTTP {r.status}: {r.url}') if r.status>=400 else None)
@@ -29,6 +36,11 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
     def wait(expr,arg=None,timeout=120000):
         page.wait_for_function(expr,arg=arg,timeout=timeout,polling=250)
     def story(): return page.evaluate('window.__TELANICO_STORY')
+    def compact_modal():
+        state=story()
+        rect=state['modal_rect'];vp=state['viewport']
+        assert rect[2]<vp[0]*0.90 and rect[3]<vp[1]*0.90, (state['modal'],rect,vp)
+        assert rect[0]>=0 and rect[1]>=0 and rect[0]+rect[2]<=vp[0] and rect[1]+rect[3]<=vp[1],rect
     def click(key, scroll_attempts=0):
         print('STORY_ACTION',width,key,'scroll_attempt',scroll_attempts,flush=True)
         if scroll_attempts >= 10:
@@ -199,6 +211,10 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         shot('characters')
         click('SELECT COOPER')
         wait("window.__TELANICO_STORY.modal==='invoice'")
+        compact_modal()
+        assert 'Diorama' not in story()['hud']
+        assert story()['walk_speed']==9.375 and story()['courier_scale']==3
+        assert story()['clock_art'].endswith('clock_analog_blue.png')
         assert story()['time']==0 and story()['invoice']['cargo']=='High Quality Energy (Physical Oil)'
         assert story()['invoice']['quantity']=='' and story()['invoice']['total']==''
         for control in story()['controls']:
@@ -207,6 +223,11 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         shot('initial-invoice')
         click('button_close_invoice.png')
         wait("window.__TELANICO_STORY.modal==='assistant'")
+        compact_modal()
+        wait('window.__RABBIT_EVENTS.some(e=>e.visible)',timeout=30000)
+        wait('window.__RABBIT_EVENTS.some((e,i,a)=>!e.visible&&a.slice(0,i).some(x=>x.visible))',timeout=15000)
+        assert story()['assistant_png'].endswith('.png')
+        print('CANONICAL_GIF_TO_PNG_PASS',width,page.evaluate('window.__RABBIT_EVENTS'),flush=True)
         click('CONTINUE')
         wait("!window.__TELANICO_STORY.locked")
         page.evaluate('window.__TELANICO_COMMAND={rate:12}')

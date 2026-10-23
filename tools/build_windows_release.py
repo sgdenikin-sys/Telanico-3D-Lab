@@ -74,6 +74,8 @@ def main():
     shutil.copy2(ROOT / 'godot/web/audio_bridge.js', web / 'audio_bridge.js')
     media = web / 'media'
     media.mkdir()
+    shutil.copy2(ROOT / 'godot/web/rabbit_animation_bridge.js', web / 'rabbit_animation_bridge.js')
+    shutil.copy2(ROOT / 'godot/web/rabbit.gif', media / 'rabbit.gif')
     shutil.copy2(ROOT / 'godot/assets/audio/music/original_theme.mp3', media / 'music.mp3')
     for sample in (ROOT / 'godot/assets/audio/sfx').glob('*.wav'):
         shutil.copy2(sample, media / sample.name)

@@ -48,6 +48,11 @@ var elapsed := 0.0
 var last_world_state := "IDLE"
 var dialogue_tween: Tween
 var invoice_touches: Dictionary = {}
+var invoice_scroll: ScrollContainer
+var assistant_portrait: TextureRect
+var assistant_backdrop: ColorRect
+var assistant_gif_open := false
+var assistant_gif_elapsed := 0.0
 
 func _ready() -> void:
     world = load("res://scenes/main.tscn").instantiate()
@@ -155,7 +160,7 @@ func _build_hud() -> void:
     hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
     ui.add_child(hud)
-    for item in [["Invoice","hud_invoice_button.png"],["Menu","button_menu.png"],["Diorama","button_diorama_view.png"],["Assistant","button_assistant.png"]]:
+    for item in [["Invoice","hud_invoice_button.png"],["Menu","button_menu.png"],["Assistant","button_assistant.png"]]:
         var key: String = item[0]
         ui_buttons[key] = _art_button(hud,item[1],_hud_action.bind(key))
     clock_face = Clock.new()
@@ -168,10 +173,12 @@ func _hud_action(key: String) -> void:
         "Invoice": show_invoice()
         "Assistant": show_assistant()
         "Menu": show_menu()
-        "Diorama":
-            if not adapter.modal_active and session.current_landmark.is_empty(): world.reset_view()
 
 func _clear_modal(kind: String) -> VBoxContainer:
+    _hide_assistant_gif()
+    assistant_portrait = null
+    assistant_backdrop = null
+    invoice_scroll = null
     for child in overlay.get_children():
         # Keep bound invoice tweens inside the tree until queued destruction.
         # Removing first makes Web's tween scheduler call can_process off-tree.
@@ -183,7 +190,7 @@ func _clear_modal(kind: String) -> VBoxContainer:
     overlay.visible = true
     adapter.set_modal(true)
     var shade := ColorRect.new()
-    shade.color = Color("#07131CF5")
+    shade.color = Color("#07131C55") if kind in ["menu","assistant","invoice"] else Color("#07131CF5")
     shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     overlay.add_child(shade)
     var panel := PanelContainer.new()
@@ -251,6 +258,7 @@ func start_game() -> void:
 func close_modal() -> void:
     if modal_kind in ["intro","characters","result"]: return
     invoice_touches.clear()
+    _hide_assistant_gif()
     var closed := modal_kind
     overlay.visible = false
     modal_kind = ""
@@ -274,7 +282,9 @@ func show_invoice() -> void:
     _button(controls,"+",func(): invoice_document.set_manual_zoom(invoice_document.zoom_factor+0.25))
     _art_button(controls,"button_close_invoice.png",close_modal).custom_minimum_size = Vector2(180,44)
     var scroll := ScrollContainer.new()
-    scroll.custom_minimum_size.y = maxf(180,ui.size.y-160)
+    invoice_scroll = scroll
+    scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    scroll.custom_minimum_size.y = maxf(96,_modal_size("invoice").y-130)
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     col.add_child(scroll)
     var center := CenterContainer.new()
@@ -283,29 +293,73 @@ func show_invoice() -> void:
     invoice_document = Invoice.new()
     center.add_child(invoice_document)
     invoice_document.apply_state(session.invoice_state())
-    invoice_document.set_fit_width(minf(620,ui.size.x-72))
+    invoice_document.set_fit_width(minf(620,_modal_size("invoice").x-60))
 
 func show_assistant() -> void:
     var col := _clear_modal("assistant")
     if session.compliance_warning_pending: session.compliance_warning_shown = true
     var emotion: String = session.assistant_feedback_emotion if not session.assistant_feedback_emotion.is_empty() else "greeting"
     if session.compliance_warning_pending or session.quest_minutes>=90: emotion = "clock"
-    var portrait := _texture(col,"res://assets/ui/HUD/RUNTIME/rabbit_"+emotion+".png")
-    portrait.custom_minimum_size = Vector2(132,132)
+    var row := HBoxContainer.new()
+    row.add_theme_constant_override("separation",14)
+    col.add_child(row)
+    var slot := Control.new()
+    slot.custom_minimum_size = Vector2(132,132)
+    slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+    row.add_child(slot)
+    assistant_backdrop = ColorRect.new()
+    assistant_backdrop.color = Color("#120e0d")
+    assistant_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    slot.add_child(assistant_backdrop)
+    assistant_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    assistant_portrait = _texture(slot,"res://assets/ui/HUD/RUNTIME/rabbit_"+emotion+".png")
+    assistant_portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     var text: String = session.assistant_recent_praise if not session.assistant_recent_praise.is_empty() else session._assistant_hint()
     if session.compliance_warning_pending:
         text = "OMG, Cooper! You offered a bribe?! Now we lost 45 minutes on mandatory compliance training! No invoice data was verified. We still have to finish the real checks before 14:00."
-    _label(col,text,22)
-    _button(col,"CONTINUE",close_modal)
+    var message := _label(row,text,22)
+    message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    _button(modal_footer,"CONTINUE",close_modal).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+func _hide_assistant_gif() -> void:
+    if OS.has_feature("web") and assistant_gif_open:
+        JavaScriptBridge.eval("window.VorGunRabbit?.hide()")
+    assistant_gif_open = false
+    assistant_gif_elapsed = 0.0
+
+func _sync_assistant_gif(delta: float) -> void:
+    if not OS.has_feature("web"): return
+    if modal_kind != "assistant" or not overlay.visible or not is_instance_valid(assistant_portrait):
+        _hide_assistant_gif()
+        return
+    assistant_gif_elapsed += delta
+    if assistant_gif_open and assistant_gif_elapsed < 0.18: return
+    assistant_gif_elapsed = 0.0
+    var bridge = JavaScriptBridge.get_interface("VorGunRabbit")
+    if bridge == null: return # The canonical PNG stays visible if GIF is unavailable.
+    var rect := assistant_portrait.get_global_rect()
+    var vp := get_viewport().get_visible_rect().size
+    if rect.size.x <= 1 or rect.size.y <= 1: return
+    if assistant_gif_open:
+        bridge.sync(rect.position.x,rect.position.y,rect.size.x,rect.size.y,vp.x,vp.y)
+    else:
+        bridge.show(rect.position.x,rect.position.y,rect.size.x,rect.size.y,vp.x,vp.y)
+        assistant_gif_open = true
+    var matte: String = str(bridge.getBackgroundColor())
+    if matte.begins_with("#") and matte.length() == 7:
+        assistant_backdrop.color = Color(matte)
 
 func show_menu() -> void:
     var col := _clear_modal("menu")
     _label(col,"MENU",26)
+    var music_row := HBoxContainer.new()
+    col.add_child(music_row)
     var music_toggle := CheckButton.new()
     music_toggle.text = "MUSIC"
     music_toggle.custom_minimum_size.y = 44
     music_toggle.button_pressed = music_on
-    col.add_child(music_toggle)
+    music_toggle.custom_minimum_size.x = 170
+    music_row.add_child(music_toggle)
     music_toggle.toggled.connect(func(value):
         music_on = value
         _audio_settings())
@@ -315,15 +369,19 @@ func show_menu() -> void:
     music_slider.step = 0.01
     music_slider.value = music_volume
     music_slider.custom_minimum_size.y = 44
-    col.add_child(music_slider)
+    music_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    music_row.add_child(music_slider)
     music_slider.value_changed.connect(func(value):
         music_volume = value
         _audio_settings())
+    var sfx_row := HBoxContainer.new()
+    col.add_child(sfx_row)
     var sfx_toggle := CheckButton.new()
     sfx_toggle.text = "SOUND EFFECTS"
     sfx_toggle.custom_minimum_size.y = 44
     sfx_toggle.button_pressed = sfx_on
-    col.add_child(sfx_toggle)
+    sfx_toggle.custom_minimum_size.x = 170
+    sfx_row.add_child(sfx_toggle)
     sfx_toggle.toggled.connect(func(value):
         sfx_on = value
         _audio_settings())
@@ -333,7 +391,8 @@ func show_menu() -> void:
     sfx_slider.step = 0.01
     sfx_slider.value = sfx_volume
     sfx_slider.custom_minimum_size.y = 44
-    col.add_child(sfx_slider)
+    sfx_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    sfx_row.add_child(sfx_slider)
     sfx_slider.value_changed.connect(func(value):
         sfx_volume = value
         _audio_settings())
@@ -498,6 +557,14 @@ func restart() -> void:
     # Keep the pressed Control in-tree until GUI/touch dispatch has returned.
     get_tree().call_deferred("reload_current_scene")
 
+func _modal_size(kind: String) -> Vector2:
+    var vp := ui.size
+    match kind:
+        "menu": return Vector2(minf(520,vp.x*0.80),minf(260,vp.y*0.82))
+        "assistant": return Vector2(minf(640,vp.x*0.82),minf(250,vp.y*0.78))
+        "invoice": return Vector2(minf(680,vp.x*0.82),vp.y*0.82)
+    return vp-Vector2(36,24)
+
 func _layout() -> void:
     if ui==null or not is_inside_tree(): return
     var vp := get_viewport().get_visible_rect().size
@@ -513,7 +580,7 @@ func _layout() -> void:
     ui.scale = Vector2(units,units)
     vp /= units
     ui.size = vp
-    for i in range(4):
+    for i in range(ui_buttons.size()):
         var button: Button = ui_buttons.values()[i]
         button.position = Vector2(safe.x+8,safe.y+12+i*52)
         button.size = Vector2(158,48)
@@ -524,8 +591,12 @@ func _layout() -> void:
     if overlay!=null:
         var card = overlay.get_node_or_null("ModalCard")
         if card!=null:
-            card.position = Vector2(safe.x+18,safe.y+12)
-            card.size = Vector2(vp.x-safe.x-safe.z-36,vp.y-safe.y-safe.w-24)
+            card.size = _modal_size(modal_kind)
+            card.position = Vector2(safe.x,safe.y)+(vp-Vector2(safe.x+safe.z,safe.y+safe.w)-card.size)*0.5
+            if invoice_scroll != null:
+                invoice_scroll.custom_minimum_size.y = maxf(96,card.size.y-130)
+            if invoice_document != null:
+                invoice_document.set_fit_width(minf(620,card.size.x-60))
     if office_npc!=null and office_npc.texture!=null:
         var composition: Dictionary = Art.new()._office_composition_rects(vp,session.active_dialogue_destination,office_npc.texture.get_size(),office_desk.texture.get_size())
         office_npc.position = composition.npc.position-Vector2(vp.x*0.25,0)
@@ -541,6 +612,7 @@ func _layout() -> void:
 
 func _process(delta: float) -> void:
     if adapter==null: return
+    _sync_assistant_gif(delta)
     # Hide the old debug status. Camera controls and the original world gestures remain.
     world.status.visible = false
     if world.state!=last_world_state:
@@ -569,7 +641,9 @@ func _publish_probe() -> void:
                     if parent.clip_contents: clip = clip.intersection(parent.get_global_rect())
                     parent = parent.get_parent()
                 controls.append({"clip":[clip.position.x,clip.position.y,clip.size.x,clip.size.y],"text":button.text,"action":button.get_meta("dialogue_action",""),"art":button.get_meta("artwork",""),"rect":[rect.position.x,rect.position.y,rect.size.x,rect.size.y],"disabled":button.disabled})
-    var data := {"frame":Engine.get_process_frames(),"viewport":[get_viewport().get_visible_rect().size.x,get_viewport().get_visible_rect().size.y],"controls":controls,"screen":screen,"modal":modal_kind,"office":session.current_landmark,"time":session.quest_minutes,"invoice":session.invoice_state(),"failed":session.quest_failed,"won":session.invoice_issued,"choices":choices,"line_index":line_index,"lines":lines.size(),"locked":world.navigation_locked,"hud":rects}
+    var card = overlay.get_node_or_null("ModalCard")
+    var card_rect: Rect2 = card.get_global_rect() if card != null else Rect2()
+    var data := {"frame":Engine.get_process_frames(),"viewport":[get_viewport().get_visible_rect().size.x,get_viewport().get_visible_rect().size.y],"controls":controls,"screen":screen,"modal":modal_kind,"office":session.current_landmark,"time":session.quest_minutes,"invoice":session.invoice_state(),"failed":session.quest_failed,"won":session.invoice_issued,"choices":choices,"line_index":line_index,"lines":lines.size(),"locked":world.navigation_locked,"hud":rects,"modal_rect":[card_rect.position.x,card_rect.position.y,card_rect.size.x,card_rect.size.y],"walk_speed":world.speed,"courier_scale":world.visual.scale.x,"clock_art":clock_face.texture.resource_path,"assistant_png":assistant_portrait.texture.resource_path if is_instance_valid(assistant_portrait) else ""}
     JavaScriptBridge.eval("window.__TELANICO_STORY="+JSON.stringify(data))
 
 func _input(event: InputEvent) -> void:
@@ -589,6 +663,7 @@ func _input(event: InputEvent) -> void:
             invoice_touches[event.index] = event.position
 
 func _exit_tree() -> void:
+    _hide_assistant_gif()
     # Release native mixer playback before scene reload/shutdown. Web retains its
     # canonical browser singleton, so restarting never creates a second track.
     if music!=null:

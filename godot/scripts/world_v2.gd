@@ -29,7 +29,7 @@ var walk_points: Array = []
 var walk_index := 0
 var walk_target := ""
 var pending_transport := ""
-var speed := 3.125
+var speed := 9.375 # Three times faster real-time walking; story costs stay in the route graph.
 var simulation_rate := 1.0
 var elapsed_real := 0.0
 var trip_real := 0.0
@@ -155,6 +155,7 @@ func _make_actor() -> void:
     actor.position = graph.nodes[current_node]+Vector3(0,0.2,0)
     visual = load("res://assets/generated/courier.glb").instantiate()
     actor.add_child(visual)
+    visual.scale *= 3.0 # Presentation only: preserve the tested collision/navigation footprint.
     animation = visual.find_child("*", true, false) as AnimationPlayer
     var players := visual.find_children("*", "AnimationPlayer", true, false)
     if not players.is_empty(): animation = players[0]

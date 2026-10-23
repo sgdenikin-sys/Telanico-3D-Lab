@@ -27,6 +27,7 @@ def main():
         'index.html', 'index.js', 'index.wasm', 'index.pck', 'index.audio.worklet.js',
         'index.audio.position.worklet.js', 'index.icon.png', 'index.apple-touch-icon.png',
         'index.png', 'build.json', 'LICENSES.html', 'audio_bridge.js', 'media/music.mp3',
+        'rabbit_animation_bridge.js', 'media/rabbit.gif',
     }
     allowed.update('media/' + p.name for p in (ROOT / 'godot/assets/audio/sfx').glob('*.wav'))
     actual = {p.relative_to(web).as_posix() for p in web.rglob('*') if p.is_file()}

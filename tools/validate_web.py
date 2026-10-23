@@ -50,6 +50,11 @@ def validate(directory: Path):
         for sample in ['cooper_chponk.wav', 'door_open_office.wav', 'tube_water_flush.wav', 'bird_takeoff_soft_purr.wav', 'door_close_soft.wav', 'select_woosh.wav', 'menu_flip.wav']:
             if not (directory/'media'/sample).is_file():
                 raise ValueError('Missing canonical browser audio: '+sample)
+    if 'rabbit_animation_bridge.js' in html:
+        import hashlib
+        for name, expected in {'media/rabbit.gif': 'd0893612f0e68d73c89793fb22beb0483b7dd073f473700229d4caa602541964', 'rabbit_animation_bridge.js': '794290e46cc62fb4ef4a44be14e446d206ccb7beb7677b64e3e153d8223d60d0'}.items():
+            if hashlib.sha256((directory / name).read_bytes()).hexdigest() != expected:
+                raise ValueError('Canonical VorGun animation missing/changed: ' + name)
     for name, size in config['fileSizes'].items():
         if (directory / name).stat().st_size != size:
             raise ValueError(f'Runtime size mismatch: {name}')

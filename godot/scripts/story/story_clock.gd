@@ -1,7 +1,7 @@
 extends TextureRect
 var minutes := 720
 func _ready() -> void:
-    texture = load("res://assets/ui/HUD/RUNTIME/hud_clock_blank.png")
+    texture = load("res://assets/ui/HUD/RUNTIME/clock_analog_blue.png")
     expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
     mouse_filter = Control.MOUSE_FILTER_IGNORE
