@@ -1,0 +1,9 @@
+2026-10-23T16:07:30.9141215Z Artifact download URL: https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/39984085390/artifacts/12515076051
+2026-10-23T16:07:57.9722783Z ##[group]Run python3 tools/verify_live.py "$LIVE_URL"
+2026-10-23T16:07:57.9723533Z [36;1mpython3 tools/verify_live.py "$LIVE_URL"[0m
+2026-10-23T16:07:57.9810926Z   LIVE_URL: https://sgdenikin-sys.github.io/Telanico-3D-Web/
+2026-10-23T16:07:59.7602478Z LIVE_RUNTIME_HASHES_PASS c9ef4ebf526aa77345538e8efd32ea5326d06bdc
+2026-10-23T16:08:50.2198719Z LIVE_OPENING_PASS 1280
+2026-10-23T16:09:37.2048203Z LIVE_OPENING_PASS 844
+2026-10-23T16:09:46.6337047Z Artifact download URL: https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/39984085390/artifacts/12513779798
+2026-10-23T16:09:46.8666456Z Evaluated environment url: https://sgdenikin-sys.github.io/Telanico-3D-Web/

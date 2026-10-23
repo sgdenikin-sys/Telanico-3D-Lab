@@ -32,12 +32,14 @@
   "animation_source": "VorGun fc5e861f0c899ae5925625ff2191a41d7043d957; 63 GIF frames; canonical 4100/115/17000 ms bridge unchanged",
   "browser_log_sha256": "479dd1b818ee4948cd273c2c16e0f90cc4d37fef253f4e7f0314c6d7c860b77f",
   "deployment": {
-    "status": "blocked before runner assignment",
-    "run_id": 39962200326,
-    "job_id": 120442735377,
-    "runner_id": 0,
-    "steps": [],
-    "runtime_commit": "90bdfccac93e56db785482905807abd680fd23cd",
-    "old_public_repository_modified": false
+    "status": "success; public HTTPS/runtime hashes and desktop/touch opening verified",
+    "run_id": 39984085390,
+    "job_id": 120518617966,
+    "publication_commit": "5bca5f8a1c0599a7c3f775afbb2333fd59d1a915",
+    "source_commit": "c9ef4ebf526aa77345538e8efd32ea5326d06bdc",
+    "url": "https://sgdenikin-sys.github.io/Telanico-3D-Web/",
+    "evidence_artifact_id": 12513779798,
+    "previous_public_commit": "b096474845e9c0eeca4245086c97c592b43df304",
+    "private_ci": "39962200326 failed before runner assignment; not used for publication"
   }
 }
