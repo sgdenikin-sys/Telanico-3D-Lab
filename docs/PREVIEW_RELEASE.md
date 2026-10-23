@@ -1,13 +1,42 @@
-# Automatic preview release
+# Current preview publication procedure
 
-The private feature branch `codex/telanico-overworld-v2` is the sole allowlisted source for V2. No private main merge is required. Open PR updates run **Godot Web playable**: pinned asset fetch → headless Blender → geometry/provenance validation → Godot import → real physics gameplay tests → single-thread Compatibility Web export → desktop/touch browser tests. Only after all gates pass is `telanico-3d-web` uploaded. Source models and evidence remain separate private artifacts (14-day retention).
+Read [PROJECT_WORKFLOW.md](PROJECT_WORKFLOW.md) first. Last verified release:
+V2.2, product source `2c94a3f687e7174340360885e069336b73cf599e`, public runtime
+commit `b096474845e9c0eeca4245086c97c592b43df304`.
 
-The public repository `sgdenikin-sys/Telanico-3D-Web` runs **Import tested 3D Web build** on importer changes and every ten minutes. It uses the already configured `TELANICO_LAB_ARTIFACT_TOKEN` with private Actions read access. No new secret, copied run number, manual ZIP or owner workflow restart is needed. Scheduling can be delayed by GitHub.
+Live: https://sgdenikin-sys.github.io/Telanico-3D-Web/
+Successful Pages run: https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/39908236241
+Evidence: [release record](v2-2/RELEASE_2026-10-23.md) and
+[machine-readable results](v2-2/evidence/live-release-20261023.json).
 
-The importer chooses the newest run of the exact named workflow/branch. Pending, failed, missing, expired or older-than-14-day candidates fail visibly and preserve the previous live snapshot. It verifies source head SHA, branch and run ID against `build.json`, single-threaded config, WASM/PCK signatures and an exact public runtime filename allowlist before replacing anything. An identical commit is an idempotent no-op. Source Python, Blender files, vendor archives, credentials and test logs are never copied to the public repository. The PCK intentionally contains the playable compiled project and licensed runtime assets.
+## Existing chain
 
-A changed verified snapshot is committed to public main and deployed using the existing GitHub Pages environment. The publishing job then checks the **actual HTTPS** `build.json` and starts the hosted WebGL game at desktop and phone-landscape dimensions, requiring the expected commit and all 15 destinations. A green artifact import without hosted runtime verification is not considered release proof. The public HUD displays the short source SHA; `build.json` exposes the full identifier.
+1. Select and record the exact candidate from private Telanico-3D-Lab.
+2. Reuse a verified matching runtime or build with the existing local/cloud tools.
+   Run relevant native and browser checks against that exact output.
+3. Publish only the allowlisted runtime snapshot to existing Telanico-3D-Web.
+   Preserve source metadata, runtime hashes and V2.1 rollback history.
+4. Existing `.github/workflows/pages.yml` verifies the runtime and deploys site/.
+5. Check actual HTTPS build.json and real desktop/touch gameplay. CI success
+   alone is not live verification. Physical iPhone Safari is a separate check.
 
-Live URL: https://sgdenikin-sys.github.io/Telanico-3D-Web/
+For V2.2 the private Actions jobs were refused before runner assignment with a
+payment/spending annotation. The Windows workstation built and tested the runtime;
+public metadata honestly says source_run_id=local. The public Pages Action ran
+successfully. No account billing or security settings were changed.
 
-To download editable models on iPhone: open the private PR → Checks → successful Godot Web playable run → Artifacts → `telanico-web-source-models`. Save its ZIP to Files. `telanico-3d-web` is the downloadable browser bundle; the live URL is the convenient way to play without locally serving WASM. Artifacts require a signed-in GitHub account with private repository access.
+The pinned Godot 4.6.3 editor/template, Playwright packages and browser are already
+cached locally under ignored build/. Do not download them again as normal release
+preparation. Bootstrap is recovery/setup support only. See the workflow inventory.
+
+## Private artifact importer and rollback
+
+The original design was private successful Actions artifact → public importer →
+Pages. The public importer is currently **manual-only**, not scheduled every ten
+minutes. Its retained V2.1 pin is a rollback source. Dispatching it now restores
+V2.1; it is not the current V2.2 publication path.
+
+When private Actions is usable again, inspect the actual workflow/allowlist/pin
+before using that importer for another version. Never report a failed private run
+as successful, invent an artifact run ID, or publish private source to move builds
+onto public runners. Model/source artifacts and test logs stay private.

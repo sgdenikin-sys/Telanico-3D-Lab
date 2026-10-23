@@ -1,8 +1,17 @@
 # Telanico 3D Lab
 
-An isolated experiment for replacing **only the world map** of Telanico Trading with a soft, tabletop-style 3D diorama. The established indoor story quests, dialogue, invoice UI, and game rules are deliberately out of scope.
+An isolated experiment replacing the world map of Telanico Trading with a soft, tabletop-style 3D diorama while preserving the original gameplay. V2.2 integrates the original offices, story, invoice, assistant, audio and game rules. The production game repository is separate.
 
-## Current overworld blockout
+## Current release and working process
+
+V2.2 is live at https://sgdenikin-sys.github.io/Telanico-3D-Web/ .
+Start with [project workflow and continuity rules](docs/PROJECT_WORKFLOW.md),
+[current publication procedure](docs/PREVIEW_RELEASE.md), and the
+[verified release record](docs/v2-2/RELEASE_2026-10-23.md).
+The sections below retain earlier setup/blockout history; do not use them to
+infer the current release, installed tools or deployment availability.
+
+## Historical overworld blockout
 
 The current preview uses the first two-island overworld: settlements/support in
 the west, operations/documents in the east, a central ferry channel, one north
