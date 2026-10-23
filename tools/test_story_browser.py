@@ -231,7 +231,8 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         assert story()['assistant_png'].endswith('.png')
         assert story()['assistant_framed']
         state=story();anchor=state['hud']['Assistant'];card=state['modal_rect']
-        assert abs(card[0]-anchor[0])<1 and abs(card[1]-anchor[1]-anchor[3]-8)<1, (anchor,card)
+        units=state['viewport'][0]/width  # HUD probe is CSS-local; modal rect is Godot-global.
+        assert abs(card[0]-anchor[0]*units)<1 and abs(card[1]-(anchor[1]+anchor[3]+8)*units)<1, (anchor,card)
         assert all(r[2]>=200 and r[3]>=54 for r in state['hud'].values())
         shot('framed-assistant')
         print('CANONICAL_GIF_TO_PNG_PASS',width,page.evaluate('window.__RABBIT_EVENTS'),flush=True)
