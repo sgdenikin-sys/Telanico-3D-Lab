@@ -1,0 +1,61 @@
+name: Publish game
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'tools/release.json'
+      - 'tools/verify_release.py'
+      - 'tools/validate_web.py'
+      - '.github/workflows/publish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify tested runtime and release hashes
+        run: python3 tools/verify_release.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Verify published HTTPS build metadata
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python3 - <<'PY'
+          import json, os, time, urllib.request, urllib.error
+          from pathlib import Path
+          expected = json.loads(Path('site/build.json').read_text())
+          url = os.environ['SITE_URL'].rstrip('/') + '/build.json?verify=' + expected['commit']
+          actual = None
+          for attempt in range(12):
+              try:
+                  with urllib.request.urlopen(url, timeout=20) as response:
+                      actual = json.load(response)
+                  if actual == expected:
+                      break
+              except (urllib.error.URLError, json.JSONDecodeError):
+                  pass
+              time.sleep(5)
+          assert actual == expected, (actual, expected)
+          print('LIVE_BUILD_METADATA_VERIFIED', expected['version'], expected['commit'], url)
+          PY

@@ -1,13 +1,19 @@
 # Instructions for AI coding agents — Telanico 3D Lab
 
-## Continuity and releases — read first
-- Read [PROJECT_WORKFLOW.md](docs/PROJECT_WORKFLOW.md) before reporting status or preparing a release. Check the remote candidate and live metadata; one local checkout is not the whole project.
-- Reuse the existing local machine, cloud workspace, installed tools, cached exporters, credentials and publication repository. Inventory them before proposing downloads, setup, new access or infrastructure. A missing PATH command is not evidence that a tool is absent.
-- For an authorized interim release, freeze new features, fix the concrete blocker, and defer only confirmed broken components when the user permits it. Do not expand the release into a redesign or a new exhaustive test matrix.
-- Diagnose the actual failed layer. If Actions executes zero steps, inspect check annotations using existing access before retrying or changing game code. A connector limitation is not proof that the account lacks access.
-- Reuse build → runtime snapshot → existing GitHub Pages → live verification. Prefer an already usable build environment; do not rebuild the toolchain by default. Preserve honest provenance and rollback.
-- Release authorization includes its routine necessary steps; do not ask conversational permission again. Obey mandatory runtime approvals, reuse applicable approved command rules, and distinguish sandbox prompts from missing credentials. Never bypass a denial or weaken security controls.
-- Keep workflow/release records current. Completion requires the expected version at the public HTTPS URL plus desktop/phone-layout checks. State physical-device testing limits.
+## Current workflow — owner decision, 23 October 2026
+- Read docs/PROJECT_WORKFLOW.md first. One repository: Telanico-3D-Lab.
+- Work directly on main. Do not create feature/recovery/release branches or PRs
+  unless the owner explicitly requests one. Historical task prompts do not override this.
+- Preserve existing work. Never reset, force-push or overwrite independent changes.
+- Reuse installed Blender/Godot, caches and existing access. Build and test the
+  changed scope; do not expand release work or repeat exhaustive checks without cause.
+- Stage tested runtime into this repository's site/ with tools/stage_web_release.py;
+  verify with tools/verify_release.py; commit/push main. Publish game is the only
+  active workflow. No second repository, artifact importer or cross-repo secret.
+- Check Pages and actual HTTPS metadata before claiming a release; distinguish
+  recorded checks, newly executed checks and physical-device testing.
+- No automatic repo visibility changes or deletion of historical work. Runtime
+  approvals still apply; a connector limitation is not absence of account permission.
 
 ## Scope and priorities
 You are working in the isolated Telanico-3D-Lab experiment. Never edit the existing production Telanico Trading game or its repositories as part of tasks here unless the user explicitly requests that.
@@ -33,9 +39,8 @@ The objective is a 3D **overworld map** preserving the established original indo
 - Do not commit generated binary artifacts by default. For hand-edited source models, propose Git LFS first.
 
 ## Workflow
-1. Inspect README, scripts and project state.
-2. Create a feature branch for changes beyond the initial scaffold.
-3. Prefer small changes that produce testable .blend + .glb outputs.
-4. Run Blender in background if available, validate .glb, check the Godot scene if Godot is installed.
-5. If a tool is unavailable, say precisely what was not tested and provide an exact command for a compatible environment.
-6. Open a PR with summary, testing evidence and visual samples where practical.
+1. Inspect main, README and docs/PROJECT_WORKFLOW.md; preserve uncommitted work.
+2. Implement the requested change directly on main.
+3. Run relevant existing Blender/Godot/browser checks when the change needs them.
+4. Stage and verify the tested Web snapshot in site/ when publishing.
+5. Commit/push main and verify Pages/HTTPS. No routine branch or PR ceremony.

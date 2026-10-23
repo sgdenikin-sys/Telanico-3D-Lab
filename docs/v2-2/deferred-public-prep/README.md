@@ -1,3 +1,7 @@
+# HISTORICAL — superseded by main → Pages
+
+Do not apply these cross-repository importer preparations. See docs/PROJECT_WORKFLOW.md.
+
 # Unapplied public importer preparation — recovery refresh 2026-10-22
 
 These files are private review material, not active workflows or a deployment.

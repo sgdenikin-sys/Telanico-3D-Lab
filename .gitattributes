@@ -2,3 +2,6 @@
 *.blend binary
 *.glb binary
 *.fbx binary
+
+# Preserve tested runtime bytes across Windows and Linux.
+site/** -text

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#1f2b38">
+<title>Telanico 3D Lab</title>
+<style>
+:root {
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --page-background: #1f2b38;
+  color-scheme: dark;
+  background: var(--page-background);
+}
+html, body { margin: 0; padding: 0; border: 0; width: 100%; height: 100%; overflow: hidden;
+  overscroll-behavior: none; background: var(--page-background); }
+body { position: fixed; inset: 0; }
+#game { position: fixed; inset: 0; width: 100%; height: 100vh; height: 100dvh;
+  background: var(--page-background); }
+#canvas { display: block; width: 100%; height: 100%; border: 0; outline: none; touch-action: none;
+  background: var(--page-background); }
+#status { position: absolute; inset: 0; display: grid; place-content: center; gap: 12px;
+  background: var(--page-background); color: #eee9db; font: 16px system-ui, sans-serif; text-align: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+</style>
+<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+<style>html,body{overscroll-behavior:none;touch-action:none}#canvas{touch-action:none}</style>
+<meta name="telanico-build" content="2c94a3f687e7174340360885e069336b73cf599e"></head>
+<body>
+<div id="game">
+  <canvas id="canvas" tabindex="0" aria-label="Telanico tabletop diorama"></canvas>
+  <div id="status" role="status"><span id="notice">Loading Telanico…</span><progress id="progress"></progress></div>
+</div>
+<noscript>JavaScript is required to view the diorama.</noscript>
+<script src="index.js"></script>
+<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":0,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":57922652,"index.wasm":37700666},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const canvas = document.getElementById('canvas');
+const game = document.getElementById('game');
+// The backing buffer and CSS rectangle use the same aspect ratio. Godot then
+// recalculates its camera projection; the rendered image is never stretched.
+function resizeGame() {
+  const viewport = window.visualViewport;
+  // Fixed elements already follow Safari's visual viewport. Adding its
+  // offsetLeft again can expose a strip along the page edge. Keep the game
+  // anchored at zero and reserve safe-area padding for HUD content only.
+  const width = document.documentElement.clientWidth;
+  const height = viewport ? viewport.height : window.innerHeight;
+  game.style.width = width + 'px';
+  game.style.height = height + 'px';
+
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  const bufferWidth = Math.round(width * ratio);
+  const bufferHeight = Math.round(height * ratio);
+  if (canvas.width !== bufferWidth) canvas.width = bufferWidth;
+  if (canvas.height !== bufferHeight) canvas.height = bufferHeight;
+}
+window.addEventListener('resize', resizeGame);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', resizeGame);
+  window.visualViewport.addEventListener('scroll', resizeGame);
+}
+resizeGame();
+// CSS safe-area values also drive the Godot HUD in its own logical coordinates.
+// Called on resize and periodically for Safari toolbar/inset changes.
+window.telanicoViewport = () => {
+  const style = getComputedStyle(document.documentElement);
+  const rect = canvas.getBoundingClientRect();
+  const inset = side => parseFloat(style.getPropertyValue('--safe-' + side)) || 0;
+  return JSON.stringify({width: rect.width, height: rect.height,
+    left: inset('left'), right: inset('right'), top: inset('top'), bottom: inset('bottom')});
+};
+const engine = new Engine(GODOT_CONFIG);
+const notice = document.getElementById('notice');
+const progress = document.getElementById('progress');
+const missing = Engine.getMissingFeatures({threads: GODOT_THREADS_ENABLED});
+if (missing.length) {
+  notice.textContent = 'This browser needs: ' + missing.join(', ');
+} else {
+  engine.startGame({canvas, onProgress: (current, total) => {
+    if (total > 0) { progress.max = total; progress.value = current; }
+  }}).then(() => {
+    document.getElementById('status').remove();
+    canvas.focus();
+  }).catch(error => {
+    notice.textContent = 'Unable to load Telanico: ' + error.message;
+    console.error(error);
+  });
+}
+</script>
+<script src="audio_bridge.js?rev=2c94a3f687e7174340360885e069336b73cf599e"></script>
+</body>
+</html>
+

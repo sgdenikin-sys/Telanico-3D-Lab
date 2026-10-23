@@ -1,8 +1,10 @@
-"""Stage only a fully checked local Web snapshot in the existing public checkout."""
+"""Stage only a fully checked local Web snapshot in the main repository site/ directory."""
 import hashlib
 import json
 from pathlib import Path
 import shutil
+import platform
+import time
 
 from validate_web import validate
 
@@ -11,8 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     web = ROOT / 'build/web'
-    public = ROOT / 'build/public-web'
-    assert (public / '.git').is_dir(), 'Clone the existing publication repository first'
+    public = ROOT
     validate(web)
     meta = json.loads((web / 'build.json').read_text())
     assert meta['version'] == 'telanico-v2.2' and meta['source_run_id'] == 'local', meta
@@ -31,8 +32,8 @@ def main():
     actual = {p.relative_to(web).as_posix() for p in web.rglob('*') if p.is_file()}
     assert actual <= allowed, ('Unexpected public files', actual - allowed)
     assert allowed <= actual, ('Missing runtime files', allowed - actual)
-    rollback = ROOT / 'build/rollback-v21'
-    if not rollback.exists():
+    rollback = ROOT / 'build/site-history' / str(time.time_ns())
+    if (public / 'site').exists():
         shutil.copytree(public / 'site', rollback)
     for name in sorted(actual):
         target = public / 'site' / name
@@ -41,14 +42,13 @@ def main():
     (public / 'site/.nojekyll').touch()
     manifest = {
         'version': meta['version'], 'source_commit': meta['commit'],
-        'build_environment': 'Windows workstation; official Godot 4.6.3; Blender 5.2.2',
-        'private_actions_status': 'Not started: GitHub account payment/spending restriction',
+        'build_environment': platform.platform(),
         'validation': {'native_release_gates': 'passed', 'desktop_browser': 'passed',
                        'phone_full_story': 'passed', 'physical_iphone_safari': 'not tested'},
         'disabled_features': [],
         'files': {name: hashlib.sha256((web / name).read_bytes()).hexdigest() for name in sorted(actual)},
     }
-    (public / 'tools/release-v22.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+    (public / 'tools/release.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
     print('V22_PUBLIC_SNAPSHOT_STAGED', meta['commit'], len(actual), 'runtime files')
 
 

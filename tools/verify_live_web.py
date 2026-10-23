@@ -10,7 +10,7 @@ from test_story_browser import exercise
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--url', default='https://sgdenikin-sys.github.io/Telanico-3D-Web/')
+    parser.add_argument('--url', default='https://sgdenikin-sys.github.io/Telanico-3D-Lab/')
     parser.add_argument('--commit', required=True)
     args = parser.parse_args()
     url = args.url.rstrip('/') + '/'
