@@ -76,7 +76,8 @@ func run():
             var rect: Rect2 = button.get_global_rect()
             assert(rect.position.x>=0 and rect.end.x<=screen.x and rect.end.y<=screen.y,
                 "Office footer must remain reachable at %s: %s" % [screen,rect])
-            assert(rect.size.y>=44)
+            assert(rect.size.y>=52)
+            if button_name!="OfficeLeave": assert(rect.size.x>=156,"Office artwork must not shrink to tiny icons")
         var arrows=game.dialogue_card.find_children("*","Button",true,false)
         for button in arrows:
             if button.text in ["^","v"]:

@@ -507,17 +507,27 @@ func _build_office() -> void:
     dialogue_label.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
     choice_list = VBoxContainer.new()
     col.add_child(choice_list)
+    var footer := VBoxContainer.new()
+    frame.add_child(footer)
     var actions := HBoxContainer.new()
-    frame.add_child(actions)
-    _button(actions,"LEAVE OFFICE",func(): session.leave_office()).name = "OfficeLeave"
+    footer.add_child(actions)
+    var leave := _button(actions,"LEAVE OFFICE",func(): session.leave_office())
+    leave.name = "OfficeLeave"
+    leave.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     # Always-reachable scroll controls are essential on short landscape phones.
     # They operate the real ScrollContainer, never the dialogue/session state.
     var up := _button(actions,"^",_scroll_office.bind(-1))
     up.custom_minimum_size = Vector2(52,52)
     var down := _button(actions,"v",_scroll_office.bind(1))
     down.custom_minimum_size = Vector2(52,52)
-    _art_button(actions,"hud_invoice_button.png",show_invoice).name = "OfficeInvoice"
-    _art_button(actions,"button_assistant.png",show_assistant).name = "OfficeAssistant"
+    var office_tools := HBoxContainer.new()
+    footer.add_child(office_tools)
+    var invoice_button := _art_button(office_tools,"hud_invoice_button.png",show_invoice)
+    invoice_button.name = "OfficeInvoice"
+    invoice_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    var assistant_button := _art_button(office_tools,"button_assistant.png",show_assistant)
+    assistant_button.name = "OfficeAssistant"
+    assistant_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     var menu := _art_button(office,"button_menu.png",show_menu)
     menu.name = "OfficeMenu"
     menu.position = Vector2(8,8)
@@ -668,7 +678,8 @@ func _layout() -> void:
     if dialogue_card!=null:
         for button_name in ["OfficeLeave","OfficeInvoice","OfficeAssistant"]:
             var button = dialogue_card.find_child(button_name,true,false)
-            if button!=null: button.custom_minimum_size=Vector2(78 if vp.x<760 else 100,52)
+            if button!=null:
+                button.custom_minimum_size=Vector2((156 if vp.x<760 else 180) if button_name!="OfficeLeave" else 130,56)
         dialogue_card.position = Vector2(vp.x*0.44,safe.y+62)
         dialogue_card.size = Vector2(vp.x*0.56-safe.z-12,vp.y-safe.y-safe.w-74)
 
@@ -676,6 +687,11 @@ func _process(delta: float) -> void:
     if adapter==null: return
     _sync_assistant_gif(delta)
     for key in ui_buttons: ui_buttons[key].set_meta("story_active",overlay.visible and modal_kind==key.to_lower())
+    for pair in [["OfficeMenu","menu"],["OfficeInvoice","invoice"],["OfficeAssistant","assistant"]]:
+        var office_button = office.find_child(pair[0],true,false)
+        if office_button!=null: office_button.set_meta("story_active",overlay.visible and modal_kind==pair[1])
+    for pair in [["Explore",world.inspect_mode],["Follow",world.follow_character],["Names",world.show_names]]:
+        world.top_buttons[pair[0]].set_meta("story_active",pair[1])
     # Hide the old debug status. Camera controls and the original world gestures remain.
     world.status.visible = false
     if world.state!=last_world_state:
