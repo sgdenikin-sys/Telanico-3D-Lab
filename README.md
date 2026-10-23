@@ -15,7 +15,8 @@
 - `.github/workflows/publish.yml` — единственный активный workflow.
 
 Целевой URL: https://sgdenikin-sys.github.io/Telanico-3D-Lab/
-Первое включение требует публичного репозитория и Pages → GitHub Actions.
+В Pages должен быть выбран Source → GitHub Actions. Приватный репозиторий
+тоже подходит, если тариф аккаунта разрешает Pages; менять видимость необязательно.
 До подтверждённого запуска нового URL предыдущая V2.2 остаётся доступна по
 https://sgdenikin-sys.github.io/Telanico-3D-Web/ .
 
