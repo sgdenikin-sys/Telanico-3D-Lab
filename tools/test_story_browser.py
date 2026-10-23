@@ -41,6 +41,8 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         rect=state['modal_rect'];vp=state['viewport']
         assert rect[2]<vp[0]*0.90 and rect[3]<vp[1]*0.90, (state['modal'],rect,vp)
         assert rect[0]>=0 and rect[1]>=0 and rect[0]+rect[2]<=vp[0] and rect[1]+rect[3]<=vp[1],rect
+        if not state['office']:
+            assert state['world_visible'] and state['courier_visible'],state
     def click(key, scroll_attempts=0):
         print('STORY_ACTION',width,key,'scroll_attempt',scroll_attempts,flush=True)
         if scroll_attempts >= 10:

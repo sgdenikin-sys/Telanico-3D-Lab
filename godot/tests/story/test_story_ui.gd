@@ -28,6 +28,7 @@ func run():
         var card: Control = game.overlay.get_node("ModalCard")
         assert(card.size.x<screen.x*0.90 and card.size.y<screen.y*0.90,
             "Invoice must leave the world visible: %s" % card.size)
+        assert(game.world.world.visible and game.world.actor.visible)
         assert(game.invoice_document.applied_state.cargo=="High Quality Energy (Physical Oil)")
         game.close_modal()
         for kind in ["assistant","menu"]:
@@ -39,6 +40,8 @@ func run():
             assert(card.size.x<screen.x*0.90 and card.size.y<screen.y*0.90,
                 "%s must be compact: %s" % [kind,card.size])
             assert(game.world.navigation_locked,"Modal must block movement")
+            assert(game.world.world.visible and game.world.actor.visible,
+                "Compact windows must retain the actual 3D world behind them")
             for button in game.modal_footer.get_children():
                 var bounds: Rect2 = button.get_global_rect()
                 assert(bounds.position.x>=0 and bounds.end.x<=screen.x and bounds.end.y<=screen.y)

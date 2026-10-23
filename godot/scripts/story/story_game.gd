@@ -188,7 +188,7 @@ func _clear_modal(kind: String) -> VBoxContainer:
     invoice_document = null
     modal_kind = kind
     overlay.visible = true
-    adapter.set_modal(true)
+    adapter.set_modal(true,kind not in ["menu","assistant","invoice"])
     var shade := ColorRect.new()
     shade.color = Color("#07131C55") if kind in ["menu","assistant","invoice"] else Color("#07131CF5")
     shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -644,6 +644,8 @@ func _publish_probe() -> void:
     var card = overlay.get_node_or_null("ModalCard")
     var card_rect: Rect2 = card.get_global_rect() if card != null else Rect2()
     var data := {"frame":Engine.get_process_frames(),"viewport":[get_viewport().get_visible_rect().size.x,get_viewport().get_visible_rect().size.y],"controls":controls,"screen":screen,"modal":modal_kind,"office":session.current_landmark,"time":session.quest_minutes,"invoice":session.invoice_state(),"failed":session.quest_failed,"won":session.invoice_issued,"choices":choices,"line_index":line_index,"lines":lines.size(),"locked":world.navigation_locked,"hud":rects,"modal_rect":[card_rect.position.x,card_rect.position.y,card_rect.size.x,card_rect.size.y],"walk_speed":world.speed,"courier_scale":world.visual.scale.x,"clock_art":clock_face.texture.resource_path,"assistant_png":assistant_portrait.texture.resource_path if is_instance_valid(assistant_portrait) else ""}
+    data["world_visible"] = world.world.visible
+    data["courier_visible"] = world.actor.visible
     JavaScriptBridge.eval("window.__TELANICO_STORY="+JSON.stringify(data))
 
 func _input(event: InputEvent) -> void:

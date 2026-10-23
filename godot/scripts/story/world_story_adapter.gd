@@ -6,6 +6,7 @@ signal office_returned(landmark: String)
 var session = Session.new()
 var world
 var modal_active := false
+var modal_obscures_world := true
 
 func attach(target) -> void:
     assert(world == null, "Adapter must only attach once")
@@ -20,17 +21,19 @@ func _sync() -> void:
     if world == null: return
     world.story_minutes = session.quest_minutes
     world.navigation_locked = modal_active or not session.current_landmark.is_empty() or session.quest_failed or session.invoice_issued
-    # Full-screen story layers obscure the diorama. Avoid rendering its meshes
-    # behind them on iPhone/CPU WebGL; collisions and authored geometry persist.
-    world.world.visible = not world.navigation_locked
-    if world.state == "IDLE": world.actor.visible = not world.navigation_locked
+    # Input locking and visibility are independent: compact windows keep the
+    # campus visible. Only opaque opening/interior/result layers hide 3D meshes.
+    var obscured := (modal_active and modal_obscures_world) or not session.current_landmark.is_empty() or session.quest_failed or session.invoice_issued
+    world.world.visible = not obscured
+    if world.state == "IDLE": world.actor.visible = not obscured
     if world.navigation_locked:
         world.touches.clear()
         world.pointer_dragged = false
         world.touch_multi = false
 
-func set_modal(active: bool) -> void:
+func set_modal(active: bool, obscures_world := true) -> void:
     modal_active = active
+    modal_obscures_world = obscures_world
     _sync()
 
 func enter(landmark: String) -> bool:
