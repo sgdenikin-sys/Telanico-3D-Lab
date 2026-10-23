@@ -1,0 +1,35 @@
+{
+  "source_commit": "c9ef4ebf526aa77345538e8efd32ea5326d06bdc",
+  "version": "telanico-v2.2",
+  "browser": {
+    "1280": {
+      "errors": [],
+      "musicStarts": 1,
+      "walk_speed": 9.375,
+      "courier_scale": 3,
+      "hud": [
+        "Assistant",
+        "Invoice",
+        "Menu"
+      ],
+      "final_screen": "world"
+    },
+    "844": {
+      "errors": [],
+      "musicStarts": 1,
+      "walk_speed": 9.375,
+      "courier_scale": 3,
+      "hud": [
+        "Assistant",
+        "Invoice",
+        "Menu"
+      ],
+      "final_screen": "intro"
+    }
+  },
+  "full_phone": "victory 13:54; clean restart",
+  "physical_iphone_safari": "not tested",
+  "animation_source": "VorGun fc5e861f0c899ae5925625ff2191a41d7043d957; 63 GIF frames; canonical 4100/115/17000 ms bridge unchanged",
+  "browser_log_sha256": "479dd1b818ee4948cd273c2c16e0f90cc4d37fef253f4e7f0314c6d7c860b77f",
+  "deployment": "pending"
+}

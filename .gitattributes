@@ -5,3 +5,5 @@
 
 # Preserve tested runtime bytes across Windows and Linux.
 site/** -text
+# This canonical VorGun browser bridge is verified byte-for-byte on both OSes.
+godot/web/rabbit_animation_bridge.js -text
