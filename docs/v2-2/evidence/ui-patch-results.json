@@ -31,5 +31,13 @@
   "physical_iphone_safari": "not tested",
   "animation_source": "VorGun fc5e861f0c899ae5925625ff2191a41d7043d957; 63 GIF frames; canonical 4100/115/17000 ms bridge unchanged",
   "browser_log_sha256": "479dd1b818ee4948cd273c2c16e0f90cc4d37fef253f4e7f0314c6d7c860b77f",
-  "deployment": "pending"
+  "deployment": {
+    "status": "blocked before runner assignment",
+    "run_id": 39962200326,
+    "job_id": 120442735377,
+    "runner_id": 0,
+    "steps": [],
+    "runtime_commit": "90bdfccac93e56db785482905807abd680fd23cd",
+    "old_public_repository_modified": false
+  }
 }
