@@ -1,0 +1,52 @@
+{
+  "version": "telanico-v2.2",
+  "source_commit": "2c94a3f687e7174340360885e069336b73cf599e",
+  "public_commit": "b096474845e9c0eeca4245086c97c592b43df304",
+  "pages_run": 39908236241,
+  "pages_job": 120265009277,
+  "pages_status": "success",
+  "live_url": "https://sgdenikin-sys.github.io/Telanico-3D-Web/",
+  "live_metadata": {
+    "branch": "fix/v22-web-release",
+    "camera_elevation_above_horizontal": 40,
+    "camera_projection": "orthographic",
+    "commit": "2c94a3f687e7174340360885e069336b73cf599e",
+    "source_run_id": "local",
+    "version": "telanico-v2.2"
+  },
+  "local_full_phone_story": "passed; victory 13:54; clean restart",
+  "hosted_browser_cases": {
+    "1280": {
+      "errors": [],
+      "music_starts": 1,
+      "passed": true
+    },
+    "844": {
+      "errors": [],
+      "music_starts": 1,
+      "passed": true
+    }
+  },
+  "physical_iphone_safari": "not tested",
+  "disabled_features": [],
+  "log_sha256": {
+    "build/blender-release.log": "6997bb41da67b25132a48c7082c6e12c6e8520afd2fab71828c4dcdd47e65a4b",
+    "build/story-browser-release.log": "9e7363c6a8a7548888a2b226127111a39c3f4f5ced4b3cf83992c106094856c4",
+    "build/live-v22-verification.log": "428f7e16a6a10b7c293f86067cb716f8a3d43c494079cb44f5bc6959416765d6",
+    "build\\logs\\audio.log": "6015edecf133c1cc2294c6c15a35dac5d63836cb1abd3b8d8afc2ec5d8f6ebfc",
+    "build\\logs\\export.log": "7508d39a67f029f41a7d0874c8182114e135f94f0e5f5014f679562b5ba9f738",
+    "build\\logs\\glb.log": "f2941b185a2f69721bc84d1152755c7a8a4567f6ff0780968dcd31d2ddb3dd1d",
+    "build\\logs\\import.log": "08391aebbf6611d087e659f043f7e3add3aa6e7c2d55cbab0c98cb3766508578",
+    "build\\logs\\layout.log": "fdde4ce7180e4f3dff51c5a0ab501c79b4968d33f9f2e3bfb3938a4166f8ce39",
+    "build\\logs\\stamp-after.log": "1f591e0b24e4a08dca7527d01c5b778db7e8f7c6f9a53202f8b1f9eeb9cdae46",
+    "build\\logs\\stamp-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build\\logs\\test_optional_offices.log": "9ec03bafd9dac11dd24799bd31349c74ce8ba4cb65bd0447627a2c0dd5abca6a",
+    "build\\logs\\test_playthrough.log": "0cbeb8a243962c86ecbc866d85e4c0ca581328de0b7341bf98cc5ad9602c448b",
+    "build\\logs\\test_source_parity.log": "093cd74d078e016bc862ef4d8cd91b0bd3d61be3b9452e2bdb894a33f70b3fa2",
+    "build\\logs\\test_story_session.log": "9aa3de88c1ad2b8f79263de1b8655a51c245fb6cc68fc1eabd6dea9f9cc93a94",
+    "build\\logs\\test_story_ui.log": "b9004cbf81d2ec79df9005d8337e9b6a612c2d4e15b30e195b73789d4238a203",
+    "build\\logs\\test_world_integration.log": "2443ff1e210bdfa54f6d06cb6c1549d86bcf9c3c646af68b85e1093370f2e7f2",
+    "build\\logs\\viewer.log": "04b5458be41d6750df40cb0d7e37d61ecd2f71fad2b4274748ef4d49096b6956",
+    "build\\logs\\web-validation.log": "8dd6cf733393943e08a957ec88a76c411f1f5e5b540979139aab2af923a5ced1"
+  }
+}

@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 LOGS = ROOT / 'build' / 'logs'
@@ -59,9 +60,15 @@ def main():
     run('audio', [node, 'tools/audio_lifecycle_regression.js'])
     run('viewer', base + ['--script', 'res://tests/test_v2.gd'], 'TELANICO_TEST_OK')
     web = ROOT / 'build/web'
-    # Never merge a new export with an old runtime snapshot.
+    # Preserve the old snapshot and start clean, including on repeated builds.
     if web.exists():
-        raise RuntimeError('build/web already exists; preserve it separately before rebuilding')
+        history = ROOT / 'build/web-history'
+        history.mkdir(exist_ok=True)
+        backup = history / str(time.time_ns())
+        for path in (web, backup):
+            if not path.resolve().is_relative_to((ROOT / 'build').resolve()):
+                raise RuntimeError('Output path escaped the build directory')
+        web.rename(backup)
     web.mkdir()
     run('export', base + ['--export-release', 'Web', '../build/web/index.html'], timeout=600)
     shutil.copy2(ROOT / 'godot/web/audio_bridge.js', web / 'audio_bridge.js')
