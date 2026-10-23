@@ -1,0 +1,30 @@
+{
+  "source_commit": "94f261e22937086fb12a64e4d08cb03fa5fb60f2",
+  "version": "telanico-v2.2",
+  "desktop_browser": "passed opening, incorrect answer, office, invoice, assistant, menu/audio",
+  "phone_browser": "passed full actual geography, both tubes, canonical quest, victory 13:54, restart",
+  "phone_css_viewport": [
+    844,
+    390
+  ],
+  "native_ui_viewports": [
+    [
+      667,
+      375
+    ],
+    [
+      844,
+      390
+    ],
+    [
+      1920,
+      1080
+    ]
+  ],
+  "time_titles": "passed beat order, queue, zero-cost suppression, actual delta at deadline; Web travel/dialogue events confirmed",
+  "physical_iphone_safari": "not tested",
+  "browser_log_sha256": "b6e623899c34115145b43f7ed3a339e9197be8b0269021e939a3ad1843cc37ad",
+  "deployment": {
+    "status": "pending"
+  }
+}

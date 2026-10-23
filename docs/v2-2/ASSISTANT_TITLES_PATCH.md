@@ -51,3 +51,10 @@ now match action/text/art consistently, as the trusted-click lookup already did.
 This is a harness correction; game/runtime bytes are unchanged. Failure evidence:
 build/logs/ui-titles-browser-scroll-helper-failure.log and saved failure screenshot.
 The phone case is rerun, not relabeled as passing.
+
+Final exact-runtime browser validation PASSED: desktop opening/incorrect answer/
+office/invoice/assistant/menu/audio; full 844x390 trusted-touch geography, both
+tubes, canonical offices, victory at 13:54 and clean Restart. No runtime or HTTP
+errors; one music start. Native time-loss beats/queue and actual charged deltas
+also passed. Evidence: evidence/assistant-titles-*. Runtime snapshot staged with
+24 SHA-256 hashes; deployment status is recorded in assistant-titles-results.json.
