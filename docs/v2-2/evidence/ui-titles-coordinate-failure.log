@@ -1,0 +1,113 @@
+127.0.0.1 - - [23/Oct/2026 16:55:49] "GET /?test=1&story_test=1 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:49] "GET /rabbit_animation_bridge.js HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:49] "GET /index.js HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:49] "GET /audio_bridge.js?rev=94f261e22937086fb12a64e4d08cb03fa5fb60f2 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /index.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /index.pck HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /media/cooper_chponk.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /media/bird_takeoff_soft_purr.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /media/tube_water_flush.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /media/door_open_office.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /media/door_close_soft.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /media/select_woosh.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /media/menu_flip.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:50] "GET /media/music.mp3 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:51] "GET /index.icon.png HTTP/1.1" 200 -
+STORY_CONSOLE log Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+STORY_CONSOLE log OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+STORY_CONSOLE log Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+STORY_CONSOLE log TELANICO_V2_READY imported world, animated courier, 15 sites
+127.0.0.1 - - [23/Oct/2026 16:55:55] "GET /index.audio.worklet.js HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 16:55:55] "GET /index.audio.position.worklet.js HTTP/1.1" 200 -
+STORY_ACTION 1280 CHOOSE YOUR ROLE scroll_attempt 0
+STORY_TAP 1280 CHOOSE YOUR ROLE 640 670
+STORY_ACTION 1280 SELECT COOPER scroll_attempt 0
+STORY_TAP 1280 SELECT COOPER 181 331
+STORY_ACTION 1280 button_close_invoice.png scroll_attempt 0
+STORY_TAP 1280 button_close_invoice.png 618 143.799987792969
+127.0.0.1 - - [23/Oct/2026 16:57:14] "GET /media/rabbit.gif HTTP/1.1" 200 -
+CANONICAL_GIF_TO_PNG_PASS 1280 [{'visible': False, 'time': 84345.20000000298, 'rect': [0, 0, 0, 0]}, {'visible': True, 'time': 90891.89999999106, 'rect': [29, 255, 102, 99]}, {'visible': False, 'time': 95459.89999999106, 'rect': [0, 0, 0, 0]}]
+STORY_ACTION 1280 CONTINUE scroll_attempt 0
+STORY_TAP 1280 CONTINUE 268 428
+STORY_NAV 1280 sites operations
+STORY_TAP 1280 operations 465.806457519531 410.324676513672
+STORY_NAV 1280 ui Walk
+STORY_TAP 1280 Walk 286 614
+STORY_NAV 1280 ui Enter
+STORY_TAP 1280 Enter 286 614
+STORY_ACTION 1280 greet_polite scroll_attempt 0
+STORY_TAP 1280 greet_polite 915.200012207031 182
+STORY_DIALOGUE_ACK 1280 greet_polite 10
+STORY_ACTION 1280 ops_estimate scroll_attempt 0
+STORY_TAP 1280 ops_estimate 915.200012207031 228
+STORY_DIALOGUE_ACK 1280 ops_estimate 11
+STORY_ACTION 1280 CONTINUE > scroll_attempt 0
+STORY_TAP 1280 CONTINUE > 915.200012207031 172
+STORY_DIALOGUE_ACK 1280 CONTINUE > 11
+STORY_ACTION 1280 ops_qty scroll_attempt 0
+STORY_TAP 1280 ops_qty 915.200012207031 172
+STORY_DIALOGUE_ACK 1280 ops_qty 12
+STORY_ACTION 1280 CONTINUE > scroll_attempt 0
+STORY_TAP 1280 CONTINUE > 915.200012207031 203
+STORY_DIALOGUE_ACK 1280 CONTINUE > 12
+STORY_ACTION 1280 CONTINUE > scroll_attempt 0
+STORY_TAP 1280 CONTINUE > 915.200012207031 203
+STORY_DIALOGUE_ACK 1280 CONTINUE > 12
+STORY_ACTION 1280 CONTINUE > scroll_attempt 0
+STORY_TAP 1280 CONTINUE > 915.200012207031 172
+STORY_DIALOGUE_ACK 1280 CONTINUE > 12
+STORY_ACTION 1280 button_close_invoice.png scroll_attempt 0
+STORY_TAP 1280 button_close_invoice.png 618 143.799987792969
+STORY_ACTION 1280 CONTINUE scroll_attempt 0
+STORY_TAP 1280 CONTINUE 268 428
+STORY_ACTION 1280 LEAVE OFFICE scroll_attempt 0
+STORY_TAP 1280 LEAVE OFFICE 859.200012207031 608
+TIME_LOSS_EVENTS_PASS 1280 [{'minutes': 9, 'reason': 'walk'}, {'minutes': 1, 'reason': 'CONVERSATION'}, {'minutes': 1, 'reason': 'CONVERSATION'}, {'minutes': 1, 'reason': 'CONVERSATION'}]
+STORY_ACTION 1280 button_menu.png scroll_attempt 0
+STORY_TAP 1280 button_menu.png 122 117
+STORY_ACTION 1280 SOUND EFFECTS scroll_attempt 0
+STORY_TAP 1280 SOUND EFFECTS 478.5 376
+STORY_ACTION 1280 SOUND EFFECTS scroll_attempt 0
+STORY_TAP 1280 SOUND EFFECTS 478.5 376
+STORY_ACTION 1280 RESUME GAME scroll_attempt 0
+STORY_TAP 1280 RESUME GAME 515 452
+STORY_BROWSER_PASS 1280 opening-office-wrong-answer
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /?test=1&story_test=1 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /audio_bridge.js?rev=94f261e22937086fb12a64e4d08cb03fa5fb60f2 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /index.js HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /rabbit_animation_bridge.js HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /index.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /index.pck HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /media/cooper_chponk.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /media/tube_water_flush.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /media/door_open_office.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /media/bird_takeoff_soft_purr.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /media/door_close_soft.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /media/select_woosh.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /media/menu_flip.wav HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:54] "GET /media/music.mp3 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:56] "GET /index.icon.png HTTP/1.1" 200 -
+STORY_CONSOLE log Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+STORY_CONSOLE log OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+STORY_CONSOLE log Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+STORY_CONSOLE log TELANICO_V2_READY imported world, animated courier, 15 sites
+127.0.0.1 - - [23/Oct/2026 17:03:59] "GET /index.audio.position.worklet.js HTTP/1.1" 200 -
+127.0.0.1 - - [23/Oct/2026 17:03:59] "GET /index.audio.worklet.js HTTP/1.1" 200 -
+STORY_ACTION 844 CHOOSE YOUR ROLE scroll_attempt 0
+STORY_TAP 844 CHOOSE YOUR ROLE 422 339.9664634068809
+STORY_ACTION 844 SELECT COOPER scroll_attempt 0
+STORY_TAP 844 SELECT COOPER 126.50000462268828 287.97155475616455
+STORY_ACTION 844 button_close_invoice.png scroll_attempt 0
+STORY_TAP 844 button_close_invoice.png 399.99999200823385 114.09219074249268
+127.0.0.1 - - [23/Oct/2026 17:05:03] "GET /media/rabbit.gif HTTP/1.1" 200 -
+Traceback (most recent call last):
+  File "/workspace/Telanico-3D-Lab/tools/test_story_browser.py", line 350, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/Telanico-3D-Lab/tools/test_story_browser.py", line 346, in main
+    if args.case is None or args.case==width:exercise(browser,url,output,width,height,touch,full,args.landmarks_only,args.restart_only)
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Telanico-3D-Lab/tools/test_story_browser.py", line 234, in exercise
+    assert abs(card[0]-anchor[0])<1 and abs(card[1]-anchor[1]-anchor[3]-8)<1, (anchor,card)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([8, 132, 200, 54], [14.7677726745605, 358.118499755859, 959.905212402344, 339.729858398438])

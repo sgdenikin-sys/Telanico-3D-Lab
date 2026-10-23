@@ -1,0 +1,506 @@
+{
+  "state": {
+    "assistant_framed": true,
+    "assistant_png": "res://assets/ui/HUD/RUNTIME/rabbit_clock.png",
+    "choices": [
+      [
+        "Do we need an original signature and stamp?",
+        "lc_signature_notice"
+      ],
+      [
+        "Can we prepare the original now?",
+        "lc_original"
+      ],
+      [
+        "That's enough. Thank you.",
+        "lc_exit"
+      ]
+    ],
+    "clock_art": "res://assets/ui/HUD/RUNTIME/clock_analog_blue.png",
+    "controls": [
+      {
+        "action": "",
+        "art": "",
+        "clip": [
+          707.671630859375,
+          136.601898193359,
+          804.843627929688,
+          317.507110595703
+        ],
+        "disabled": false,
+        "rect": [
+          707.671630859375,
+          415.343597412109,
+          790.075866699219,
+          95.9905242919922
+        ],
+        "text": "CONTINUE >"
+      },
+      {
+        "action": "",
+        "art": "",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          707.671630859375,
+          461.492889404297,
+          598.094787597656,
+          103.374404907227
+        ],
+        "text": "LEAVE OFFICE"
+      },
+      {
+        "action": "",
+        "art": "",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          1313.150390625,
+          461.492889404297,
+          95.9905242919922,
+          103.374404907227
+        ],
+        "text": "^"
+      },
+      {
+        "action": "",
+        "art": "",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          1416.52465820312,
+          461.492889404297,
+          95.9905242919922,
+          103.374404907227
+        ],
+        "text": "v"
+      },
+      {
+        "action": "",
+        "art": "hud_invoice_button.png",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          707.671630859375,
+          572.251159667969,
+          398.729858398438,
+          103.374404907227
+        ],
+        "text": ""
+      },
+      {
+        "action": "",
+        "art": "button_assistant.png",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          1113.78540039062,
+          572.251159667969,
+          398.729858398438,
+          103.374404907227
+        ],
+        "text": ""
+      },
+      {
+        "action": "",
+        "art": "button_menu.png",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          14.7677726745605,
+          14.7677726745605,
+          383.962097167969,
+          110.758293151855
+        ],
+        "text": ""
+      },
+      {
+        "action": "",
+        "art": "hud_invoice_button.png",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          14.7677726745605,
+          22.1516590118408,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "text": ""
+      },
+      {
+        "action": "",
+        "art": "button_menu.png",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          14.7677726745605,
+          132.909957885742,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "text": ""
+      },
+      {
+        "action": "",
+        "art": "button_assistant.png",
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          14.7677726745605,
+          243.668243408203,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "text": ""
+      }
+    ],
+    "courier_scale": 3,
+    "courier_visible": false,
+    "failed": false,
+    "frame": 3010,
+    "hud": {
+      "Assistant": [
+        8,
+        132,
+        200,
+        54
+      ],
+      "Invoice": [
+        8,
+        12,
+        200,
+        54
+      ],
+      "Menu": [
+        8,
+        72,
+        200,
+        54
+      ]
+    },
+    "invoice": {
+      "adjustment": "",
+      "adjustment_visible": false,
+      "bank": "TreeBank (receiving bank)\nReference: 1.0834 (direction unconfirmed)",
+      "buyer": "ABC Forest Trading",
+      "cargo": "High Quality Energy (Physical Oil)",
+      "invoice_date": "",
+      "invoice_no": "",
+      "payment": "Letter of credit\nLC amount: reconciled\nFX fixing: previous business day",
+      "quantity": "8,470 MT",
+      "seller": "VorGun Trading",
+      "signed": false,
+      "status": "DRAFT",
+      "total": "",
+      "unit_price": "USD 612.5000000000",
+      "vat": "Zero-rated / Rotterdam, Netherlands / T1 verified"
+    },
+    "line_index": 0,
+    "lines": 1,
+    "locked": true,
+    "modal": "",
+    "modal_rect": [
+      33.2274894714355,
+      22.1516590118408,
+      1491.54504394531,
+      675.696716308594
+    ],
+    "office": "lc",
+    "screen": "world",
+    "time": 101,
+    "time_titles": {
+      "history": [
+        {
+          "minutes": 9,
+          "reason": "walk"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 12,
+          "reason": "walk"
+        },
+        {
+          "minutes": 3,
+          "reason": "tube"
+        },
+        {
+          "minutes": 6,
+          "reason": "walk"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 9,
+          "reason": "walk"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 9,
+          "reason": "walk"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 11,
+          "reason": "walk"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 17,
+          "reason": "walk"
+        },
+        {
+          "minutes": 3,
+          "reason": "tube"
+        },
+        {
+          "minutes": 3,
+          "reason": "walk"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        }
+      ],
+      "stage": ""
+    },
+    "viewport": [
+      1558,
+      720
+    ],
+    "walk_speed": 9.375,
+    "won": false,
+    "world_visible": false
+  },
+  "world": {
+    "animation": "Idle",
+    "animation_position": 0.400002801418306,
+    "camera_size": 124,
+    "camera_target": [
+      0,
+      5,
+      0
+    ],
+    "commit": "94f261e22937086fb12a64e4d08cb03fa5fb60f2",
+    "current": "lc",
+    "elevation": 40,
+    "follow": false,
+    "fps": 9,
+    "frame": 3012,
+    "inspect": false,
+    "island": "west",
+    "last_trip": {
+      "kind": "walk",
+      "length": 22.7037283368409,
+      "minutes": 3,
+      "real_seconds": 0.45
+    },
+    "position": [
+      -55,
+      3.88819050788879,
+      31
+    ],
+    "projection": 1,
+    "ready": true,
+    "selected": "lc",
+    "sites": {
+      "archive": [
+        1208.67736816406,
+        299.634338378906
+      ],
+      "coffee": [
+        360.935546875,
+        354.476043701172
+      ],
+      "compliance": [
+        639.645202636719,
+        268.049530029297
+      ],
+      "contracts": [
+        964.806457519531,
+        220.914413452148
+      ],
+      "dock_e": [
+        871.903198242188,
+        358.345367431641
+      ],
+      "dock_w": [
+        686.096801757812,
+        361.798645019531
+      ],
+      "finance": [
+        500.290344238281,
+        194.736083984375
+      ],
+      "fx": [
+        1191.25805664062,
+        428.846343994141
+      ],
+      "lc": [
+        459.645172119141,
+        441.036163330078
+      ],
+      "operations": [
+        604.806457519531,
+        410.324676513672
+      ],
+      "settlements": [
+        413.193572998047,
+        184.138488769531
+      ],
+      "trader": [
+        1121.58068847656,
+        207.831466674805
+      ],
+      "tube_e": [
+        1220.29028320312,
+        156.127746582031
+      ],
+      "tube_w": [
+        360.935546875,
+        466.213562011719
+      ],
+      "vat": [
+        1063.51611328125,
+        396.310424804688
+      ]
+    },
+    "state": "IDLE",
+    "story_minutes": 101,
+    "ui": {
+      "Explore": [
+        823.303344726562,
+        653.545043945312
+      ],
+      "Follow": [
+        1026.36022949219,
+        653.545043945312
+      ],
+      "Names": [
+        1229.4169921875,
+        653.545043945312
+      ],
+      "Reset": [
+        1432.47387695312,
+        653.545043945312
+      ]
+    },
+    "view": "(1558.0, 720.0)",
+    "viewport": [
+      1558,
+      720
+    ],
+    "yaw": 0
+  },
+  "errors": []
+}

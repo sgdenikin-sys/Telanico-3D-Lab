@@ -43,3 +43,11 @@ confirmed the panel was correctly anchored. The test now converts coordinates
 using viewport/CSS width; gameplay and viewport code were unchanged. Original
 failure log: build/logs/ui-titles-browser-coordinate-failure.log. The final
 release log combines the passed unchanged desktop case and rerun phone case.
+
+A subsequent phone pass reached LC Desk at 13:41, with both tubes and all previous
+offices verified, then stopped in the test scroll helper: Continue has a text key
+and no dialogue-action ID. Both the pre-scroll lookup and movement acknowledgment
+now match action/text/art consistently, as the trusted-click lookup already did.
+This is a harness correction; game/runtime bytes are unchanged. Failure evidence:
+build/logs/ui-titles-browser-scroll-helper-failure.log and saved failure screenshot.
+The phone case is rerun, not relabeled as passing.

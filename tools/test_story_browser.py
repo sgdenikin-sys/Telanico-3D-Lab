@@ -68,14 +68,14 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
             available = any(c.get('text') == arrow and not c.get('disabled')
                             for c in story().get('controls', []))
             if available and key not in ('v', '^'):
-                button_before = next(c for c in story()['controls'] if c.get('action') == key)
+                button_before = next(c for c in story()['controls'] if not c['disabled'] and key in (c.get('action'),c.get('text'),c.get('art')))
                 previous_y = button_before['rect'][1]
                 click(arrow)
                 # Compare Godot-space coordinates on both sides of the check.
                 # CSS-space click positions and Godot viewport coordinates differ
                 # on retina / scaled landscape devices.
                 wait("""([name, old]) => window.__TELANICO_STORY?.controls?.some(
-                    c => c.action===name && Math.abs(c.rect[1]-old)>8)""",
+                    c => (c.action===name || c.text===name || c.art===name) && Math.abs(c.rect[1]-old)>8)""",
                     [key, previous_y], timeout=15000)
                 return click(key, scroll_attempts+1)
             # Fall back to an actual touch swipe on other scrollable screens.
