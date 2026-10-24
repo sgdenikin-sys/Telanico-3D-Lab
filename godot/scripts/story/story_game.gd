@@ -398,7 +398,11 @@ func show_assistant() -> void:
     row.add_child(response)
     response.add_child(speech)
     speech.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    modal_footer.reparent(response)
+    # Build inside its final container. Reparenting a laid-out footer can retain
+    # an old minimum height across the scaled Web canvas on Retina devices.
+    modal_footer.queue_free()
+    modal_footer = HBoxContainer.new()
+    response.add_child(modal_footer)
     var advice_scroll := ScrollContainer.new()
     advice_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     advice_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
@@ -410,7 +414,10 @@ func show_assistant() -> void:
     var message := _label(advice_scroll,text,18)
     message.add_theme_color_override("font_color",Color("#183047"))
     message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    _button(modal_footer,"CONTINUE",close_modal).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    var continue_button := _button(modal_footer,"CONTINUE",close_modal)
+    continue_button.custom_minimum_size.y = 44
+    continue_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    modal_footer.size_flags_vertical = Control.SIZE_SHRINK_END
 
 func _hide_assistant_gif() -> void:
     if OS.has_feature("web") and assistant_gif_open:
@@ -685,6 +692,7 @@ func _layout() -> void:
     for i in range(ui_buttons.size()):
         var button: Button = ui_buttons.values()[i]
         button.position = Vector2(safe.x+8,safe.y+8+i*(46 if short else 60 if vp.y<500 else 72))
+        button.custom_minimum_size = Vector2(100,44 if short else 52)
         button.size = Vector2(184 if short else 200 if vp.y<500 else 228,44 if short else 54 if vp.y<500 else 66)
     clock_plate.position = Vector2(vp.x-safe.z-294,safe.y+6)
     clock_plate.size = Vector2(286,54)
@@ -705,7 +713,8 @@ func _layout() -> void:
                 assistant_slot.custom_minimum_size = Vector2(side,side)
                 card.size = Vector2(minf(520,(vp.x-safe.x-safe.z)*0.82),height)
             else:
-                card.size = _modal_size(modal_kind)
+                var desired := _modal_size(modal_kind)
+                card.size = desired.min(vp-Vector2(safe.x+safe.z,safe.y+safe.w)-Vector2(16,16))
             card.position = Vector2(safe.x,safe.y)+(vp-Vector2(safe.x+safe.z,safe.y+safe.w)-card.size)*0.5
             if modal_kind=="assistant":
                 card.position = Vector2(ui_buttons.Assistant.position.x,ui_buttons.Assistant.position.y+ui_buttons.Assistant.size.y+8)

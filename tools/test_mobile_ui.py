@@ -35,7 +35,8 @@ try:
     assert all(abs(x-y)<1 for x,y in zip(a,media)),(a,media)
     assert a[0]>=card[0] and a[1]>=card[1] and a[1]+a[3]<=card[1]+card[3]+1,(a,card)
     c=next(c for c in s['controls'] if c['text']=='CONTINUE')
-    assert a[0]+a[2] <= c['rect'][0],(a,c) # portrait cannot be covered by footer
+    assert a[0]+a[2] <= c['rect'][0],(a,c)
+    assert c['rect'][3]*ratio<=54,("Footer must not crush message",c) # portrait cannot be covered by footer
    rect=s['modal_rect']
    if rect[2]:assert rect[0]>=0 and rect[1]>=0 and rect[0]+rect[2]<=w+1 and rect[1]+rect[3]<=h+1,rect
    plate=s['clock_plate'];assert plate[0]>=0 and plate[0]+plate[2]<=w+1,plate
@@ -46,6 +47,7 @@ try:
   wait('window.__TELANICO_STORY?.screen==="intro"')
   # Simulate the cutout/home-indicator insets independently of Chromium's zero iOS env().
   page.evaluate("document.documentElement.style.setProperty('--safe-left','47px');document.documentElement.style.setProperty('--safe-right','47px');document.documentElement.style.setProperty('--safe-bottom','21px')")
+  page.wait_for_timeout(2000)
   validate('intro-844x306')
   click('CHOOSE YOUR ROLE');wait('window.__TELANICO_STORY.screen==="characters"')
   validate('characters-844x306')

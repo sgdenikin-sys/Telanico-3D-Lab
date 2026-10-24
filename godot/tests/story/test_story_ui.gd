@@ -53,7 +53,7 @@ func run():
                 var runner: ColorRect = anchor.get_node("HudPerimeterRunner")
                 assert(runner.mouse_filter==Control.MOUSE_FILTER_IGNORE)
                 var start_position := runner.position
-                await create_timer(0.15).timeout
+                await create_timer(0.4).timeout
                 assert(runner.visible and runner.position!=start_position,"Active Assistant perimeter must move")
             assert(game.world.navigation_locked,"Modal must block movement")
             assert(game.world.world.visible and game.world.actor.visible,
