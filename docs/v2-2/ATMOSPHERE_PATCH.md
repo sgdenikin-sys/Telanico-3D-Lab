@@ -47,3 +47,22 @@ measured factor 0.8 on touch, 1.0 on desktop, no world perimeter nodes. Shader
 compilation and final visual review passed; 38 trees/36 bushes stay clear of routes.
 Evidence: evidence/atmosphere-*. Publication status: atmosphere-results.json.
 Physical iPhone Safari is untested.
+
+## Verified live publication
+
+Game: https://sgdenikin-sys.github.io/Telanico-3D-Web/?release=4909d8f
+Source: 4909d8ffbffe49e47a1104428d7dcc12982ce2a4 (main).
+Public publication: e5906f71826e027c6fb45b47e7ce073a17328a08.
+Successful run: https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/40064787666
+
+The public runner verified all 24 exact runtime hashes, then actual WebGL opening
+at 1280x720 and touch 844x390. Both cases confirmed 36 bushes, no perimeter on
+world controls, desktop factor 1.0 and touch factor 0.8, plus original story UI
+and framed Assistant. Evidence: atmosphere-live-pass.log and live-validation
+artifact 12547764975 (screenshots/result.json). No runtime/resource errors.
+
+Direct Lab run 40064740865 again failed before runner assignment; it performed
+no tests or deployment. The existing owner-authorized Web/main carrier was used,
+without new branches, PRs, importer or deployment pipeline. Source/Blender assets
+remain private. Previous public commit fab68f5 remains recoverable in Git.
+Physical iPhone Safari was not tested; touch results are cloud Chromium simulation.

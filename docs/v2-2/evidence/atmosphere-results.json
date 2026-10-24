@@ -18,6 +18,20 @@
   "physical_iphone_safari": "not tested",
   "browser_log_sha256": "da783e39c8bd5a07c0cc339a300595a0d926a7b8fd8a9861b0311ee92d738433",
   "deployment": {
-    "status": "pending"
+    "status": "success; actual HTTPS runtime hashes and desktop/touch opening verified",
+    "run_id": 40064787666,
+    "job_id": 120785636813,
+    "public_commit": "e5906f71826e027c6fb45b47e7ce073a17328a08",
+    "source_snapshot_commit": "dcf90960e29de28a18f89e658d83ec9e37472390",
+    "pages_artifact_id": 12549021606,
+    "live_validation_artifact_id": 12547764975,
+    "url": "https://sgdenikin-sys.github.io/Telanico-3D-Web/",
+    "previous_public_commit": "fab68f5de9126978c9e5ab451474178f66a6c262",
+    "direct_lab_run": {
+      "id": 40064740865,
+      "runner_id": 0,
+      "steps": [],
+      "result": "failed before runner; existing authorized Web/main publication used"
+    }
   }
 }

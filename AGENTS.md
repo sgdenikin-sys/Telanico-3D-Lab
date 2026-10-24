@@ -4,7 +4,7 @@
 - Actual publication exception, subsequently authorized by the owner: source
   development stays on Lab/main; use the existing Web/main Pages workflow for
   the current preview while direct Lab Actions fails before runner assignment.
-  The current verified release is run 39999967009 (game source 94f261e). Consult the actual status
+  The current verified release is run 40064787666 (game source 4909d8f). Consult the actual status
   at the top of docs/PROJECT_WORKFLOW.md; do not confuse the desired Lab-only
   migration with a completed migration, or revive the old artifact importer.
 - Read docs/PROJECT_WORKFLOW.md first. One repository: Telanico-3D-Lab.
