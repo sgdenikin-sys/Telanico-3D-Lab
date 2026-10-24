@@ -9,7 +9,7 @@ static func attach(button: BaseButton) -> void:
     runner.mouse_filter = Control.MOUSE_FILTER_IGNORE
     runner.visible = false
     button.add_child(runner)
-    button.pressed.connect(func(): button.set_meta("clicked_active",true))
+    button.button_down.connect(func(): button.set_meta("clicked_active",true))
 
 var chase_time := 0.0
 func _process(delta: float) -> void:

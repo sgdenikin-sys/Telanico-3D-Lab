@@ -38,6 +38,21 @@ func run():
     assert(game.adapter.enter("settlements"))
     for button in game.choice_list.get_children():
         if button is Button:assert(button.has_node("HudPerimeterRunner"),"Dialogue retains click feedback")
+    var feedback: Button=game._button(game.ui,"Feedback",func():pass)
+    feedback.position=Vector2(10,root.size.y-64)
+    feedback.size=Vector2(150,52)
+    await process_frame
+    assert(not feedback.get_node("HudPerimeterRunner").visible,"Hover/focus alone must not animate")
+    var point=feedback.get_global_rect().get_center()
+    for down in [true,false]:
+        var event:=InputEventMouseButton.new()
+        event.button_index=MOUSE_BUTTON_LEFT
+        event.pressed=down
+        event.position=point
+        event.global_position=point
+        root.push_input(event,true)
+        await process_frame
+        if down:assert(feedback.get_node("HudPerimeterRunner").visible,"Dialogue-style buttons animate immediately on press, before the action replaces them")
     game.queue_free()
     await process_frame
     await process_frame
