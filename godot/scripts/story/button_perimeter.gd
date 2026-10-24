@@ -9,12 +9,13 @@ static func attach(button: BaseButton) -> void:
     runner.mouse_filter = Control.MOUSE_FILTER_IGNORE
     runner.visible = false
     button.add_child(runner)
+    button.pressed.connect(func(): button.set_meta("clicked_active",true))
 
 var chase_time := 0.0
 func _process(delta: float) -> void:
     var button := get_parent() as BaseButton
     chase_time += delta
-    visible = not button.disabled and (bool(button.get_meta("story_active",false)) or button.is_hovered() or button.has_focus() or button.is_pressed())
+    visible = not button.disabled and (bool(button.get_meta("story_active",false)) or (bool(button.get_meta("clicked_active",false)) and (button.has_focus() or button.is_pressed())))
     if not visible: return
     var w := button.size.x
     var h := button.size.y

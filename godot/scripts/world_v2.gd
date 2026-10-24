@@ -66,6 +66,7 @@ var test_mode := false
 var transition_clock := 0.0
 var layout_timer := 0.0
 var last_layout := ""
+var mobile_controls_factor := 1.0
 var panel_left := 10.0
 var panel_bottom := 10.0
 
@@ -182,26 +183,7 @@ func _make_camera_lighting() -> void:
     camera.current = true
     camera.far = 800
     add_child(camera)
-    var sun := DirectionalLight3D.new()
-    sun.rotation_degrees = Vector3(-38,-38,0)
-    sun.light_energy = 0.78
-    sun.light_specular = 0.25
-    sun.shadow_enabled = true
-    sun.shadow_bias = 0.20
-    sun.shadow_opacity = 0.55
-    sun.shadow_normal_bias = 2.0
-    sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-    sun.directional_shadow_max_distance = 320
-    add_child(sun)
-    var environment := WorldEnvironment.new()
-    var settings := Environment.new()
-    settings.background_mode = Environment.BG_COLOR
-    settings.background_color = Color(0.065,0.22,0.25)
-    settings.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-    settings.ambient_light_color = Color(0.76,0.83,0.88)
-    settings.ambient_light_energy = 0.32
-    environment.environment = settings
-    add_child(environment)
+    preload("res://scripts/campus_atmosphere.gd").apply(self,world)
 
 func _camera_pose() -> void:
     var e := deg_to_rad(camera_elevation)
@@ -322,26 +304,31 @@ func _layout_ui(force := false) -> void:
             right = float(layout.get("right",0))*units
             top = float(layout.get("top",0))*units
             bottom = float(layout.get("bottom",0))*units
-    var signature := str([viewport,left,right,top,bottom,units])
+    var handheld := DisplayServer.is_touchscreen_available()
+    if OS.has_feature("web"):
+        handheld = bool(JavaScriptBridge.eval("(navigator.maxTouchPoints>0)&&matchMedia('(pointer:coarse)').matches"))
+    var control_scale := 0.8 if handheld else 1.0
+    mobile_controls_factor = control_scale
+    var signature := str([viewport,left,right,top,bottom,units,control_scale])
     if not force and signature==last_layout: return
     last_layout = signature
     var index := 0
     for name in top_buttons:
         var button: Button = top_buttons[name]
         var story := story_adapter != null
-        button.position = Vector2(viewport.x-right-(10+(110 if story else 82)*(4-index))*units,(viewport.y-bottom-62*units) if story else top+8*units)
-        button.size = Vector2(104,52)*units if story else Vector2(78,36)*units
-        button.add_theme_font_size_override("font_size",roundi((17 if story else 13)*units))
+        button.position = Vector2(viewport.x-right-(10+(110*control_scale if story else 82)*(4-index))*units,(viewport.y-bottom-(52*control_scale+10)*units) if story else top+8*units)
+        button.size = Vector2(104,52)*units*control_scale if story else Vector2(78,36)*units
+        button.add_theme_font_size_override("font_size",roundi((17*control_scale if story else 13)*units))
         index += 1
     status.position = Vector2(left+10*units,top+9*units)
     status.add_theme_font_size_override("font_size",roundi(12*units))
     panel_left = left+(220 if story_adapter != null else 10)*units
-    panel_bottom = bottom+(70 if story_adapter != null else 10)*units
+    panel_bottom = bottom+(52*control_scale+18 if story_adapter != null else 10)*units
     title.add_theme_font_size_override("font_size",roundi(16*units))
     info.add_theme_font_size_override("font_size",roundi(14*units))
     for button in buttons.values():
-        button.custom_minimum_size = Vector2(100,52)*units if story_adapter != null else Vector2(88,44)*units
-        button.add_theme_font_size_override("font_size",roundi((17 if story_adapter != null else 14)*units))
+        button.custom_minimum_size = Vector2(100,52)*units*control_scale if story_adapter != null else Vector2(88,44)*units
+        button.add_theme_font_size_override("font_size",roundi((17*control_scale if story_adapter != null else 14)*units))
     panel.position = Vector2(panel_left,viewport.y-panel.size.y-panel_bottom)
     portrait.visible = viewport.y>viewport.x
 
@@ -738,6 +725,10 @@ func _publish_probe() -> void:
         "viewport":[get_viewport().get_visible_rect().size.x,get_viewport().get_visible_rect().size.y],
         "camera_size":camera.size,"camera_target":[camera_target.x,camera_target.y,camera_target.z],
         "projection":camera.projection,"follow":follow_character,"inspect":inspect_mode,"elevation":camera_elevation,"yaw":camera_yaw,"commit":build_info.get("commit","local")}
+    probe["controls_factor"] = mobile_controls_factor
+    probe["camera_control_size"] = [top_buttons.Explore.size.x,top_buttons.Explore.size.y]
+    probe["world_control_glow"] = top_buttons.Explore.has_node("HudPerimeterRunner") or buttons.Walk.has_node("HudPerimeterRunner")
+    probe["bushes"] = world.find_children("Soft Canopy Bush*","MeshInstance3D",true,false).size()
     if OS.has_feature("web"): JavaScriptBridge.eval("window.__TELANICO_STATE="+JSON.stringify(probe)+";")
 
 func _charge_story_time(minutes: int, mode: String) -> void:

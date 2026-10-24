@@ -240,6 +240,14 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         wait("!window.__TELANICO_STORY.locked")
         page.evaluate('window.__TELANICO_COMMAND={rate:12}')
         shot('story-world')
+        scenery=page.evaluate('window.__TELANICO_STATE')
+        assert scenery['bushes']==36 and not scenery['world_control_glow']
+        expected_factor=0.8 if touch else 1.0
+        assert scenery['controls_factor']==expected_factor
+        units=scenery['viewport'][0]/width
+        assert abs(scenery['camera_control_size'][0]/units-104*expected_factor)<1
+        assert abs(scenery['camera_control_size'][1]/units-52*expected_factor)<1
+        print('ATMOSPHERE_CONTROLS_PASS',width,'bushes',scenery['bushes'],'control factor',scenery['controls_factor'],flush=True)
         if restart_only:
             click('button_menu.png')
             wait("window.__TELANICO_STORY.modal==='menu'")

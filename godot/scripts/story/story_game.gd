@@ -69,7 +69,6 @@ func _ready() -> void:
     adapter = Adapter.new()
     add_child(adapter)
     adapter.attach(world)
-    for button in world.top_buttons.values()+world.buttons.values(): Perimeter.attach(button)
     session = adapter.session
     session.dialogue_changed.connect(_dialogue)
     session.changed.connect(_refresh)
@@ -690,8 +689,7 @@ func _process(delta: float) -> void:
     for pair in [["OfficeMenu","menu"],["OfficeInvoice","invoice"],["OfficeAssistant","assistant"]]:
         var office_button = office.find_child(pair[0],true,false)
         if office_button!=null: office_button.set_meta("story_active",overlay.visible and modal_kind==pair[1])
-    for pair in [["Explore",world.inspect_mode],["Follow",world.follow_character],["Names",world.show_names]]:
-        world.top_buttons[pair[0]].set_meta("story_active",pair[1])
+
     # Hide the old debug status. Camera controls and the original world gestures remain.
     world.status.visible = false
     if world.state!=last_world_state:

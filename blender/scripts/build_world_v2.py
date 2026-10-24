@@ -287,6 +287,65 @@ def reviews():
         scene.render.filepath=str(out/f'world-{elevation}.png');bpy.ops.render.render(write_still=True)
 
 
+def extra_greenery(edges):
+    """Sparse, deterministic dressing; no route, terrain or building changes."""
+    def segment_distance(p,a,b):
+        dx,dy=b[0]-a[0],b[1]-a[1]
+        t=max(0,min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/max(dx*dx+dy*dy,.001)))
+        return math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy)
+    occupied=[(o.location.x,o.location.y) for o in bpy.context.scene.objects if o.name.startswith('CC0 tree_')]
+    rng=random.Random(24019)
+    def choose(side,spacing,path_clear):
+        for _ in range(3000):
+            x=rng.uniform(-81,-20) if side=='west' else rng.uniform(20,81)
+            y=rng.uniform(-47,48)
+            if not L.inside(x,y,side):continue
+            poly=L.POLYGONS[side]
+            if min(segment_distance((x,y),a,b) for a,b in zip(poly,poly[1:]+poly[:1]))<3:continue
+            if any(abs(x-cx)<w/2+6 and abs(y-cy)<d/2+6 for _,_,_,_,(cx,cy),(w,d),_ in L.SITES):continue
+            if min(segment_distance((x,y),a,b) for e in edges for a,b in zip(e['points'],e['points'][1:]))<path_clear:continue
+            if any(math.hypot(x-a,y-b)<spacing for a,b in occupied):continue
+            occupied.append((x,y));return x,y
+        raise RuntimeError('No clear vegetation position on '+side)
+    for side in ('west','east'):
+        for i in range(7):
+            x,y=choose(side,6.0,6.0)
+            asset('tree_single_A' if i%2 else 'tree_single_B',(x,y,L.height(x,y)),(rng.uniform(3.4,4.8),rng.uniform(3.4,4.8)),'nature')
+    # A shared, softly rounded three-lobed crown, rooted at Z=0. Materials are
+    # shaded dark-to-light in Blender and receive upper-only wind in Godot.
+    parts=[]
+    for x,y,z,r in [(-.42,0,.58,.62),(.40,.08,.66,.66),(0,-.18,.97,.57)]:
+        bpy.ops.mesh.primitive_uv_sphere_add(segments=12,ring_count=8,radius=r,location=(x,y,z))
+        obj=bpy.context.object
+        for polygon in obj.data.polygons:polygon.use_smooth=True
+        parts.append(obj)
+    bpy.ops.object.select_all(action='DESELECT')
+    for obj in parts:obj.select_set(True)
+    bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join()
+    template=bpy.context.object
+    bpy.ops.object.transform_apply(location=True,rotation=True,scale=True)
+    mesh=template.data
+    colors=mesh.color_attributes.new(name='FoliageTint',type='FLOAT_COLOR',domain='CORNER')
+    for loop in mesh.loops:
+        z=mesh.vertices[loop.vertex_index].co.z;t=max(0,min(1,(z-.1)/1.4))
+        colors.data[loop.index].color=(.14+.31*t,.24+.35*t,.105+.125*t,1)
+    mat=material('Soft leaf crown - shaded roots',(.35,.48,.18))
+    vertex=mat.node_tree.nodes.new('ShaderNodeVertexColor');vertex.layer_name='FoliageTint'
+    mat.node_tree.links.new(vertex.outputs['Color'],mat.node_tree.nodes['Principled BSDF'].inputs['Base Color'])
+    mesh.materials.clear();mesh.materials.append(mat)
+    bpy.data.objects.remove(template,do_unlink=True)
+    for side in ('west','east'):
+        for i in range(18):
+            x,y=choose(side,3.8,4.6)
+            obj=bpy.data.objects.new('Soft Canopy Bush '+side+' '+str(i),mesh)
+            bpy.context.collection.objects.link(obj)
+            obj.location=(x,y,L.height(x,y)-.12)
+            scale=rng.uniform(1.3,1.85);obj.scale=(scale,scale*rng.uniform(.8,1.15),scale*rng.uniform(.9,1.15))
+            obj.rotation_euler.z=rng.uniform(0,math.tau)
+            obj['source']='Telanico procedural rounded foliage; no external pack'
+    print('GREENERY_OK 38 existing-pack trees; 36 shared-mesh bushes; paths/courts clear')
+
+
 def main():
     OUT.mkdir(parents=True,exist_ok=True);ASSETS.mkdir(parents=True,exist_ok=True)
     courier()
@@ -326,10 +385,13 @@ def main():
         asset('tree_single_A' if i%2 else 'tree_single_B',(x,y,L.height(x,y)),(rng.uniform(3,5),rng.uniform(3,5)),'nature')
     for i,(x,y) in enumerate([(-79,22),(-80,27),(-76,30),(-78,-40),(-75,-46),(80,32),(82,27),(78,46),(77,-41),(73,-47)]):
         asset('rock_single_B' if i%2 else 'rock_single_C',(x,y,L.height(x,y)-1),(3.5,4),'nature')
+    extra_greenery(edges)
     ferry();report(sites,edges)
     bpy.ops.object.camera_add(location=(0,-200*math.cos(math.radians(40)),5+200*math.sin(math.radians(40))));cam=bpy.context.object;cam.name='V2.1 40 degrees ABOVE HORIZONTAL';cam.rotation_euler=(Vector((0,0,5))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=200;bpy.context.scene.camera=cam
-    bpy.ops.object.light_add(type='AREA',location=(-60,-80,130));light=bpy.context.object;light.data.energy=180000;light.data.size=95
-    world=bpy.context.scene.world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.65,.72,.75,1);world.node_tree.nodes['Background'].inputs['Strength'].default_value=.5
+    bpy.ops.object.light_add(type='SUN',location=(180,180,90));light=bpy.context.object
+    light.name='Late afternoon sun - northeast';light.rotation_euler=(-light.location).to_track_quat('-Z','Y').to_euler()
+    light.data.energy=2.0;light.data.color=(1.0,.85,.65);light.data.angle=math.radians(5)
+    world=bpy.context.scene.world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.48,.67,.83,1);world.node_tree.nodes['Background'].inputs['Strength'].default_value=.65
     bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'overworld.blend'))
     bpy.ops.export_scene.gltf(filepath=str(ASSETS/'overworld.glb'),export_format='GLB',export_cameras=False,export_lights=False,export_extras=True,export_apply=True)
     print('V2_WORLD_OK imported assets',len(USED),'landmarks',len(sites))
