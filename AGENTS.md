@@ -22,6 +22,46 @@
 - No automatic repo visibility changes or deletion of historical work. Runtime
   approvals still apply; a connector limitation is not absence of account permission.
 
+## Bounded execution and validation — mandatory
+
+**Owner priority: conserve Codex context and usage limits. A small UI change must
+not trigger a project-wide audit, test cascade, infrastructure investigation or
+unrelated repairs. Finishing the requested patch takes precedence over broad
+confidence-building.**
+
+- **Scope first:** Read only the task-relevant files plus `AGENTS.md` and the
+  *current workflow summary* in `docs/PROJECT_WORKFLOW.md`. Inspect additional
+  source only when a concrete dependency requires it. Do not re-audit the
+  repository, entire branch history, architecture, dependencies or pipelines.
+- **Smallest patch:** Fix only the requested behavior. Do not opportunistically
+  refactor other UI, game logic, assets, releases or tooling.
+- **Finite verification budget for a normal UI patch:** At most ONE necessary
+  Godot import/build smoke check and ONE targeted browser/viewport check for
+  the affected screen (iPhone landscape about 844x390). If a relevant check
+  fails because of the patch, make at most ONE focused correction and rerun
+  only that failing check ONCE. Then stop and report evidence; do not begin
+  another fix/test loop autonomously.
+- **No broad tests by default:** Do not run full story playthroughs, entire
+  browser/device matrices, full regression suites, repeated CI jobs, unrelated
+  visual snapshots, or Blender rebuilds when assets were not changed.
+  Run these only on the owner's explicit instruction or when a clearly
+  identified blocker makes the specific extra check essential; explain that
+  necessity before proceeding.
+- **Separate publication from patching:** A UI-only patch does NOT imply staging,
+  pushing runtime to the public Web repository, Pages verification or release
+  smoke tests. Deploy only when explicitly requested in the current task.
+  Preserve the existing working publication path; do not change CI/CD,
+  secrets, repository settings or permissions.
+- **Stop on environment blockers:** No installing tools, requesting new access,
+  changing runner setup or inventing workflow alternatives. Record the exact
+  missing capability/failure and stop.
+- **Concise handoff:** State changed files, one-line outcome, checks actually
+  executed (or not executed), and any unresolved blocker. Do not claim
+  physical-iPhone verification based on desktop browser touch emulation.
+- Explicit instructions in the current user task may enlarge the test/release
+  scope; old prompts, historical plans and generic "thorough testing"
+  language do not.
+
 ## Scope and priorities
 You are working in the isolated Telanico-3D-Lab experiment. Never edit the existing production Telanico Trading game or its repositories as part of tasks here unless the user explicitly requests that.
 
