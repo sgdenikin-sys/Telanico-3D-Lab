@@ -19,10 +19,12 @@ try:
   def wait(expr):page.wait_for_function(expr,timeout=180000,polling=300)
   def state():return page.evaluate('window.__TELANICO_STORY')
   def click(key,edge=False):
-   page.wait_for_timeout(1200)
+   wait("Math.abs(window.__TELANICO_STORY.viewport[0]/window.__TELANICO_STORY.viewport[1]-innerWidth/visualViewport.height)<0.01")
+   frame=state()['frame'];wait(f"window.__TELANICO_STORY.frame>{frame}")
    xy=page.evaluate('''([key,edge])=>{const s=window.__TELANICO_STORY,c=s.controls.find(c=>!c.disabled&&[c.text,c.art].includes(key));
     if(!c)throw Error('Missing '+key);const r=document.querySelector('canvas').getBoundingClientRect();
     return [r.x+(c.rect[0]+c.rect[2]*(edge?.16:.5))*r.width/s.viewport[0],r.y+(c.rect[1]+c.rect[3]*.5)*r.height/s.viewport[1]]}''',[key,edge])
+   print('MOBILE_TOUCH',key,xy,'frame',state()['frame'],flush=True)
    page.touchscreen.tap(*xy)
   def validate(name):
    s=state();w,h=s['viewport'];css=page.evaluate('({w:innerWidth,h:visualViewport.height})');ratio=css['w']/w
@@ -57,7 +59,9 @@ try:
   validate('assistant-844x306')
   # Real Safari toolbar opening/closing and short screen: no reload or state loss.
   for width,height in [(667,280),(844,390)]:
-   page.set_viewport_size({'width':width,'height':height});page.wait_for_timeout(3000)
+   page.set_viewport_size({'width':width,'height':height})
+   wait(f"Math.abs(window.__TELANICO_STORY.viewport[0]/window.__TELANICO_STORY.viewport[1]-{width}/{height})<0.01")
+   frame=state()['frame'];wait(f"window.__TELANICO_STORY.frame>{frame}")
    validate(f'assistant-{width}x{height}')
   click('CONTINUE',True);wait('window.__TELANICO_STORY.modal===""')
   click('button_menu.png',True);wait('window.__TELANICO_STORY.modal==="menu"')

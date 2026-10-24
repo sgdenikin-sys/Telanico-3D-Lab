@@ -168,7 +168,7 @@ func _art_button(parent: Node, filename: String, action: Callable) -> Button:
     # Same canonical crop as VorGun: detached separator is not a clickable button.
     var atlas := AtlasTexture.new()
     atlas.atlas = image.texture
-    atlas.region = Rect2(25,12,461,133) if filename=="hud_invoice_button.png" else Rect2(0,9,image.texture.get_width(),image.texture.get_height()-9) if filename in ["button_menu.png","button_assistant.png"] else Rect2(Vector2.ZERO,image.texture.get_size())
+    atlas.region = Rect2(25,12,461,133) if filename=="hud_invoice_button.png" else Rect2(0,15,image.texture.get_width(),image.texture.get_height()-15) if filename=="button_menu.png" else Rect2(0,14,image.texture.get_width(),image.texture.get_height()-14) if filename=="button_assistant.png" else Rect2(Vector2.ZERO,image.texture.get_size())
     atlas.filter_clip = true
     image.texture = atlas
     image.stretch_mode = TextureRect.STRETCH_SCALE
