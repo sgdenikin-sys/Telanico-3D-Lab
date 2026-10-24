@@ -421,8 +421,9 @@ def build_crown():
     lathe('Dome spring cornice', [(4.32, 9.78), (4.60, 9.86), (4.60, 10.05), (4.49, 10.14)], M['ivory'], 36)
     lathe('Dome brass waterline', [(4.49, 10.12), (4.53, 10.19), (4.53, 10.26)], M['brass'], 36)
     dome('Smooth deep blue metal dome', 4.48, 10.20, 4.95, M['teal'])
-    for i in range(12):
-        a = TAU*i/12
+    n_ribs = 8 if lite() else 12
+    for i in range(n_ribs):
+        a = TAU*i/n_ribs
         points = []
         rib_steps = 10 if lite() else 16
         for j in range(rib_steps):
@@ -478,6 +479,8 @@ def build_wing(sign):
             ('front', 2, 'x', cy-depth/2, 0, width),
             ('rear', 2, 'x', cy+depth/2, math.pi, width),
             ('outer', 3, 'y', cx+sign*width/2, sign*math.pi/2, depth)]:
+        if lite() and label in ('rear', 'outer'):
+            count -= 1  # Preserve front facade; simplify distant side/rear repetition.
         for i in range(count):
             offset = -span/2+span/count*(i+.5)
             parts = window_bay(span/count, .86, 5.45, 1.35, 1.40, 3.70)
@@ -487,7 +490,7 @@ def build_wing(sign):
     # Short inner return walls, mostly behind the central hall.
     block(side+' inner return', (cx-sign*width/2, cy+1.8, 3.10), (.28, 3.40, 4.48), M['ivory'])
     for yy in (cy-depth/2-.08, cy+depth/2+.08):
-        for xx in (cx-width/2, cx, cx+width/2):
+        for xx in ((cx-width/2, cx+width/2) if lite() else (cx-width/2, cx, cx+width/2)):
             column(side+' facade column', xx, yy, .89, 5.20, .22)
     # Low tiered cornice and a visibly shaped roof, not a flat slab.
     for z, w, d, h, mat in [(5.23, 5.94, 7.24, .18, M['ivory']),
