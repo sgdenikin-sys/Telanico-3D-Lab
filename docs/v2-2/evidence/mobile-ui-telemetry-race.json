@@ -1,0 +1,367 @@
+{
+  "state": {
+    "assistant_frame": [
+      44.3033180236816,
+      73.8388671875,
+      243.668243408203,
+      243.668243408203
+    ],
+    "assistant_framed": true,
+    "assistant_media": [
+      44.3033180236816,
+      73.8388671875,
+      243.668243408203,
+      243.668243408203
+    ],
+    "assistant_png": "res://assets/ui/HUD/RUNTIME/rabbit_documents.png",
+    "choices": [
+      [
+        "Has the Trader sent over the fixed price?",
+        "contract_price"
+      ],
+      [
+        "I should probably stop asking questions.",
+        "contracts_exit"
+      ]
+    ],
+    "clock_art": "res://assets/ui/HUD/RUNTIME/clock_analog_blue.png",
+    "clock_plate": [
+      1015.28436279297,
+      11.0758295059204,
+      527.947875976562,
+      99.6824645996094
+    ],
+    "controls": [
+      {
+        "action": "",
+        "art": "hud_invoice_button.png",
+        "art_rect": [
+          14.7677726745605,
+          14.7677726745605,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          14.7677726745605,
+          14.7677726745605,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "text": ""
+      },
+      {
+        "action": "",
+        "art": "button_menu.png",
+        "art_rect": [
+          14.7677726745605,
+          125.526069641113,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          14.7677726745605,
+          125.526069641113,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "text": ""
+      },
+      {
+        "action": "",
+        "art": "button_assistant.png",
+        "art_rect": [
+          14.7677726745605,
+          236.284362792969,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "clip": [
+          0,
+          0,
+          1558,
+          720
+        ],
+        "disabled": false,
+        "rect": [
+          14.7677726745605,
+          236.284362792969,
+          369.194305419922,
+          99.6824645996094
+        ],
+        "text": ""
+      }
+    ],
+    "courier_scale": 3,
+    "courier_visible": true,
+    "failed": false,
+    "frame": 800,
+    "hud": {
+      "Assistant": [
+        8,
+        128,
+        200,
+        54
+      ],
+      "Invoice": [
+        8,
+        8,
+        200,
+        54
+      ],
+      "Menu": [
+        8,
+        68,
+        200,
+        54
+      ]
+    },
+    "invoice": {
+      "adjustment": "",
+      "adjustment_visible": false,
+      "bank": "",
+      "buyer": "ABC Forest Trading",
+      "cargo": "High Quality Energy (Physical Oil)",
+      "invoice_date": "",
+      "invoice_no": "",
+      "payment": "Letter of credit",
+      "quantity": "8,470 MT",
+      "seller": "VorGun Trading",
+      "signed": false,
+      "status": "DRAFT",
+      "total": "",
+      "unit_price": "",
+      "vat": ""
+    },
+    "line_index": 0,
+    "lines": 1,
+    "locked": false,
+    "modal": "",
+    "modal_rect": [
+      33.2274894714355,
+      22.1516590118408,
+      1491.54504394531,
+      675.696716308594
+    ],
+    "office": "",
+    "screen": "world",
+    "time": 48,
+    "time_titles": {
+      "history": [
+        {
+          "minutes": 9,
+          "reason": "walk"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 12,
+          "reason": "walk"
+        },
+        {
+          "minutes": 3,
+          "reason": "tube"
+        },
+        {
+          "minutes": 6,
+          "reason": "walk"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 1,
+          "reason": "CONVERSATION"
+        },
+        {
+          "minutes": 9,
+          "reason": "walk"
+        }
+      ],
+      "stage": "9"
+    },
+    "viewport": [
+      1558,
+      720
+    ],
+    "walk_speed": 9.375,
+    "won": false,
+    "world_visible": true
+  },
+  "world": {
+    "animation": "Idle",
+    "animation_position": 0.4,
+    "bushes": 36,
+    "camera_control_size": [
+      153.584838867188,
+      76.7924194335938
+    ],
+    "camera_size": 124,
+    "camera_target": [
+      0,
+      5,
+      0
+    ],
+    "commit": "f593e4b26a0d95ff051d50e381bf5136ddb70ac2",
+    "controls_factor": 0.8,
+    "current": "trader",
+    "elevation": 40,
+    "follow": false,
+    "fps": 1,
+    "frame": 800,
+    "inspect": false,
+    "island": "east",
+    "last_trip": {
+      "kind": "walk",
+      "length": 82.4840697869658,
+      "minutes": 9,
+      "real_seconds": 1.25
+    },
+    "position": [
+      59,
+      12.2992992401123,
+      -16
+    ],
+    "projection": 1,
+    "ready": true,
+    "selected": "trader",
+    "sites": {
+      "archive": [
+        1208.67736816406,
+        299.634338378906
+      ],
+      "coffee": [
+        360.935546875,
+        354.476043701172
+      ],
+      "compliance": [
+        639.645202636719,
+        268.049530029297
+      ],
+      "contracts": [
+        964.806457519531,
+        220.914413452148
+      ],
+      "dock_e": [
+        871.903198242188,
+        358.345367431641
+      ],
+      "dock_w": [
+        686.096801757812,
+        361.798645019531
+      ],
+      "finance": [
+        500.290344238281,
+        194.736083984375
+      ],
+      "fx": [
+        1191.25805664062,
+        428.846343994141
+      ],
+      "lc": [
+        459.645172119141,
+        441.036163330078
+      ],
+      "operations": [
+        604.806457519531,
+        410.324676513672
+      ],
+      "settlements": [
+        413.193572998047,
+        184.138488769531
+      ],
+      "trader": [
+        1121.58068847656,
+        207.831466674805
+      ],
+      "tube_e": [
+        1220.29028320312,
+        156.127746582031
+      ],
+      "tube_w": [
+        360.935546875,
+        466.213562011719
+      ],
+      "vat": [
+        1063.51611328125,
+        396.310424804688
+      ]
+    },
+    "state": "IDLE",
+    "story_minutes": 48,
+    "ui": {
+      "Enter": [
+        495.952606201172,
+        562.376342773438
+      ],
+      "Explore": [
+        966.550720214844,
+        663.14404296875
+      ],
+      "Follow": [
+        1128.99609375,
+        663.14404296875
+      ],
+      "Names": [
+        1291.44165039062,
+        663.14404296875
+      ],
+      "Outside": [
+        646.95263671875,
+        562.376342773438
+      ],
+      "Reset": [
+        1453.88720703125,
+        663.14404296875
+      ]
+    },
+    "view": "(1558.0, 720.0)",
+    "viewport": [
+      1558,
+      720
+    ],
+    "world_control_glow": false,
+    "yaw": 0
+  },
+  "errors": []
+}

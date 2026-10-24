@@ -83,3 +83,9 @@ probe. It now waits for the time probe too and asserts the **exact** charged
 delta against last_trip.minutes. The game rules were not modified. The failed
 run is preserved separately; the unchanged successful desktop case is retained
 and the full phone case is rerun on the same exported product.
+
+Final local validation: desktop and complete phone route passed on game source
+`f593e4b`, victory 13:54 and clean Restart, no runtime/resource errors and one
+music owner. Retina visual suite passed on `620fad1`; subsequent product change
+only adjusts office Menu safe insets, covered by final native/UI and story run.
+See [results](evidence/mobile-ui-results.json) and the matching evidence logs.

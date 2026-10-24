@@ -1,0 +1,33 @@
+{
+  "source_commit": "f593e4b26a0d95ff051d50e381bf5136ddb70ac2",
+  "branch": "main",
+  "focused_retina_ui": {
+    "source_commit": "620fad1ffb1f9bf7154bc2892067de15f507fbf3",
+    "dpr": 3,
+    "viewports": [
+      "844x306",
+      "667x280",
+      "844x390"
+    ],
+    "safe_insets": [
+      47,
+      0,
+      47,
+      21
+    ],
+    "result": "passed"
+  },
+  "final_native_ui": "passed incl short landscape and Restart",
+  "desktop_browser": "passed",
+  "phone_full_story": {
+    "dpr": 1,
+    "result": "passed",
+    "victory": "13:54",
+    "restart": "passed"
+  },
+  "runtime_errors": [],
+  "physical_iphone_safari": "not tested",
+  "canonical_frame_sha256": "9bd75b441c016b3be3dbf58afacc5dae17f8572ae883b1ebfd3dda4282b0b0c7",
+  "public_deployment": "pending",
+  "rollback_public_commit": "e5906f71826e027c6fb45b47e7ce073a17328a08"
+}

@@ -1,0 +1,37 @@
+127.0.0.1 - - [24/Oct/2026 16:33:01] "GET /?test=1&story_test=1 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:01] "GET /audio_bridge.js?rev=620fad1ffb1f9bf7154bc2892067de15f507fbf3 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:01] "GET /index.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:01] "GET /rabbit_animation_bridge.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /index.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /index.pck HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /media/cooper_chponk.wav HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /media/door_open_office.wav HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /media/tube_water_flush.wav HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /media/bird_takeoff_soft_purr.wav HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /media/door_close_soft.wav HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /media/select_woosh.wav HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /media/menu_flip.wav HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:02] "GET /media/music.mp3 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:04] "GET /index.icon.png HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:09] "GET /index.audio.position.worklet.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Oct/2026 16:33:09] "GET /index.audio.worklet.js HTTP/1.1" 200 -
+MOBILE_UI_LAYOUT_PASS intro-844x306 {'w': 844, 'h': 306} retina 3
+MOBILE_TOUCH CHOOSE YOUR ROLE [422.00001946360436, 238.89381256103525] frame 24
+127.0.0.1 - - [24/Oct/2026 16:33:31] "GET /media/music.mp3 HTTP/1.1" 200 -
+MOBILE_UI_LAYOUT_PASS characters-844x306 {'w': 844, 'h': 306} retina 3
+MOBILE_TOUCH SELECT COOPER [422.00001946360436, 238.89381256103525] frame 49
+MOBILE_UI_LAYOUT_PASS invoice-844x306 {'w': 844, 'h': 306} retina 3
+MOBILE_TOUCH button_close_invoice.png [400.00000943969417, 96.0095726013184] frame 74
+127.0.0.1 - - [24/Oct/2026 16:35:46] "GET /media/rabbit.gif HTTP/1.1" 200 -
+MOBILE_UI_LAYOUT_PASS assistant-844x306 {'w': 844, 'h': 306} retina 3
+MOBILE_UI_LAYOUT_PASS assistant-667x280 {'w': 667, 'h': 280} retina 3
+MOBILE_UI_LAYOUT_PASS assistant-844x390 {'w': 844, 'h': 390} retina 3
+MOBILE_TOUCH CONTINUE [258.19999105548993, 328.96750831604027] frame 123
+MOBILE_TOUCH button_menu.png [86.99999867509054, 94.99062188466374] frame 133
+MOBILE_UI_LAYOUT_PASS menu-844x390 {'w': 844, 'h': 390} retina 3
+MOBILE_TOUCH RESUME GAME [297.0000086969218, 276.49196720123285] frame 158
+MOBILE_TOUCH button_assistant.png [86.99999867509054, 154.98469734191912] frame 170
+MOBILE_UI_LAYOUT_PASS assistant-reopened {'w': 844, 'h': 390} retina 3
+MOBILE_TOUCH CONTINUE [383.99998769894813, 328.96750831604027] frame 186
+MOBILE_UI_LAYOUT_PASS world-clock-controls {'w': 844, 'h': 390} retina 3
+MOBILE_UI_RETINA_PASS no resource/runtime errors, visual rectangles match hitboxes, real touch at artwork edge, safe areas and toolbar resize
