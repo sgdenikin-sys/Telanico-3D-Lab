@@ -209,6 +209,17 @@ func reset_view() -> void:
     touches.clear()
     _camera_pose()
 
+func _style_world_button(button: Button) -> void:
+    # Opaque enough to read over terrain, no moving perimeter on camera controls.
+    for state in ["normal","hover","pressed","hover_pressed","disabled","focus"]:
+        var plate := StyleBoxFlat.new()
+        plate.bg_color = Color("#102B3BEF") if state not in ["pressed","hover_pressed"] else Color("#234B60F5")
+        plate.border_color = Color("#B99B59")
+        plate.set_border_width_all(1)
+        plate.set_corner_radius_all(6)
+        button.add_theme_stylebox_override(state,plate)
+    button.add_theme_color_override("font_color",Color("#F4EAD5"))
+
 func _make_ui() -> void:
     var layer := CanvasLayer.new()
     add_child(layer)
@@ -223,6 +234,7 @@ func _make_ui() -> void:
     for name in ["Explore", "Follow", "Names", "Reset"]:
         var button := Button.new()
         button.text = name
+        _style_world_button(button)
         button.add_theme_font_size_override("font_size",22)
         button.pressed.connect(_top_action.bind(name))
         top_buttons[name] = button
@@ -265,6 +277,7 @@ func _make_ui() -> void:
     for name in ["Walk", "Boat", "Tube", "Enter", "Outside", "Cancel", "Return"]:
         var button := Button.new()
         button.text = name
+        _style_world_button(button)
         button.custom_minimum_size = Vector2(100,64)
         button.add_theme_font_size_override("font_size",22)
         button.pressed.connect(_action.bind(name))

@@ -25,6 +25,7 @@ var office_scroll: ScrollContainer
 var speaker: Label
 var clock_label: Label
 var clock_face
+var clock_plate: Panel
 var modal_kind := ""
 var screen := "intro"
 var lines: Array[String] = []
@@ -84,8 +85,7 @@ func _ready() -> void:
     layer.add_child(ui)
     _build_hud()
     _build_office()
-    clock_face.reparent(ui)
-    clock_label.reparent(ui)
+    clock_plate.reparent(ui)
     overlay = Control.new()
     overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     overlay.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -129,7 +129,10 @@ func _button(parent: Node, text: String, action: Callable) -> Button:
     style.set_border_width_all(2)
     style.set_corner_radius_all(9)
     style.set_content_margin_all(8)
-    button.add_theme_stylebox_override("normal",style)
+    for state in ["normal","hover","pressed","hover_pressed","disabled","focus"]:
+        var surface := style.duplicate()
+        if state in ["hover","pressed","hover_pressed"]: surface.bg_color = Color("#20445BF5")
+        button.add_theme_stylebox_override(state,surface)
     parent.add_child(button)
     Perimeter.attach(button)
     button.pressed.connect(func():
@@ -158,9 +161,28 @@ func _cached_texture(path: String) -> Texture2D:
 func _art_button(parent: Node, filename: String, action: Callable) -> Button:
     var button := _button(parent,"",action)
     button.set_meta("artwork",filename)
-    button.add_theme_stylebox_override("normal",StyleBoxEmpty.new())
+    for state in ["normal","hover","pressed","hover_pressed","disabled","focus"]:
+        button.add_theme_stylebox_override(state,StyleBoxEmpty.new())
     var image := _texture(button,"res://assets/ui/HUD/RUNTIME/"+filename)
+    image.name = "HudButtonArtwork"
+    # Same canonical crop as VorGun: detached separator is not a clickable button.
+    var atlas := AtlasTexture.new()
+    atlas.atlas = image.texture
+    atlas.region = Rect2(25,12,461,133) if filename=="hud_invoice_button.png" else Rect2(0,9,image.texture.get_width(),image.texture.get_height()-9) if filename in ["button_menu.png","button_assistant.png"] else Rect2(Vector2.ZERO,image.texture.get_size())
+    atlas.filter_clip = true
+    image.texture = atlas
+    image.stretch_mode = TextureRect.STRETCH_SCALE
     image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    if filename in ["button_menu.png","button_assistant.png"]:
+        var rim := ColorRect.new()
+        rim.color = BRASS
+        rim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        button.add_child(rim)
+        rim.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+        rim.offset_left=7
+        rim.offset_right=-7
+        rim.offset_top=-2
+        rim.offset_bottom=0
     button.move_child(button.get_node("HudPerimeterRunner"),-1)
     return button
 
@@ -172,9 +194,19 @@ func _build_hud() -> void:
     for item in [["Invoice","hud_invoice_button.png"],["Menu","button_menu.png"],["Assistant","button_assistant.png"]]:
         var key: String = item[0]
         ui_buttons[key] = _art_button(hud,item[1],_hud_action.bind(key))
+    clock_plate = Panel.new()
+    clock_plate.name = "QuestClock"
+    clock_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    var plate := StyleBoxFlat.new()
+    plate.bg_color = Color("#102331EF")
+    plate.border_color = BRASS
+    plate.set_border_width_all(2)
+    plate.set_corner_radius_all(13)
+    clock_plate.add_theme_stylebox_override("panel",plate)
+    hud.add_child(clock_plate)
     clock_face = Clock.new()
-    hud.add_child(clock_face)
-    clock_label = _label(hud,"12:00 · 120 MIN TO 14:00",16)
+    clock_plate.add_child(clock_face)
+    clock_label = _label(clock_plate,"12:00 · 120 MIN TO 14:00",16)
     clock_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _hud_action(key: String) -> void:
@@ -218,13 +250,18 @@ func _clear_modal(kind: String) -> VBoxContainer:
     var scroll := ScrollContainer.new()
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-    frame.add_child(scroll)
+    if kind!="assistant": frame.add_child(scroll)
     modal_footer = HBoxContainer.new()
     frame.add_child(modal_footer)
     modal_column = VBoxContainer.new()
     modal_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     modal_column.add_theme_constant_override("separation",10)
-    scroll.add_child(modal_column)
+    if kind=="assistant":
+        scroll.free()
+        frame.add_child(modal_column)
+        frame.move_child(modal_column,0)
+        modal_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    else: scroll.add_child(modal_column)
     _layout.call_deferred()
     return modal_column
 
@@ -253,9 +290,9 @@ func _characters() -> void:
         if spec[0]!="COOPER": portrait.modulate = Color(0.08,0.09,0.10,0.72)
         _label(card,spec[0],18)
         _label(card,spec[2],13)
-        var button := _button(card,"SELECT COOPER" if spec[0]=="COOPER" else "LOCKED",start_game)
-        button.disabled = spec[0]!="COOPER"
-    _label(col,"Audio settings: MENU after entering the game",16)
+        if spec[0]!="COOPER": _button(card,"LOCKED",start_game).disabled = true
+    # Selection remains reachable with Safari's address/home bars visible.
+    _button(modal_footer,"SELECT COOPER",start_game).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 func start_game() -> void:
     if screen != "characters": return
@@ -314,6 +351,7 @@ func show_assistant() -> void:
     var row := HBoxContainer.new()
     row.add_theme_constant_override("separation",6)
     col.add_child(row)
+    row.size_flags_vertical = Control.SIZE_EXPAND_FILL
     assistant_slot = Control.new()
     assistant_slot.name = "AssistantMediaSlot"
     assistant_slot.custom_minimum_size = Vector2(132,132)
@@ -355,7 +393,12 @@ func show_assistant() -> void:
     bubble.set_corner_radius_all(10)
     bubble.set_content_margin_all(8)
     speech.add_theme_stylebox_override("panel",bubble)
-    row.add_child(speech)
+    var response := VBoxContainer.new()
+    response.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    row.add_child(response)
+    response.add_child(speech)
+    speech.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    modal_footer.reparent(response)
     var advice_scroll := ScrollContainer.new()
     advice_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     advice_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
@@ -638,15 +681,17 @@ func _layout() -> void:
     ui.scale = Vector2(units,units)
     vp /= units
     ui.size = vp
+    var short := vp.y<360
     for i in range(ui_buttons.size()):
         var button: Button = ui_buttons.values()[i]
-        var short := vp.y<500
-        button.position = Vector2(safe.x+8,safe.y+12+i*(60 if short else 72))
-        button.size = Vector2(200 if short else 228,54 if short else 66)
-    clock_face.position = Vector2(vp.x-safe.z-280,safe.y+8)
+        button.position = Vector2(safe.x+8,safe.y+8+i*(46 if short else 60 if vp.y<500 else 72))
+        button.size = Vector2(184 if short else 200 if vp.y<500 else 228,44 if short else 54 if vp.y<500 else 66)
+    clock_plate.position = Vector2(vp.x-safe.z-294,safe.y+6)
+    clock_plate.size = Vector2(286,54)
+    clock_face.position = Vector2(5,3)
     clock_face.size = Vector2(48,48)
-    clock_label.position = Vector2(vp.x-safe.z-226,safe.y+18)
-    clock_label.size = Vector2(216,32)
+    clock_label.position = Vector2(59,9)
+    clock_label.size = Vector2(222,36)
     if time_titles != null: time_titles.layout(vp)
     if overlay!=null:
         var card = overlay.get_node_or_null("ModalCard")
@@ -656,7 +701,7 @@ func _layout() -> void:
                 var top := anchor.position.y+anchor.size.y+8
                 var height := minf(230,vp.y-safe.w-top-12)
                 # Reserve footer and margins; shrink only the portrait on short phones.
-                var side := minf(132,maxf(66,height-76))
+                var side := minf(132,maxf(60,height-12))
                 assistant_slot.custom_minimum_size = Vector2(side,side)
                 card.size = Vector2(minf(520,(vp.x-safe.x-safe.z)*0.82),height)
             else:
@@ -703,6 +748,10 @@ func _process(delta: float) -> void:
         _layout()
         if test_mode and OS.has_feature("web"): _publish_probe()
 
+func _bounds(control: Control) -> Array:
+    var r := control.get_global_rect()
+    return [r.position.x,r.position.y,r.size.x,r.size.y]
+
 func _publish_probe() -> void:
     var rects := {}
     for key in ui_buttons: rects[key] = [ui_buttons[key].position.x,ui_buttons[key].position.y,ui_buttons[key].size.x,ui_buttons[key].size.y]
@@ -717,11 +766,14 @@ func _publish_probe() -> void:
                 while parent is Control:
                     if parent.clip_contents: clip = clip.intersection(parent.get_global_rect())
                     parent = parent.get_parent()
-                controls.append({"clip":[clip.position.x,clip.position.y,clip.size.x,clip.size.y],"text":button.text,"action":button.get_meta("dialogue_action",""),"art":button.get_meta("artwork",""),"rect":[rect.position.x,rect.position.y,rect.size.x,rect.size.y],"disabled":button.disabled})
+                controls.append({"clip":[clip.position.x,clip.position.y,clip.size.x,clip.size.y],"text":button.text,"action":button.get_meta("dialogue_action",""),"art":button.get_meta("artwork",""),"rect":[rect.position.x,rect.position.y,rect.size.x,rect.size.y],"disabled":button.disabled,"art_rect":_bounds(button.get_node("HudButtonArtwork")) if button.has_node("HudButtonArtwork") else []})
     var card = overlay.get_node_or_null("ModalCard")
     var card_rect: Rect2 = card.get_global_rect() if card != null else Rect2()
     var data := {"frame":Engine.get_process_frames(),"viewport":[get_viewport().get_visible_rect().size.x,get_viewport().get_visible_rect().size.y],"controls":controls,"screen":screen,"modal":modal_kind,"office":session.current_landmark,"time":session.quest_minutes,"invoice":session.invoice_state(),"failed":session.quest_failed,"won":session.invoice_issued,"choices":choices,"line_index":line_index,"lines":lines.size(),"locked":world.navigation_locked,"hud":rects,"modal_rect":[card_rect.position.x,card_rect.position.y,card_rect.size.x,card_rect.size.y],"walk_speed":world.speed,"courier_scale":world.visual.scale.x,"clock_art":clock_face.texture.resource_path,"assistant_png":assistant_portrait.texture.resource_path if is_instance_valid(assistant_portrait) else ""}
     data["time_titles"] = {"stage":time_titles.stage,"history":time_titles.history}
+    data["clock_plate"] = _bounds(clock_plate)
+    data["assistant_media"] = _bounds(assistant_slot) if is_instance_valid(assistant_slot) else []
+    data["assistant_frame"] = _bounds(assistant_slot.get_node("AssistantVideoFrame")) if is_instance_valid(assistant_slot) else []
     data["assistant_framed"] = is_instance_valid(assistant_slot) and assistant_slot.has_node("AssistantVideoFrame")
     data["world_visible"] = world.world.visible
     data["courier_visible"] = world.actor.visible

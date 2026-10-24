@@ -14,7 +14,7 @@ DIALOGUE_PROGRESS = "JSON.stringify([s.time,s.modal,s.office,s.line_index,s.line
 
 
 def exercise(browser, url, output, width, height, touch, full, landmarks_only=False, restart_only=False):
-    context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch,
+    context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch,device_scale_factor=3 if touch else 1,
         **({'user_agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'} if touch else {}))
     context.tracing.start(screenshots=False,snapshots=True,sources=False)
     page = context.new_page()

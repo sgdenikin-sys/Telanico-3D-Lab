@@ -14,14 +14,14 @@ func run():
     assert(game.world.visual.scale.is_equal_approx(Vector3.ONE*3))
     assert(absf(game.clock_face.texture.get_size().aspect()-1.0)<0.1,
         "Clock must use the round canonical dial, not a wide HUD plate")
-    for screen in [Vector2i(844,390),Vector2i(667,375),Vector2i(1920,1080)]:
+    for screen in [Vector2i(844,306),Vector2i(667,280),Vector2i(844,390),Vector2i(667,375),Vector2i(1920,1080)]:
         # Exercise the same CSS-space layout used by the Web presenter.
         root.content_scale_size = screen
         root.size = screen
         await process_frame
         game._layout()
         for button in game.ui_buttons.values():
-            assert(button.size.y>=54 and button.size.x>=200 and button.position.x>=0 and button.position.y>=0)
+            assert(button.size.y>=44 and button.size.x>=184 and button.position.x>=0 and button.position.y>=0)
         game.show_invoice()
         game._layout()
         for frame in range(3): await process_frame
@@ -46,6 +46,8 @@ func run():
                 assert(card.get_global_rect().end.y<=screen.y)
                 assert(game.assistant_slot.has_node("AssistantVideoFrame"))
                 var frame: TextureRect = game.assistant_slot.get_node("AssistantVideoFrame")
+                assert(frame.get_global_rect().size.x>=70,"Portrait/frame must remain readable with Safari toolbars")
+                assert(frame.get_global_rect().end.y<=card.get_global_rect().end.y)
                 assert(frame.texture.resource_path.ends_with("hud_assistant_video_frame.png"))
                 assert(card.find_child("RabbitSpeechBubble",true,false)!=null)
                 var runner: ColorRect = anchor.get_node("HudPerimeterRunner")
@@ -101,7 +103,7 @@ func run():
     assert(is_equal_approx(game.music_volume,0.3) and is_equal_approx(game.sfx_volume,0.3))
     game.close_modal()
     assert(game.adapter.enter("settlements"))
-    assert(game.clock_face.get_parent()==game.ui and game.clock_face.is_visible_in_tree())
+    assert(game.clock_face.get_parent()==game.clock_plate and game.clock_plate.get_parent()==game.ui and game.clock_face.is_visible_in_tree())
     assert(game.office.get_node("OfficeMenu").is_visible_in_tree())
     game.session.leave_office()
     # Presentation-level penalty feedback; canonical 45-minute rule is also
