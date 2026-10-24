@@ -728,6 +728,11 @@ func _layout() -> void:
         office_npc.size = composition.npc.size
         office_desk.position = composition.desk.position
         office_desk.size = composition.desk.size
+    var office_menu := office.get_node_or_null("OfficeMenu") as Button
+    if office_menu!=null:
+        office_menu.position = Vector2(safe.x+8,safe.y+8)
+        office_menu.custom_minimum_size = Vector2(100,44 if short else 52)
+        office_menu.size = Vector2(184 if short else 208,44 if short else 54)
     if dialogue_card!=null:
         for button_name in ["OfficeLeave","OfficeInvoice","OfficeAssistant"]:
             var button = dialogue_card.find_child(button_name,true,false)
