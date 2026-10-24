@@ -1,0 +1,23 @@
+{
+  "source_commit": "4909d8ffbffe49e47a1104428d7dcc12982ce2a4",
+  "version": "telanico-v2.2",
+  "desktop_browser": "passed opening, incorrect answer, office/invoice/assistant/menu/audio",
+  "phone_browser": "passed full physical geography, both tubes, canonical story, victory 13:54, clean restart",
+  "errors": [],
+  "mobile_control_factor": 0.8,
+  "desktop_control_factor": 1.0,
+  "world_control_perimeter": false,
+  "trees": 38,
+  "bushes": 36,
+  "bush_draw_batches": 1,
+  "glb_meshes": 185,
+  "unique_vertices": 103895,
+  "glb_bytes": 3721052,
+  "sun_direction": "northeast (+X/-Z), elevation 19.47 degrees",
+  "renderer": "Godot 4.6.3 Compatibility; single-threaded Web",
+  "physical_iphone_safari": "not tested",
+  "browser_log_sha256": "da783e39c8bd5a07c0cc339a300595a0d926a7b8fd8a9861b0311ee92d738433",
+  "deployment": {
+    "status": "pending"
+  }
+}

@@ -1,0 +1,759 @@
+ASSETS_OK: 33 pinned, licensed files verified
+04:18:09 | INFO: Data are loaded, start creating Blender stuff
+04:18:09 | INFO: Blender create Mesh node Cube.199
+04:18:09 | INFO: Blender create Mesh node Cube.202
+04:18:09 | INFO: Blender create Mesh node PrototypePete_body.025
+04:18:09 | INFO: Blender create Mesh node Cube.12634
+04:18:09 | INFO: Blender create Mesh node Cube.194
+04:18:09 | INFO: Blender create Mesh node Cube.187
+04:18:09 | INFO: Blender create Mesh node Cylinder.002
+04:18:09 | INFO: Blender create Mesh node Cube.015
+04:18:09 | INFO: Blender create Mesh node Cube.004
+04:18:09 | INFO: Blender create Mesh node Cylinder.008
+04:18:09 | INFO: Blender create Mesh node Cylinder.006
+04:18:09 | INFO: Blender create Mesh node Plane.007
+04:18:09 | INFO: glTF import finished in 0.07s
+Info: Saved "courier.blend"
+ERROR Draco mesh compression is not available because library could not be found at /usr/bin/4.3/python/lib/python3.13/site-packages/libextern_draco.so
+04:18:09 | INFO: Starting glTF 2.0 export
+04:18:09 | INFO: Extracting primitive: Cube.199
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cube.202
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: PrototypePete_body.025
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cube.12634
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cube.194
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cube.187
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Plane.007
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cylinder.002
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cube.015
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cube.004
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cylinder.008
+04:18:09 | INFO: Primitives created: 1
+04:18:09 | INFO: Extracting primitive: Cylinder.006
+04:18:09 | INFO: Primitives created: 1
+04:18:10 | INFO: Finished glTF 2.0 export in 0.47802186012268066 s
+
+COURIER_OK real imported rig; Idle and Walking_A only
+SURFACE_CLEARANCE_OK 1183 triangles; minimum clearance 0.45005226135253906
+04:18:10 | INFO: Data are loaded, start creating Blender stuff
+04:18:10 | INFO: Blender create Mesh node building_castle_blue
+04:18:10 | INFO: glTF import finished in 0.02s
+Warning: No mesh data to join
+04:18:10 | INFO: Data are loaded, start creating Blender stuff
+04:18:10 | INFO: Blender create Mesh node building_tower_B_blue
+04:18:10 | INFO: Blender create Mesh node building_tower_B_top_blue
+04:18:10 | INFO: glTF import finished in 0.01s
+04:18:10 | INFO: Data are loaded, start creating Blender stuff
+04:18:10 | INFO: Blender create Mesh node building_barracks_blue
+04:18:10 | INFO: glTF import finished in 0.01s
+Warning: No mesh data to join
+04:18:10 | INFO: Data are loaded, start creating Blender stuff
+04:18:10 | INFO: Blender create Mesh node building_home_B_blue
+04:18:10 | INFO: glTF import finished in 0.01s
+Warning: No mesh data to join
+04:18:11 | INFO: Data are loaded, start creating Blender stuff
+04:18:11 | INFO: Blender create Mesh node building_home_A_blue
+04:18:11 | INFO: glTF import finished in 0.01s
+Warning: No mesh data to join
+04:18:11 | INFO: Data are loaded, start creating Blender stuff
+04:18:11 | INFO: Blender create Mesh node building_blacksmith_blue
+04:18:11 | INFO: glTF import finished in 0.01s
+Warning: No mesh data to join
+04:18:11 | INFO: Data are loaded, start creating Blender stuff
+04:18:11 | INFO: Blender create Mesh node building_market_blue
+04:18:11 | INFO: glTF import finished in 0.04s
+Warning: No mesh data to join
+04:18:12 | INFO: Data are loaded, start creating Blender stuff
+04:18:12 | INFO: Blender create Mesh node building_tavern_blue
+04:18:12 | INFO: glTF import finished in 0.02s
+Warning: No mesh data to join
+04:18:12 | INFO: Data are loaded, start creating Blender stuff
+04:18:12 | INFO: Blender create Mesh node building_archeryrange_blue
+04:18:12 | INFO: glTF import finished in 0.02s
+Warning: No mesh data to join
+04:18:12 | INFO: Data are loaded, start creating Blender stuff
+04:18:12 | INFO: Blender create Mesh node building_tower_A_blue
+04:18:12 | INFO: Blender create Mesh node building_tower_A_top_blue
+04:18:12 | INFO: glTF import finished in 0.02s
+04:18:13 | INFO: Data are loaded, start creating Blender stuff
+04:18:13 | INFO: Blender create Mesh node tree_single_B
+04:18:13 | INFO: glTF import finished in 0.01s
+Warning: No mesh data to join
+04:18:13 | INFO: Data are loaded, start creating Blender stuff
+04:18:13 | INFO: Blender create Mesh node tree_single_A
+04:18:13 | INFO: glTF import finished in 0.01s
+Warning: No mesh data to join
+04:18:13 | INFO: Data are loaded, start creating Blender stuff
+04:18:13 | INFO: Blender create Mesh node rock_single_C
+04:18:13 | INFO: glTF import finished in 0.01s
+Warning: No mesh data to join
+04:18:13 | INFO: Data are loaded, start creating Blender stuff
+04:18:13 | INFO: Blender create Mesh node rock_single_B
+04:18:13 | INFO: glTF import finished in 0.01s
+Warning: No mesh data to join
+GREENERY_OK 38 existing-pack trees; 36 shared-mesh bushes; paths/courts clear
+Info: Saved "overworld.blend"
+04:18:14 | INFO: Starting glTF 2.0 export
+04:18:14 | INFO: Extracting primitive: Cylinder
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: west continuous height terrain
+04:18:14 | INFO: Primitives created: 3
+04:18:14 | INFO: Extracting primitive: west rocky coast
+04:18:14 | INFO: Primitives created: 3
+04:18:14 | INFO: Extracting primitive: Lagoon
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Foam
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: east continuous height terrain
+04:18:14 | INFO: Primitives created: 3
+04:18:14 | INFO: Extracting primitive: east rocky coast
+04:18:14 | INFO: Primitives created: 3
+04:18:14 | INFO: Extracting primitive: Lagoon.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Foam.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface0
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface1
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface2
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface3
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface4
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface5
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface6
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface7
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface8
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface9
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface10
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface11
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface12
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface13
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface14
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Bridge WalkSurface15
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Bridge arch spandrel
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Bridge arch spandrel.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.002
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Bridge stone parapet
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Bridge stone parapet.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface16
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface17
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface18
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface19
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface20
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface21
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface22
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface23
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface24
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface25
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface26
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface27
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface28
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface29
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Path WalkSurface30
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_castle_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_tower_B_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.003
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.004
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.008
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.005
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.006
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.007
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.003
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_barracks_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_home_B_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.007
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.009
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.013
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.010
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.011
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.012
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.009
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.005
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.016
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.017
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.018
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.014
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.019
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.010
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_home_A_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.021
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.022
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.023
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.020
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.024
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.011
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_blacksmith_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.026
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.027
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.028
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.025
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.012
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_market_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.030
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.031
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.032
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.029
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.013
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.033
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.034
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.014
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Torus
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Torus.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Torus.002
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Torus.003
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.035
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.016
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.015
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.018
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.019
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.017
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.020
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.021
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.022
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.023
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.037
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.038
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.039
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.040
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.041
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.042
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.043
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.036
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_tavern_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.025
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.026
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.048
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.045
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.046
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.047
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.044
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.024
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_archeryrange_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.050
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.051
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.052
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.049
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.027
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.054
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.055
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.056
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.053
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.057
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.028
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: building_tower_A_top_blue.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.059
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.060
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.061
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.058
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.029
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Sphere
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.031
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.063
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.064
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.065
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.062
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.030
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Torus.004
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Torus.005
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Torus.006
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.066
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.033
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.032
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.035
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.036
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.034
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.074
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.067
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.037
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.038
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.039
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cylinder.040
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.068
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.069
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.070
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.071
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.072
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.073
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: tree_single_B.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: tree_single_A.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: rock_single_C.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: rock_single_B.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Sphere.001
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.077
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.075
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.076
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.079
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.078
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.081
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.080
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.083
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Extracting primitive: Cube.082
+04:18:14 | INFO: Primitives created: 1
+04:18:14 | INFO: Finished glTF 2.0 export in 0.4459402561187744 s
+
+V2_WORLD_OK imported assets 14 landmarks 15
+Blender 4.3.2
+
+Blender quit
+V2_VALIDATION_OK 15 sites; canonical geography; swept corridors; genuine CC0 meshes; real rig/animations; 103895 vertices
+GLB OK: godot/assets/generated/overworld.glb, meshes=185, bytes=3721052
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] _update_scan_actions | Started Scanning actions... (2 steps)
+[   0% ] _update_scan_actions | courier.glb
+[  33% ] _update_scan_actions | overworld.glb
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started (Re)Importing Assets (2 steps)
+[   0% ] reimport | Preparing files to reimport...
+[  33% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Executing pre-reimport operations...
+[   0% ] preload_reimporting_scene | Started Preparing scenes for reload (1 steps)
+[   0% ] preload_reimporting_scene | Analyzing scene [empty]
+[  50% ] preload_reimporting_scene | Preparation done.
+[ DONE ] preload_reimporting_scene
+
+[   0% ] reimport | overworld_telanico-kaykit-atlas.png
+[  33% ] reimport | overworld.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  66% ] reimport | Finalizing Asset Import...
+[ DONE ] reimport
+
+[   0% ] reimport | Started (Re)Importing Assets (2 steps)
+[   0% ] reimport | Executing post-reimport operations...
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[ DONE ] loading_editor_layout
+
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_STORY_SESSION_PASS 61 assertions
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_SOURCE_PARITY_PASS 1116 comparisons across 16 cases
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_V2_READY imported world, animated courier, 15 sites
+TELANICO_WORLD_STORY_PASS 29 assertions; physical walking, bridge, scheduled ferry, tube, explicit office and modal lock
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_V2_READY imported world, animated courier, 15 sites
+PLAYTHROUGH operations 13
+PLAYTHROUGH contracts 39
+PLAYTHROUGH trader 50
+PLAYTHROUGH vat 61
+PLAYTHROUGH fx 74
+PLAYTHROUGH lc 102
+PLAYTHROUGH settlements 114
+TELANICO_PLAYTHROUGH_PASS 104 assertions; victory at 13:54
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_V2_READY imported world, animated courier, 15 sites
+PLAYTHROUGH finance 7
+PLAYTHROUGH finance 8
+PLAYTHROUGH compliance 59
+TELANICO_OPTIONAL_OFFICES_PASS 36 assertions; actual Trade Finance/repeat and Compliance/chocolate/assistant/training
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_V2_READY imported world, animated courier, 15 sites
+TELANICO_V2_READY imported world, animated courier, 15 sites
+TELANICO_STORY_UI_PASS landscape HUD/invoice, deadline result and real scene restart
+PASS iPhone Chrome — music resume, trusted-touch retry, independent SFX
+PASS Desktop Chrome Web — music resume, trusted-touch retry, independent SFX
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_V2_READY imported world, animated courier, 15 sites
+TELANICO_TEST_OK all 15 reachable; physical district entrances/slopes; Follow; water/wall rejection; bridge, boat, tube, rig, cancellation
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+TELANICO_V2_READY imported world, animated courier, 15 sites
+TELANICO_ATMOSPHERE_PASS NE sun, cached sky, AO/fog, 38 trees/36 bushes, shared materials, correct UI effects
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] savepack | Started Packing (102 steps)
+[   1% ] savepack | Storing File: res://.godot/imported/original_theme.mp3-61e208a8bee49bf3d8696d3e4dc66b81.mp3str
+[   1% ] savepack | Storing File: res://assets/audio/music/original_theme.mp3.import
+[   2% ] savepack | Storing File: res://.godot/imported/bird_takeoff_soft_purr.wav-4ef690fc0e01c36f7eeb400fbcd88973.sample
+[   2% ] savepack | Storing File: res://assets/audio/sfx/bird_takeoff_soft_purr.wav.import
+[   3% ] savepack | Storing File: res://.godot/imported/cooper_chponk.wav-9a998c2586b86b4071631ef133f10655.sample
+[   3% ] savepack | Storing File: res://assets/audio/sfx/cooper_chponk.wav.import
+[   4% ] savepack | Storing File: res://.godot/imported/door_close_soft.wav-16b15a52eb9fef77e02030d7f5fc0a4d.sample
+[   4% ] savepack | Storing File: res://assets/audio/sfx/door_close_soft.wav.import
+[   5% ] savepack | Storing File: res://.godot/imported/door_open_office.wav-5630b323e998a8e5fce8e167b3974bb8.sample
+[   5% ] savepack | Storing File: res://assets/audio/sfx/door_open_office.wav.import
+[   6% ] savepack | Storing File: res://.godot/imported/door_open_playful.wav-54d69e2867d1e3708282c8b76c8bac3c.sample
+[   6% ] savepack | Storing File: res://assets/audio/sfx/door_open_playful.wav.import
+[   7% ] savepack | Storing File: res://.godot/imported/menu_flip.wav-91f611c28789a18dbbae417e3490c91d.sample
+[   7% ] savepack | Storing File: res://assets/audio/sfx/menu_flip.wav.import
+[   9% ] savepack | Storing File: res://.godot/imported/select_woosh.wav-c2bdedd9550ad7e57775589d00bab844.sample
+[   9% ] savepack | Storing File: res://assets/audio/sfx/select_woosh.wav.import
+[  10% ] savepack | Storing File: res://.godot/imported/swallow_takeoff.wav-779f02032cc17138446122b3ff0433f0.sample
+[  10% ] savepack | Storing File: res://assets/audio/sfx/swallow_takeoff.wav.import
+[  11% ] savepack | Storing File: res://.godot/imported/tube_water_flush.wav-888d70116195a4457921260854f53460.sample
+[  11% ] savepack | Storing File: res://assets/audio/sfx/tube_water_flush.wav.import
+[  12% ] savepack | Storing File: res://assets/generated/build_info.json
+[  13% ] savepack | Storing File: res://.godot/imported/courier.glb-62626092beeb1316b06222b796b4d756.scn
+[  13% ] savepack | Storing File: res://assets/generated/courier.glb.import
+[  14% ] savepack | Storing File: res://.godot/imported/courier_rogue_texture.png-24d73b5819546783914fa7aa3da12047.ctex
+[  14% ] savepack | Storing File: res://assets/generated/courier_rogue_texture.png.import
+[  15% ] savepack | Storing File: res://.godot/imported/overworld.glb-a491d9d0e153b3f5a6c4ac22eb5919d3.scn
+[  15% ] savepack | Storing File: res://assets/generated/overworld.glb.import
+[  17% ] savepack | Storing File: res://.godot/imported/overworld_telanico-kaykit-atlas.png-a3f26243b5f45f1dc5a3b39743c1caee.ctex
+[  17% ] savepack | Storing File: res://assets/generated/overworld_telanico-kaykit-atlas.png.import
+[  18% ] savepack | Storing File: res://shaders/water_haze.gdshader
+[  19% ] savepack | Storing File: res://assets/generated/world_v2.json
+[  20% ] savepack | Storing File: res://.godot/imported/cooper.png-644c7d65b03eff84f160b888c5eb98e2.ctex
+[  20% ] savepack | Storing File: res://assets/mascots/TOP_DOWN/cooper.png.import
+[  21% ] savepack | Storing File: res://.godot/imported/eagle.png-6d835bee605abec2ebf655879ff06f59.ctex
+[  21% ] savepack | Storing File: res://assets/mascots/TOP_DOWN/eagle.png.import
+[  22% ] savepack | Storing File: res://.godot/imported/riley.png-acebe005fb980c7cc8d90d144e23b19e.ctex
+[  22% ] savepack | Storing File: res://assets/mascots/TOP_DOWN/riley.png.import
+[  23% ] savepack | Storing File: res://.godot/imported/wolf.png-48c69780c6dab626a448b0d7f7c1accd.ctex
+[  23% ] savepack | Storing File: res://assets/mascots/TOP_DOWN/wolf.png.import
+[  25% ] savepack | Storing File: res://.godot/imported/confident_wolf_in_leather_and_denim.png-e4fc089d624efd71ace94a67b75bf310.ctex
+[  25% ] savepack | Storing File: res://assets/mascots/confident_wolf_in_leather_and_denim.png.import
+[  26% ] savepack | Storing File: res://.godot/imported/fennec_fox_business_professional.png-c74970b39ee5f69c65ecbdd7c345a8d2.ctex
+[  26% ] savepack | Storing File: res://assets/mascots/fennec_fox_business_professional.png.import
+[  27% ] savepack | Storing File: res://.godot/imported/friendly_badger_in_denim_and_sneakers.png-062c9170252b2bbb22c1492fed9b0683.ctex
+[  27% ] savepack | Storing File: res://assets/mascots/friendly_badger_in_denim_and_sneakers.png.import
+[  28% ] savepack | Storing File: res://.godot/imported/professional_beaver_tax_advisor.png-ead6cf0aa46b7474f6af9c6e8b7b05c4.ctex
+[  28% ] savepack | Storing File: res://assets/mascots/professional_beaver_tax_advisor.png.import
+[  29% ] savepack | Storing File: res://.godot/imported/professional_otter_finance_consultant.png-bbd75ae598c91050efb69b1d1cdb3064.ctex
+[  29% ] savepack | Storing File: res://assets/mascots/professional_otter_finance_consultant.png.import
+[  30% ] savepack | Storing File: res://.godot/imported/professional_red_panda_archivist.png-77ecf5ec4ef33ecc3966f83bc9fd5f90.ctex
+[  30% ] savepack | Storing File: res://assets/mascots/professional_red_panda_archivist.png.import
+[  32% ] savepack | Storing File: res://.godot/imported/professional_sloth_with_binder.png-f19fa4d53d0847980e646959ed6b9721.ctex
+[  32% ] savepack | Storing File: res://assets/mascots/professional_sloth_with_binder.png.import
+[  33% ] savepack | Storing File: res://.godot/imported/professional_tortoise_consultant_with_laptop.png-d3732abe1034bf3fbc393c5548059bca.ctex
+[  33% ] savepack | Storing File: res://assets/mascots/professional_tortoise_consultant_with_laptop.png.import
+[  33% ] savepack | Storing File: res://.godot/imported/suited_bald_eagle_welcoming_gesture.png-c1001acba464a028454b6aa4c643cb4e.ctex
+[  33% ] savepack | Storing File: res://assets/mascots/suited_bald_eagle_welcoming_gesture.png.import
+[  34% ] savepack | Storing File: res://.godot/imported/background_archive_hall.png-7b6783651951faad3313fee377393ece.ctex
+[  34% ] savepack | Storing File: res://assets/story_scenes/background_archive_hall.png.import
+[  35% ] savepack | Storing File: res://.godot/imported/background_harbor_office.png-fcbea1d7e938d4587545dab060cccdbb.ctex
+[  35% ] savepack | Storing File: res://assets/story_scenes/background_harbor_office.png.import
+[  36% ] savepack | Storing File: res://.godot/imported/foreground_counter_a.png-05c54263f09cf25ad830edf4215ef5f1.ctex
+[  36% ] savepack | Storing File: res://assets/story_scenes/foreground_counter_a.png.import
+[  37% ] savepack | Storing File: res://.godot/imported/foreground_counter_b.png-96d8947a96d204103d58f1bbeb5d7b63.ctex
+[  37% ] savepack | Storing File: res://assets/story_scenes/foreground_counter_b.png.import
+[  39% ] savepack | Storing File: res://.godot/imported/foreground_counter_c.png-5c3a582ecdb4f244d1f9270722716802.ctex
+[  39% ] savepack | Storing File: res://assets/story_scenes/foreground_counter_c.png.import
+[  40% ] savepack | Storing File: res://.godot/imported/grand_fantasy_contracts_hall.png-a50e5c657f9a78d21ab413be6a023613.ctex
+[  40% ] savepack | Storing File: res://assets/story_scenes/grand_fantasy_contracts_hall.png.import
+[  41% ] savepack | Storing File: res://.godot/imported/grand_neo_classical_compliance_hall.png-d3de960a0002c562528da2afa3c8eea5.ctex
+[  41% ] savepack | Storing File: res://assets/story_scenes/grand_neo_classical_compliance_hall.png.import
+[  42% ] savepack | Storing File: res://.godot/imported/navy_and_gold_harbor_hall.png-3992377875834f25e434b2d4c6cb3153.ctex
+[  42% ] savepack | Storing File: res://assets/story_scenes/navy_and_gold_harbor_hall.png.import
+[  43% ] savepack | Storing File: res://.godot/imported/opulent_compass_treasury_study.png-e1a8d5d927b90748b26355a17db7c4e3.ctex
+[  43% ] savepack | Storing File: res://assets/story_scenes/opulent_compass_treasury_study.png.import
+[  44% ] savepack | Storing File: res://.godot/imported/ornate_nautical_steampunk_reception_desk.png-823132c789bafa6d217f5207c468ec54.ctex
+[  44% ] savepack | Storing File: res://assets/story_scenes/ornate_nautical_steampunk_reception_desk.png.import
+[  45% ] savepack | Storing File: res://.godot/imported/ornate_navy_and_gold_executive_desk.png-99837051f49c0e969a9d96903fdd6cf8.ctex
+[  45% ] savepack | Storing File: res://assets/story_scenes/ornate_navy_and_gold_executive_desk.png.import
+[  47% ] savepack | Storing File: res://.godot/imported/ornate_navy_and_gold_reception_desk.png-c4a15da60a2272c5e3d7fc47ef0911be.ctex
+[  47% ] savepack | Storing File: res://assets/story_scenes/ornate_navy_and_gold_reception_desk.png.import
+[  48% ] savepack | Storing File: res://.godot/imported/ornate_navy_finance_reception_desk.png-afb8b771ffa10688db9e167d8d7f28a0.ctex
+[  48% ] savepack | Storing File: res://assets/story_scenes/ornate_navy_finance_reception_desk.png.import
+[  49% ] savepack | Storing File: res://.godot/imported/button_assistant.png-f2a226f34fded367602442527dd59752.ctex
+[  49% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/button_assistant.png.import
+[  50% ] savepack | Storing File: res://.godot/imported/button_close_invoice.png-db8761d29f0c3546ae762819566bae44.ctex
+[  50% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/button_close_invoice.png.import
+[  51% ] savepack | Storing File: res://.godot/imported/button_diorama_view.png-a82c55b056ad5820b8cd285d4ddf2cf8.ctex
+[  51% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/button_diorama_view.png.import
+[  52% ] savepack | Storing File: res://.godot/imported/button_menu.png-0c05ca3221a6730b54c5dae1b6f7116b.ctex
+[  52% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/button_menu.png.import
+[  54% ] savepack | Storing File: res://.godot/imported/clock_analog_blue.png-f81cd92722afb1fa5713068caf8d1322.ctex
+[  54% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/clock_analog_blue.png.import
+[  55% ] savepack | Storing File: res://.godot/imported/clock_analog_bright_blue.png-3ff151ea655787e73d96f577195ab295.ctex
+[  55% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/clock_analog_bright_blue.png.import
+[  56% ] savepack | Storing File: res://.godot/imported/clock_analog_large.png-13a6debe5d7867a48f6c701a623816d6.ctex
+[  56% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/clock_analog_large.png.import
+[  57% ] savepack | Storing File: res://.godot/imported/clock_analog_orange.png-14d8cfc6eff51fe1b9cde24eb3ced345.ctex
+[  57% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/clock_analog_orange.png.import
+[  58% ] savepack | Storing File: res://.godot/imported/hud_assistant_button.png-245ffc61f60d7e142244571b0acb709a.ctex
+[  58% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/hud_assistant_button.png.import
+[  59% ] savepack | Storing File: res://.godot/imported/hud_assistant_rabbit_background_square.png-3e5f3a9c6a997f6fd34f6d3dbaca41f0.ctex
+[  59% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/hud_assistant_rabbit_background_square.png.import
+[  60% ] savepack | Storing File: res://.godot/imported/hud_assistant_static_cutout.png-f127012e86ecd9574ea5ba2f0f01aedf.ctex
+[  60% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/hud_assistant_static_cutout.png.import
+[  62% ] savepack | Storing File: res://.godot/imported/hud_assistant_video_frame.png-dc095b0278d4bf0db4c1d7243c773d1f.ctex
+[  62% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/hud_assistant_video_frame.png.import
+[  63% ] savepack | Storing File: res://.godot/imported/hud_clock_blank.png-e3a92c2aefa6019936c6c7cfaa86b3bf.ctex
+[  63% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/hud_clock_blank.png.import
+[  64% ] savepack | Storing File: res://.godot/imported/hud_diorama_button.png-0e1a5cd1e02b88b821c7c50afc4a64ef.ctex
+[  64% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/hud_diorama_button.png.import
+[  65% ] savepack | Storing File: res://.godot/imported/hud_invoice_button.png-28eab110d254a50d7e97211511b6c28a.ctex
+[  65% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/hud_invoice_button.png.import
+[  66% ] savepack | Storing File: res://.godot/imported/hud_menu_button.png-b8c52f827cacb237faed4c55d7a001c1.ctex
+[  66% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/hud_menu_button.png.import
+[  66% ] savepack | Storing File: res://.godot/imported/rabbit_approval.png-c274d3525ef572ae0b7c0bd283c75dcc.ctex
+[  66% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/rabbit_approval.png.import
+[  67% ] savepack | Storing File: res://.godot/imported/rabbit_carrot.png-3bf748579f8d6e63067e1f2742678e26.ctex
+[  67% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/rabbit_carrot.png.import
+[  69% ] savepack | Storing File: res://.godot/imported/rabbit_clock.png-7802730f0add16fdd2992f8e7bc39b2d.ctex
+[  69% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/rabbit_clock.png.import
+[  70% ] savepack | Storing File: res://.godot/imported/rabbit_documents.png-59cae79376901ebe9aac3f470eb64812.ctex
+[  70% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/rabbit_documents.png.import
+[  71% ] savepack | Storing File: res://.godot/imported/rabbit_greeting.png-1e19f155a6f22fbc7a2a38d57095e983.ctex
+[  71% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/rabbit_greeting.png.import
+[  72% ] savepack | Storing File: res://.godot/imported/rabbit_thinking.png-563d77f201770b718aee37778a0e17cd.ctex
+[  72% ] savepack | Storing File: res://assets/ui/HUD/RUNTIME/rabbit_thinking.png.import
+[  73% ] savepack | Storing File: res://.godot/imported/invoice_blank_base.png-1ee2b39fdeb6fcf74d3534106bb9d346.ctex
+[  73% ] savepack | Storing File: res://assets/ui/INVOICE/RUNTIME/invoice_blank_base.png.import
+[  74% ] savepack | Storing File: res://.godot/imported/invoice_company_stamp_blue_mockup.png-bb21eed8a413715b525bb5301b3184c3.ctex
+[  74% ] savepack | Storing File: res://assets/ui/INVOICE/RUNTIME/invoice_company_stamp_blue_mockup.png.import
+[  76% ] savepack | Storing File: res://.godot/imported/invoice_markup_red_check.png-9eb2cd619c101e7469e866a418b6c06f.ctex
+[  76% ] savepack | Storing File: res://assets/ui/INVOICE/RUNTIME/invoice_markup_red_check.png.import
+[  77% ] savepack | Storing File: res://.godot/imported/invoice_markup_red_circle.png-b251bdd01e02f56010f656b025970674.ctex
+[  77% ] savepack | Storing File: res://assets/ui/INVOICE/RUNTIME/invoice_markup_red_circle.png.import
+[  78% ] savepack | Storing File: res://.godot/imported/invoice_markup_red_question.png-d69316bca363d3547dbb56caa467bacc.ctex
+[  78% ] savepack | Storing File: res://assets/ui/INVOICE/RUNTIME/invoice_markup_red_question.png.import
+[  79% ] savepack | Storing File: res://.godot/imported/invoice_signature_blue_sample.png-37d96ea89582a0d2f670138a337bb168.ctex
+[  79% ] savepack | Storing File: res://assets/ui/INVOICE/RUNTIME/invoice_signature_blue_sample.png.import
+[  80% ] savepack | Storing File: res://.godot/exported/133200997/export-3ad5c15c4f3250da0cc7c1af1770d85f-main.scn
+[  81% ] savepack | Storing File: res://.godot/exported/133200997/export-b902d2aed0a3c949f2831c3ed33e0729-story_game.scn
+[  82% ] savepack | Storing File: res://scripts/story/button_perimeter.gdc
+[  84% ] savepack | Storing File: res://scripts/story/canonical_presentation.gdc
+[  85% ] savepack | Storing File: res://scripts/story/story_clock.gdc
+[  86% ] savepack | Storing File: res://scripts/story/story_game.gdc
+[  87% ] savepack | Storing File: res://scripts/story/story_session.gdc
+[  88% ] savepack | Storing File: res://scripts/story/time_loss_titles.gdc
+[  89% ] savepack | Storing File: res://scripts/story/world_story_adapter.gdc
+[  90% ] savepack | Storing File: res://scripts/campus_atmosphere.gdc
+[  92% ] savepack | Storing File: res://scripts/map_smoke_test.gdc
+[  93% ] savepack | Storing File: res://scripts/telanico_invoice_document.gdc
+[  94% ] savepack | Storing File: res://scripts/world_routes.gdc
+[  95% ] savepack | Storing File: res://scripts/world_v2.gdc
+[  96% ] savepack | Storing File: res://shaders/bush_breeze.gdshader
+[  97% ] savepack | Storing File: res://shaders/campus_sky.gdshader
+[  97% ] savepack | Storing File: res://scenes/main.tscn.remap
+[  97% ] savepack | Storing File: res://scenes/story_game.tscn.remap
+[  97% ] savepack | Storing File: res://scripts/story/button_perimeter.gd.remap
+[  97% ] savepack | Storing File: res://scripts/story/canonical_presentation.gd.remap
+[  97% ] savepack | Storing File: res://scripts/story/story_clock.gd.remap
+[  97% ] savepack | Storing File: res://scripts/story/story_game.gd.remap
+[  97% ] savepack | Storing File: res://scripts/story/story_session.gd.remap
+[  97% ] savepack | Storing File: res://scripts/story/time_loss_titles.gd.remap
+[  97% ] savepack | Storing File: res://scripts/story/world_story_adapter.gd.remap
+[  97% ] savepack | Storing File: res://scripts/campus_atmosphere.gd.remap
+[  97% ] savepack | Storing File: res://scripts/map_smoke_test.gd.remap
+[  97% ] savepack | Storing File: res://scripts/telanico_invoice_document.gd.remap
+[  97% ] savepack | Storing File: res://scripts/world_routes.gd.remap
+[  97% ] savepack | Storing File: res://scripts/world_v2.gd.remap
+[  97% ] savepack | Storing File: res://.godot/global_script_class_cache.cfg
+[  97% ] savepack | Storing File: res://.godot/uid_cache.bin
+[  97% ] savepack | Storing File: res://project.binary
+[ DONE ] savepack
+
+BUILD_STAMP_OK c1eb315b07ff51e5529aff5084a8dfd6be65e9da
+WEB_OK: 10 local files; single-threaded; WASM and PCK valid

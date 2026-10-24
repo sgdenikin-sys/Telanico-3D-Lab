@@ -38,5 +38,12 @@ AudioStreamMP3/WAV, not sky/foliage resources. The fixture now isolates audio;
 existing opening/restart/audio regressions still exercise real playback. Three
 isolated repeats passed cleanly. Product audio code was not changed.
 
-Validation and publication: pending final exact-runtime browser checks. See
-companion evidence receipt when complete. Physical iPhone Safari is untested.
+Validation: complete Blender/GLB, all native story/source-parity/transport/UI/audio
+and atmosphere gates passed. Native held-press feedback and UI checks passed after
+the final button-down refinement. Exact final source 4909d8f passed desktop and
+full 844x390 trusted-touch story (both tubes, all canonical offices, victory 13:54,
+clean Restart). No runtime/resource errors, one music start. Actual world controls
+measured factor 0.8 on touch, 1.0 on desktop, no world perimeter nodes. Shader
+compilation and final visual review passed; 38 trees/36 bushes stay clear of routes.
+Evidence: evidence/atmosphere-*. Publication status: atmosphere-results.json.
+Physical iPhone Safari is untested.
