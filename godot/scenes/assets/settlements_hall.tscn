@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/generated/settlements_hall.glb" id="1_hall"]
+
+[sub_resource type="CylinderShape3D" id="Cylinder_podium"]
+radius = 5.8
+height = 1.43
+
+[sub_resource type="CylinderShape3D" id="Cylinder_hall"]
+radius = 5.42
+height = 6.4
+
+[sub_resource type="CylinderShape3D" id="Cylinder_dome"]
+radius = 4.5
+height = 8.7
+
+[sub_resource type="BoxShape3D" id="Box_wing"]
+size = Vector3(5.7, 6.2, 7)
+
+[node name="SettlementsHall" type="Node3D"]
+metadata/asset_units = "metres"
+metadata/front = "+Z"
+metadata/usage = "Standalone exterior landmark; optional coarse building collisions. Ground/platform/stair navigation belongs to the host scene."
+
+[node name="Architecture" parent="." instance=ExtResource("1_hall")]
+
+[node name="OptionalBuildingCollision" type="StaticBody3D" parent="."]
+
+[node name="Podium" type="CollisionShape3D" parent="OptionalBuildingCollision"]
+position = Vector3(0, 0.715, 0)
+shape = SubResource("Cylinder_podium")
+
+[node name="Rotunda" type="CollisionShape3D" parent="OptionalBuildingCollision"]
+position = Vector3(0, 4.63, 0)
+shape = SubResource("Cylinder_hall")
+
+[node name="Dome" type="CollisionShape3D" parent="OptionalBuildingCollision"]
+position = Vector3(0, 12.0, 0)
+shape = SubResource("Cylinder_dome")
+
+[node name="WestWing" type="CollisionShape3D" parent="OptionalBuildingCollision"]
+position = Vector3(-8.35, 3.5, -0.5)
+shape = SubResource("Box_wing")
+
+[node name="EastWing" type="CollisionShape3D" parent="OptionalBuildingCollision"]
+position = Vector3(8.35, 3.5, -0.5)
+shape = SubResource("Box_wing")
