@@ -1,0 +1,156 @@
+{
+  "source_commit": "af5af06987f6b801c0d0ea58dfa1e9a0e624972c",
+  "glb_sha256": "2356bf19576414afaf6a9a96bac18d4a09fbba30af236867b58ed0c861ecd57e",
+  "files": [
+    {
+      "path": "blender/generated/settlements_hall/settlements_hall.blend",
+      "bytes": 4527988,
+      "sha256": "6d3db83980edee7a7cd5523f85956059e8aa483f66f40ecd51e76ba066aaa6d2"
+    },
+    {
+      "path": "godot/assets/generated/settlements_hall.glb",
+      "bytes": 2093408,
+      "sha256": "2356bf19576414afaf6a9a96bac18d4a09fbba30af236867b58ed0c861ecd57e"
+    },
+    {
+      "path": "blender/generated/settlements_hall/hero.png",
+      "bytes": 3213215,
+      "sha256": "28fda9f4c313727c67bb163948b4a20507541a8594ceb518fd92c8aa7c6d918e"
+    },
+    {
+      "path": "blender/generated/settlements_hall/front.png",
+      "bytes": 1990379,
+      "sha256": "949e18f4e3b735d7e5afe15ae465102e5dfe921e5b080771fdec72563991aad9"
+    },
+    {
+      "path": "blender/generated/settlements_hall/rear.png",
+      "bytes": 1939863,
+      "sha256": "ae4c693f193d8c020e26a06ff8a3adf86c871a49c081ade2c2b796442008b64a"
+    },
+    {
+      "path": "blender/generated/settlements_hall/detail.png",
+      "bytes": 2325596,
+      "sha256": "9e652656f8daea8b9db0f205838856d4899f3c39231be759e42dfc5ca4489aed"
+    },
+    {
+      "path": "blender/generated/settlements_hall/animation_demo.mp4",
+      "bytes": 443281,
+      "sha256": "3dec9098b83859d8fda277c6cf06ec7d91c97568618ac4dca6bc6b3f325fc55d"
+    },
+    {
+      "path": "blender/generated/settlements_hall/animation_demo.gif",
+      "bytes": 1366624,
+      "sha256": "1494ca30d755e844cc79766c55600aadb8b66dfde44a95f859be575bcdc7354f"
+    },
+    {
+      "path": "blender/generated/settlements_hall/asset_stats.json",
+      "bytes": 1225,
+      "sha256": "7722eda98dab793844c1beddde4a162678dd7c426b1c696d82d29c468faf2ced"
+    },
+    {
+      "path": "blender/generated/settlements_hall/glb_validation.json",
+      "bytes": 635,
+      "sha256": "6996a52d1a6db8d5e2807d8e7071fd1553d0a26e617df9d22f093e15c5ec1252"
+    },
+    {
+      "path": "blender/generated/settlements_hall/godot_animation_validation.json",
+      "bytes": 776,
+      "sha256": "2b593b29f8e0f56399dcff8d037e181672541aebe0ca6c7d2c17534ca73ddff4"
+    },
+    {
+      "path": "blender/generated/settlements_hall/round_trip_animation_report.json",
+      "bytes": 3550,
+      "sha256": "8b5e30f133caba6843b46aa6ea6bcb67e9d7eb4ce67dd5702c1a4f60339a985d"
+    },
+    {
+      "path": "blender/generated/settlements_hall/hand_edit_export_validation.json",
+      "bytes": 635,
+      "sha256": "54dceac0462965fe7ba101ad8bfb66526ce75fff38dfb63933c3bc16c20fd6e7"
+    },
+    {
+      "path": "blender/generated/settlements_hall/evidence/blender-build.log",
+      "bytes": 293896,
+      "sha256": "3996cb649fdc2c85aa05c553440c101592fe74890015db0d496c3a64a0b74cbe"
+    },
+    {
+      "path": "blender/generated/settlements_hall/evidence/godot-check.log",
+      "bytes": 668,
+      "sha256": "c98341345e079e511711652ad1494a3f4acbde7a48c47a0934566699129b7d72"
+    },
+    {
+      "path": "blender/generated/settlements_hall/evidence/godot-import.log",
+      "bytes": 2696,
+      "sha256": "b321879fce1b1ba6c4b6f1aa8a403c4756aa12f60baae609d454af9db57651a5"
+    },
+    {
+      "path": "blender/generated/settlements_hall/evidence/godot-preview.log",
+      "bytes": 155,
+      "sha256": "150af8630bae346c4e4d859630f55e9937279a3ab9eeb7dee731218643c64c53"
+    },
+    {
+      "path": "blender/scripts/build_settlements_hall.py",
+      "bytes": 46912,
+      "sha256": "05ca49d4219b3833f7efc193313a62ac3f0a8d8215475a2ce512715a407f3b7c"
+    },
+    {
+      "path": "blender/scripts/export_settlements_hall.py",
+      "bytes": 1790,
+      "sha256": "52e8287557b9b6f4634305505c38e0c822d6ff6ea62a7689a84f62ae2e9b7709"
+    },
+    {
+      "path": "blender/scripts/render_settlements_hall_demo.py",
+      "bytes": 3959,
+      "sha256": "249549fe481bd9940e64673aca4f136360d6d5dceb73b3d462bedbb526e5f526"
+    },
+    {
+      "path": "blender/scripts/build_smoke_test.py",
+      "bytes": 7886,
+      "sha256": "a4dd197a32f7f7df503b150ab00411564c3f132feee5821cdc7c855cdbe98705"
+    },
+    {
+      "path": "docs/assets/SETTLEMENTS_HALL.md",
+      "bytes": 9665,
+      "sha256": "4cfd9ebb8da450ef1e99cf281c4431016fb324e44fe73bf599d8bb22ed647ab9"
+    },
+    {
+      "path": "godot/scenes/assets/settlements_hall.tscn",
+      "bytes": 1729,
+      "sha256": "5d621bde55ccb88d6a83831d38913bd30c6fff6ef0ac2bd030db167bd7865de5"
+    },
+    {
+      "path": "godot/scenes/assets/settlements_hall_preview.tscn",
+      "bytes": 381,
+      "sha256": "f991e26503edbede9fe9ae0707320c645395479b4e2402f5d89109f5d98af1a8"
+    },
+    {
+      "path": "godot/scripts/settlements_hall_asset.gd",
+      "bytes": 1428,
+      "sha256": "2e4a14e13db006cc3197492a6980302d6f8b66a9a9039a66377efcf32b603383"
+    },
+    {
+      "path": "godot/scripts/settlements_hall_preview.gd",
+      "bytes": 3520,
+      "sha256": "01944675ead26af3fa5936fef287251835b057631d30d7698121a4b8f1cebdb8"
+    },
+    {
+      "path": "tools/check_settlements_hall.gd",
+      "bytes": 6481,
+      "sha256": "8fa7a31834e77606ebc9f452389da026e104a42655e6efda42cf3ad367aefbdd"
+    },
+    {
+      "path": "tools/validate_settlements_hall.py",
+      "bytes": 7140,
+      "sha256": "887870a1adc5f0454862efad4eb9266cbee90cd34ca7e75865131fc40253af5e"
+    },
+    {
+      "path": "tools/validate_glb.py",
+      "bytes": 1172,
+      "sha256": "6ad32eeb10f68966a59b93dff239ddc4fab7fc056e0aed55e8299a472e538104"
+    },
+    {
+      "path": "tools/package_settlements_hall.py",
+      "bytes": 9093,
+      "sha256": "b1b8713dfdc70888201abd91c5548ae94d2fa426fe51b5c3cee85d638eaf09ee"
+    }
+  ]
+}
