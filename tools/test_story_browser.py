@@ -13,10 +13,10 @@ from test_v2_browser import POINT
 DIALOGUE_PROGRESS = "JSON.stringify([s.time,s.modal,s.office,s.line_index,s.lines,s.invoice,s.controls.map(c=>[c.text,c.action,c.art,c.disabled])])"
 
 
-def exercise(browser, url, output, width, height, touch, full, landmarks_only=False, restart_only=False):
-    context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch,device_scale_factor=3 if touch else 1,
+def exercise(browser, url, output, width, height, touch, full, landmarks_only=False, restart_only=False,no_screenshots=False):
+    context = browser.new_context(viewport={"width":width,"height":height},has_touch=touch,device_scale_factor=1,
         **({'user_agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'} if touch else {}))
-    context.tracing.start(screenshots=False,snapshots=True,sources=False)
+    context.tracing.start(screenshots=False,snapshots=not no_screenshots,sources=False)
     page = context.new_page()
     page.add_init_script("""window.__RABBIT_EVENTS=[];
       setInterval(()=>{const h=document.querySelector('#vorgun-rabbit-animation');
@@ -148,7 +148,8 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
             page.evaluate(POINT,['sites',ident])
         assert not geometry()['outside'] and not geometry()['covered'], (ident,geometry())
 
-    def shot(name): page.screenshot(path=str(output/f'{name}-{width}.png'),timeout=120000)
+    def shot(name):
+        if not no_screenshots:page.screenshot(path=str(output/f'{name}-{width}.png'),timeout=120000)
     def finish_reply():
         while story()['line_index']<story()['lines']-1:click('CONTINUE >')
         # A new verified fact is reviewed after the NPC's last line, before choices.
@@ -167,7 +168,12 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         wait('(id)=>window.__TELANICO_STATE.selected===id&&window.__TELANICO_STATE.ui.Walk',target)
         nav('Walk')
         wait('(id)=>window.__TELANICO_STATE.current===id&&window.__TELANICO_STATE.state==="IDLE"',target)
-        assert story()['time']>before
+        # World arrival and story telemetry publish independently. Wait for the
+        # authoritative charged time as well, rather than comparing an old frame.
+        wait('(before)=>window.__TELANICO_STORY.time>before',before)
+        charged=page.evaluate('window.__TELANICO_STATE.last_trip.minutes')
+        assert story()['time']==before+charged, (target,before,story()['time'],charged)
+        print('STORY_TRAVEL_CHARGE_PASS',target,before,story()['time'],charged,flush=True)
     def transfer():
         # Tube state may last less than Playwright's polling interval on WebGL.
         # Assert the observable completed journey rather than requiring a sampled
@@ -331,6 +337,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory',nargs='?',default='build/web')
     parser.add_argument('--url')
+    parser.add_argument('--no-screenshots',action='store_true',help='Use separate visual evidence; avoid repeated software-WebGL readbacks in the full functional suite')
     parser.add_argument('--case',type=int,choices=[1280,844,667])
     parser.add_argument('--landmarks-only',action='store_true')
     parser.add_argument('--restart-only',action='store_true')
@@ -352,7 +359,7 @@ def main():
             cases=[(1280,720,False,False),(844,390,True,True)]
             if args.landmarks_only:cases.append((667,375,True,False))
             for width,height,touch,full in cases:
-                if args.case is None or args.case==width:exercise(browser,url,output,width,height,touch,full,args.landmarks_only,args.restart_only)
+                if args.case is None or args.case==width:exercise(browser,url,output,width,height,touch,full,args.landmarks_only,args.restart_only,args.no_screenshots)
             browser.close()
     finally:
         if server:server.shutdown();server.server_close()
