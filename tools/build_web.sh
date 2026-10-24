@@ -43,6 +43,13 @@ if rg -n 'SCRIPT ERROR:|Assertion failed' build/logs/import.log build/logs/viewe
   exit 1
 fi
 rg -q 'TELANICO_TEST_OK' build/logs/viewer.log
+timeout 120 "$godot_bin" --headless --path godot --script res://tests/test_atmosphere.gd \
+  2>&1 | tee build/logs/atmosphere-native.log
+if rg -n 'SCRIPT ERROR:|Assertion failed|ERROR:' build/logs/atmosphere-native.log; then
+  echo 'Atmosphere/UI regression failed' >&2
+  exit 1
+fi
+rg -q 'TELANICO_ATMOSPHERE_PASS' build/logs/atmosphere-native.log
 "$godot_bin" --headless --path godot --export-release Web ../build/web/index.html \
   2>&1 | tee build/logs/export.log
 mkdir -p build/web/media

@@ -16,8 +16,10 @@ func run():
     assert(world.world.get_node("LowWaterHaze").cast_shadow==GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
     var bushes=world.world.find_children("Soft Canopy Bush*","MeshInstance3D",true,false)
     assert(bushes.size()==36)
+    assert(world.world.get_node("InstancedBushCrowns").multimesh.instance_count==36)
     var material=bushes[0].material_override
     for bush in bushes:
+        assert(not bush.visible,"Source nodes must not double-draw the instanced crowns")
         assert(bush.material_override==material,"Share the wind material")
         assert(bush.get_child_count()==0,"Decoration must not add path blockers")
         assert(bush.cast_shadow==GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
