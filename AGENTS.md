@@ -36,8 +36,8 @@ confidence-building.**
 - **Smallest patch:** Fix only the requested behavior. Do not opportunistically
   refactor other UI, game logic, assets, releases or tooling.
 - **Finite verification budget for a normal UI patch:** At most ONE necessary
-  Godot import/build smoke check and ONE targeted browser/viewport check for
-  the affected screen (iPhone landscape about 844x390). If a relevant check
+  Godot import/build smoke check and ONE targeted browser/viewport pass covering
+  only the affected UI screens (iPhone landscape about 844x390). If a relevant check
   fails because of the patch, make at most ONE focused correction and rerun
   only that failing check ONCE. Then stop and report evidence; do not begin
   another fix/test loop autonomously.
