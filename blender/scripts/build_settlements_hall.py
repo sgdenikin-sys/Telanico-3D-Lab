@@ -218,14 +218,15 @@ def window_bay(width=2.9, bottom=1.4, top=7.35, opening=1.5,
     wall_arch('Pier wall with arch opening', width, bottom, top, opening, sill, spring)
     arch_ring('Limestone archivolt', opening, sill, spring, .18, -.13, .04, M['ivory'])
     arch_ring('Bronze glazing frame', opening-.13, sill+.04, spring, .055, -.055, .09, M['bronze'])
-    pane = arch_slab('Blue entrance leaves' if door else 'Recessed tinted glass',
-                    opening-.20, sill+.08, spring, .07, .095,
+    transom = spring-.45
+    pane = arch_slab('Fixed blue arched fanlight' if door else 'Recessed tinted glass',
+                    opening-.20, transom if door else sill+.08, spring, .07, .15 if door else .095,
                     M['door'] if door else M['glass'])
     # An interior shadow well behind transparent glass, rather than opaque wall.
     arch_slab('Unlit interior reveal', opening-.22, sill+.08, spring, .48, .50, M['shadow'])
     block('Projecting stone sill', (0, -.14, sill-.04), (opening+.44, .48, .14), M['paving'], .02)
     mid = (sill+spring)/2
-    tube('Central mullion', [(0, -.018, sill+.1), (0, -.018, spring+opening/2-.12)], .026, M['brass'])
+    tube('Central mullion', [(0, -.018, transom if door else sill+.1), (0, -.018, spring+opening/2-.12)], .026, M['brass'])
     tube('Transom', [(-opening/2+.12, -.02, spring-.45), (opening/2-.12, -.02, spring-.45)], .025, M['brass'])
     # Two restrained radial bars in the fanlight.
     for sign in (-1, 1):
@@ -233,11 +234,21 @@ def window_bay(width=2.9, bottom=1.4, top=7.35, opening=1.5,
                              (sign*opening*.30, -.025, spring+opening*.32)], .021, M['brass'])
     if door:
         for sign in (-1, 1):
-            block('Door inset brass border', (sign*opening*.255, -.025, mid-.08),
-                  (opening*.39, .035, spring-sill-.28), M['brass'], .02)
-            block('Painted inset panel', (sign*opening*.255, -.048, mid-.08),
-                  (opening*.34, .035, spring-sill-.38), M['door'], .016)
+            start = len(ASSET)
+            leaf_width = (opening-.20)/2
+            leaf_low, leaf_high = sill+.08, transom-.025
+            mid_leaf = (leaf_low+leaf_high)/2
+            block('Hinged blue door leaf', (sign*leaf_width/2, .11, mid_leaf),
+                  (leaf_width-.012, .08, leaf_high-leaf_low), M['door'], .014)
+            block('Door inset brass border', (sign*leaf_width/2, -.025, mid_leaf),
+                  (leaf_width-.12, .035, leaf_high-leaf_low-.14), M['brass'], .007)
+            block('Painted inset panel', (sign*leaf_width/2, -.048, mid_leaf),
+                  (leaf_width-.20, .035, leaf_high-leaf_low-.22), M['door'], .007)
             tube('Door pull', [(sign*.13, -.16, sill+1.05), (sign*.13, -.16, sill+1.42)], .027, M['brass'], 6)
+            tube('Door meeting stile', [(sign*.018, -.018, leaf_low),
+                                        (sign*.018, -.018, leaf_high)], .018, M['brass'])
+            for part in ASSET[start:]:
+                part['motion_group'] = 'Door_Leaf_'+('L' if sign < 0 else 'R')
         compass('Entrance compass crest', (0, -.16, spring+.10), .39, M['brass'], vertical=True)
     else:
         tube('Lower transom', [(-opening/2+.12, -.02, mid-.25),
@@ -501,21 +512,125 @@ def build_entry():
         hanging_banner(x, y-.35, .58, .69, 1.48)
 
 
+def nla_action(owner, action, clip, active=False):
+    owner.animation_data_create()
+    owner.animation_data.action = None
+    track = owner.animation_data.nla_tracks.new()
+    track.name = clip
+    strip = track.strips.new(clip, 1, action)
+    strip.blend_type = 'REPLACE'
+    strip.extrapolation = 'NOTHING'
+    track.mute = not active
+
+
+def animated_cloth(parts, name, wind):
+    """One deformable object per fabric piece, including its attached decoration."""
+    bpy.ops.object.select_all(action='DESELECT')
+    for obj in parts:
+        obj.select_set(True)
+    ASSET[:] = [p for p in ASSET if p not in parts]
+    bpy.context.view_layer.objects.active = parts[0]
+    bpy.ops.object.join()
+    obj = bpy.context.object
+    obj.name = name
+    ASSET.append(obj)
+    obj['motion_group'] = name
+    obj['cloth_loop_seconds'] = 4.0
+    obj.shape_key_add(name='Basis')
+    cosine = obj.shape_key_add(name='Wind_Cosine')
+    plus = obj.shape_key_add(name='Wind_Sine_Positive')
+    minus = obj.shape_key_add(name='Wind_Sine_Negative')
+    for i, vertex in enumerate(obj.data.vertices):
+        a, b, vertical = wind(vertex.co)
+        cosine.data[i].co.y -= 2*a
+        plus.data[i].co.y += b
+        minus.data[i].co.y -= b
+        plus.data[i].co.z -= vertical
+        minus.data[i].co.z += vertical
+    keys = obj.data.shape_keys
+    action = bpy.data.actions.new(name+'__Wind')
+    keys.animation_data_create()
+    keys.animation_data.action = action
+    for frame in range(1, 122, 5):
+        angle = TAU*(frame-1)/60
+        cosine.value = (1-math.cos(angle))/2
+        plus.value = max(0, -math.sin(angle))
+        minus.value = max(0, math.sin(angle))
+        for key in (cosine, plus, minus):
+            key.keyframe_insert(data_path='value', frame=frame)
+    for curve in action.fcurves:
+        for point in curve.keyframe_points:
+            point.interpolation = 'LINEAR'
+    nla_action(keys, action, 'Flags_Wind-loop')
+    nla_action(keys, action, 'Hall_Demo-loop', active=True)
+    for key in (cosine, plus, minus):
+        key.value = 0
+    return obj
+
+
+def setup_door_rig():
+    """Two real vertical hinges, with independently addressable rotation tracks."""
+    col = bpy.data.collections['01 | Rotunda — twelve editable arch bays']
+    for side, sign in [('L', -1), ('R', 1)]:
+        hinge = bpy.data.objects.new('Door_Hinge_'+side, None)
+        col.objects.link(hinge)
+        hinge.location = (sign*.96, -5.17, 1.51)
+        hinge.empty_display_type = 'ARROWS'
+        hinge.empty_display_size = .25
+        hinge['door_hinge'] = True
+        bpy.context.view_layer.update()
+        for obj in ASSET:
+            if obj.get('motion_group') == 'Door_Leaf_'+side:
+                matrix = obj.matrix_world.copy()
+                obj.parent = hinge
+                obj.matrix_world = matrix
+        for clip, samples in [
+                ('Doors_Open', [(1, 0), (31, 100)]),
+                ('Doors_Close', [(1, 100), (31, 0)]),
+                ('Hall_Demo-loop', [(1, 0), (31, 100), (61, 100), (91, 0), (121, 0)])]:
+            action = bpy.data.actions.new('Door_'+side+'__'+clip)
+            hinge.animation_data_create()
+            hinge.animation_data.action = action
+            for frame, degrees in samples:
+                hinge.rotation_euler.z = sign*math.radians(degrees)
+                hinge.keyframe_insert(data_path='rotation_euler', index=2, frame=frame)
+            for curve in action.fcurves:
+                for point in curve.keyframe_points:
+                    point.handle_left_type = point.handle_right_type = 'AUTO_CLAMPED'
+            nla_action(hinge, action, clip, active=clip == 'Hall_Demo-loop')
+        hinge.rotation_euler.z = 0
+    scene = bpy.context.scene
+    scene.render.fps = 30
+    scene.frame_start, scene.frame_end = 1, 121
+    scene.frame_set(1)
+
+
 def hanging_banner(x, y, bottom, width, height):
+    start = len(ASSET)
     p = [(-width/2, bottom+height), (-width/2, bottom),
          (0, bottom+.15), (width/2, bottom), (width/2, bottom+height)]
-    obj = mesh('Hanging blue heraldic pennant', [(x+u, y, z) for u, z in p],
-               [tuple(range(5))], M['fabric'])
+    cols, rows = 4, 4
+    verts = [(x+(u-.5)*width, y, bottom+height-v*(height-.15*(1-abs(2*u-1))))
+             for v in [j/rows for j in range(rows+1)] for u in [i/cols for i in range(cols+1)]]
+    faces = [(j*(cols+1)+i, j*(cols+1)+i+1, (j+1)*(cols+1)+i+1, (j+1)*(cols+1)+i)
+             for j in range(rows) for i in range(cols)]
+    obj = mesh('Hanging blue heraldic pennant', verts, faces, M['fabric'], True)
     for a, b in zip(p, p[1:]+p[:1]):
         tube('Pennant stitched gold edging', [(x+a[0], y-.012, a[1]), (x+b[0], y-.012, b[1])], .014, M['brass'])
     compass('Pennant compass insignia', (x, y-.023, bottom+height*.58), width*.28, M['brass'], True)
-    return obj
+    def wind(co):
+        u = max(0, min(1, (co.x-x)/width+.5))
+        v = max(0, min(1, (bottom+height-co.z)/(height-.15*(1-abs(2*u-1)))))
+        return .055*v+.025*math.sin(math.pi*u)*math.sin(math.pi*v), \
+               .035*v+.018*math.sin(TAU*u)*math.sin(math.pi*v), .012*v
+    return animated_cloth(ASSET[start:], 'Flag_Entry_'+('L' if x < 0 else 'R'), wind)
 
 
 def build_flags():
     collection('06 | Flags and decorative metalwork')
     # Roof flagpoles follow the reference's asymmetric flag arrangement, while
-    # the architecture remains symmetrical. Cloth is a static modeled wave.
+    # the architecture remains symmetrical. Three small morph targets animate
+    # the existing wave; decorative hems and insignia deform with the cloth.
     for sign in (-1, 1):
         x, y, base = sign*8.55, 1.55, 6.65
         lathe('Flagpole stepped socket', [(.36, 0), (.36, .14), (.25, .20), (.22, .43)], M['brass'], 16, (x, y, base))
@@ -523,6 +638,7 @@ def build_flags():
         for z in (.58, 3.08, 4.90):
             lathe('Flagpole brass collar', [(.112, z), (.112, z+.10)], M['brass'], 12, (x, y, base))
         lathe('Flagpole spear', [(.07, 5.08), (.18, 5.30), (.075, 5.58), (.001, 5.70)], M['brass'], 10, (x, y, base))
+        start = len(ASSET)
         # Cloth runs toward the outer wing; total span stays within the plaza.
         w, h, cols, rows = 2.30, 1.38, 12, 6
         def flag_point(u, v, behind=0):
@@ -546,6 +662,12 @@ def build_flags():
             r = .33 if i%2 == 0 else .095
             verts.append(flag_point(center_u+math.sin(a)*r/w, center_v+math.cos(a)*r/h, -.018))
         mesh('Roof flag compass insignia', verts, [(0, 1+i, 1+(i+1)%16) for i in range(16)], M['brass'])
+        def wind(co):
+            u = max(0, min(1, (sign*(co.x-x)-.09)/w))
+            v = max(0, min(1, (base+4.89-.28*u-co.z)/(h-.09*math.sin(u*math.pi))))
+            phase = u*math.pi*2.3-v*.8
+            return .22*u*math.sin(phase), .22*u*math.cos(phase), .035*u*v
+        animated_cloth(ASSET[start:], 'Flag_Roof_'+('L' if sign < 0 else 'R'), wind)
 
 
 def build_plaza():
@@ -681,80 +803,117 @@ def configure_studio():
 
 
 def export_runtime(path):
-    """Material batches reduce hundreds of authoring parts to 11 draw surfaces.
-
-    Source remains untouched. Evaluation applies small bevels, recalculates
-    outward normals and preserves the authored flat/smooth shading choices.
+    """Batch static architecture and each rigid leaf separately; preserve cloth
+    morphs, hinge hierarchy and four named NLA clips on temporary export copies.
     """
     import bmesh
     scene = bpy.context.scene
-    export_col = bpy.data.collections.new('TEMP | Runtime material batches')
+    scene.frame_set(1)
+    export_col = bpy.data.collections.new('TEMP | Runtime export')
     scene.collection.children.link(export_col)
     depsgraph = bpy.context.evaluated_depsgraph_get()
     batches = defaultdict(list)
+    cloth = []
     for obj in ASSET:
-        batches[obj.data.materials[0]].append(obj)
-    runtime = []
+        if obj.data.shape_keys:
+            cloth.append(obj)
+        else:
+            if len(obj.data.materials) != 1:
+                raise ValueError('Keep one material per rigid authoring part: '+obj.name)
+            batches[(obj.data.materials[0], obj.get('motion_group', ''))].append(obj)
+    runtime, renamed, hinges = [], [], {}
     section_stats = defaultdict(int)
     source_triangles = 0
     for obj in ASSET:
-        data = obj.evaluated_get(depsgraph).to_mesh()
+        evaluated = obj.evaluated_get(depsgraph)
+        data = evaluated.to_mesh()
         data.calc_loop_triangles()
         count = len(data.loop_triangles)
         source_triangles += count
         section_stats[obj.users_collection[0].name] += count
-        obj.evaluated_get(depsgraph).to_mesh_clear()
-    for mat, objects in batches.items():
+        evaluated.to_mesh_clear()
+
+    def clone_animated(source):
+        name = source.name
+        source.name = name+'__authoring'
+        renamed.append((source, name))
+        obj = source.copy()
+        if source.type == 'MESH':
+            obj.data = source.data.copy()
+        obj.name = name
+        export_col.objects.link(obj)
+        runtime.append(obj)
+        return obj
+
+    for source in sorted({o.parent for o in ASSET if o.parent and o.parent.get('door_hinge')}, key=lambda o: o.name):
+        hinges[source] = clone_animated(source)
+    for source in cloth:
+        clone_animated(source)
+    for (mat, group), objects in batches.items():
+        parent = objects[0].parent if group else None
+        local_from_world = parent.matrix_world.inverted() if parent else None
         verts, faces, uvs, smooth = [], [], [], []
         for source in objects:
             evaluated = source.evaluated_get(depsgraph)
             data = evaluated.to_mesh()
             offset = len(verts)
-            verts += [source.matrix_world@v.co for v in data.vertices]
-            for p in data.polygons:
-                faces.append(tuple(offset+i for i in p.vertices))
-                smooth.append(p.use_smooth)
-                uvs.append([tuple(data.uv_layers.active.data[li].uv) for li in p.loop_indices])
+            transform = local_from_world @ source.matrix_world if parent else source.matrix_world
+            verts += [transform@v.co for v in data.vertices]
+            for face in data.polygons:
+                faces.append(tuple(offset+i for i in face.vertices))
+                smooth.append(face.use_smooth)
+                uvs.append([tuple(data.uv_layers.active.data[li].uv) for li in face.loop_indices])
             evaluated.to_mesh_clear()
-        data = bpy.data.meshes.new('Runtime | '+mat.name)
+        data = bpy.data.meshes.new((group or 'Static')+' | '+mat.name)
         data.from_pydata(verts, [], faces)
         data.materials.append(mat)
         data.update()
         uv = data.uv_layers.new(name='UVMap')
-        for p, coords, sm in zip(data.polygons, uvs, smooth):
-            p.use_smooth = sm
-            for li, coord in zip(p.loop_indices, coords):
+        for face, coords, sm in zip(data.polygons, uvs, smooth):
+            face.use_smooth = sm
+            for li, coord in zip(face.loop_indices, coords):
                 uv.data[li].uv = coord
         bm = bmesh.new()
         bm.from_mesh(data)
-        # Recalculate each manifold component; single-sided insignia/fabric retain
-        # their authored orientation and are double-sided at the material level.
         bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
         bm.to_mesh(data)
         bm.free()
-        obj = bpy.data.objects.new(mat.name, data)
+        obj = bpy.data.objects.new((group or 'Static')+'__'+mat.name, data)
         export_col.objects.link(obj)
+        if parent:
+            obj.parent = hinges[parent]
         runtime.append(obj)
     bpy.ops.object.select_all(action='DESELECT')
     for obj in runtime:
         obj.select_set(True)
-    bpy.context.view_layer.objects.active = runtime[0]
+    bpy.context.view_layer.objects.active = next(o for o in runtime if o.type == 'MESH')
     bpy.ops.export_scene.gltf(filepath=str(path), export_format='GLB',
-                              use_selection=True, export_apply=True,
+                              use_selection=True, export_apply=False,
                               export_cameras=False, export_lights=False,
                               export_extras=True, export_yup=True,
-                              export_materials='EXPORT', export_texcoords=True)
-    for obj in runtime:
+                              export_materials='EXPORT', export_texcoords=True,
+                              export_animations=True, export_animation_mode='NLA_TRACKS',
+                              export_anim_slide_to_zero=True, export_morph=True,
+                              export_morph_normal=True, export_morph_animation=True)
+    mesh_count = sum(o.type == 'MESH' for o in runtime)
+    for obj in reversed(runtime):
         data = obj.data
         bpy.data.objects.remove(obj, do_unlink=True)
-        bpy.data.meshes.remove(data)
+        if isinstance(data, bpy.types.Mesh):
+            bpy.data.meshes.remove(data)
+    for source, name in renamed:
+        source.name = name
     bpy.data.collections.remove(export_col)
     bpy.ops.object.select_all(action='DESELECT')
+    scene.frame_set(1)
     return {'source_triangles': source_triangles,
             'source_mesh_objects': len(ASSET),
             'unique_source_meshes': len({o.data for o in ASSET}),
-            'runtime_meshes': len(batches),
-            'material_count': len(M), 'section_triangles': dict(section_stats)}
+            'runtime_meshes': mesh_count,
+            'material_count': len(M), 'section_triangles': dict(section_stats),
+            'animated_door_hinges': 2, 'animated_fabric_objects': len(cloth),
+            'animation_clips': ['Doors_Open', 'Doors_Close', 'Flags_Wind-loop', 'Hall_Demo-loop'],
+            'wind_loop_seconds': 4.0}
 
 
 def main():
@@ -779,6 +938,7 @@ def main():
     build_entry()
     build_flags()
     build_plaza()
+    setup_door_rig()
     uv_and_normals()
     bpy.context.view_layer.update()
     stats = export_runtime(glb)
@@ -791,15 +951,16 @@ def main():
     stats['stair_rise_metres'] = .17
     stats['stair_tread_metres'] = .31
     stats['door_clear_width_metres'] = 1.99
-    stats['door_clear_height_metres'] = 4.155
-    stats['notes'] = 'Exterior landmark; no navigable interior. Static flags. Core glTF alpha glass. No external dependencies.'
+    stats['door_clear_height_metres'] = 2.645
+    stats['entrance_arch_height_metres'] = 4.155
+    stats['notes'] = 'Exterior landmark; no navigable interior. Hinged doors and four morph-animated fabric pieces. Core glTF PBR; no external dependencies.'
     (out/'asset_stats.json').write_text(json.dumps(stats, indent=2)+'\n')
     cameras = configure_studio()
     scene['asset'] = 'TELANICO | Settlements Hall'
     scene['asset_notes'] = stats['notes']
     scene['units'] = '1 Blender unit = 1 metre; 1.8 m adult reference scale'
     scene['regenerate'] = 'blender -b --python blender/scripts/build_settlements_hall.py -- --render'
-    scene['runtime_export'] = '11 material batches; source retains all editable parts and linked columns'
+    scene['runtime_export'] = 'Static material batches plus separate hinged leaves and four morph-animated fabric pieces'
     bpy.ops.wm.save_as_mainfile(filepath=str(out/'settlements_hall.blend'))
     print('SETTLEMENTS_HALL_STATS '+json.dumps(stats), flush=True)
     if args.render:

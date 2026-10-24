@@ -25,11 +25,11 @@ hall.ASSET[:] = sorted({obj for col in bpy.context.scene.collection.children
 if not hall.ASSET:
     raise RuntimeError('Open the editable Settlements Hall blend before exporting')
 for obj in hall.ASSET:
-    if len(obj.data.materials) != 1:
+    if not obj.data.shape_keys and len(obj.data.materials) != 1:
         raise RuntimeError('Keep one material per authoring part: '+obj.name)
     if not obj.data.uv_layers:
         raise RuntimeError('Add UV0 to the edited part: '+obj.name)
-hall.M.update({obj.data.materials[0].name: obj.data.materials[0] for obj in hall.ASSET})
+hall.M.update({mat.name: mat for obj in hall.ASSET for mat in obj.data.materials})
 bpy.context.view_layer.update()
 args.output.parent.mkdir(parents=True, exist_ok=True)
 stats = hall.export_runtime(args.output.resolve())

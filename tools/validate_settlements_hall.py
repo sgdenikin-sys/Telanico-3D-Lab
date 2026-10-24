@@ -56,8 +56,8 @@ def inspect(path):
                     degenerate += 1
     assert 12000 <= tris <= 35000, f'Triangle budget exceeded: {tris}'
     assert degenerate == 0, f'{degenerate} zero-area triangles'
-    assert len(doc['meshes']) <= 12, 'Runtime material batching missing'
-    assert not doc.get('cameras') and not doc.get('animations') and not doc.get('skins')
+    assert len(doc['meshes']) <= 20, 'Runtime material batching missing'
+    assert not doc.get('cameras') and not doc.get('skins')
     assert not doc.get('extensionsRequired'), 'Core glTF materials required'
     mats = {m['name']: m for m in doc['materials']}
     assert len(mats) == 11
@@ -74,14 +74,52 @@ def inspect(path):
     assert not doc.get('images'), 'Unexpected external image dependence'
     dims = [round(maximum[j]-minimum[j], 3) for j in range(3)]
     assert 15 < dims[1] < 18 and 22 < dims[0] < 26
-    # All runtime transforms are identity, making the root useful at metre scale.
+    # Only hinged components have local transforms; architecture remains at metre scale.
     for node in doc['nodes']:
         assert 'scale' not in node or node['scale'] == [1, 1, 1]
-        assert 'translation' not in node or node['translation'] == [0, 0, 0]
+    nodes = doc['nodes']
+    by_name = {n['name']: i for i, n in enumerate(nodes)}
+    hinge_ids = {by_name['Door_Hinge_L'], by_name['Door_Hinge_R']}
+    for side in ('L', 'R'):
+        hinge = nodes[by_name['Door_Hinge_'+side]]
+        expected = [-.96 if side == 'L' else .96, 1.51, 5.17]
+        assert max(abs(a-b) for a, b in zip(hinge['translation'], expected)) < .001
+        assert len(hinge.get('children', [])) == 2, 'Each hinged leaf must retain blue and brass batches'
+    flag_ids = {by_name[name] for name in ['Flag_Roof_L', 'Flag_Roof_R', 'Flag_Entry_L', 'Flag_Entry_R']}
+    for i in flag_ids:
+        flag_mesh = doc['meshes'][nodes[i]['mesh']]
+        for primitive in flag_mesh['primitives']:
+            assert len(primitive.get('targets', [])) == 3, 'Fabric must retain three morph targets'
+    clips = {a['name']: a for a in doc['animations']}
+    assert set(clips) == {'Doors_Open', 'Doors_Close', 'Flags_Wind-loop', 'Hall_Demo-loop'}
+    clip_report = {}
+    for name, clip in clips.items():
+        targets = {c['target']['node'] for c in clip['channels']}
+        expected = hinge_ids if name.startswith('Doors_') else flag_ids if name.startswith('Flags_') else hinge_ids | flag_ids
+        assert targets == expected, (name, targets, expected)
+        duration = 0
+        for channel in clip['channels']:
+            sampler = clip['samplers'][channel['sampler']]
+            times = accessor(sampler['input'])
+            values = accessor(sampler['output'])
+            duration = max(duration, times[-1][0])
+            assert abs(times[0][0]) < .001
+            if channel['target']['path'] == 'weights':
+                values = [v[0] for v in values]
+                assert max(values)-min(values) > .9, 'Static cloth weights'
+                assert max(abs(a-b) for a, b in zip(values[:3], values[-3:])) < .0001, 'Wind seam must close'
+            else:
+                assert channel['target']['path'] == 'rotation'
+                if name.startswith('Doors_'):
+                    dot = abs(sum(a*b for a, b in zip(values[0], values[-1])))
+                    assert .60 < dot < .68, 'Door must rotate about 100 degrees'
+        assert abs(duration-(1 if name.startswith('Doors_') else 4)) < .001
+        clip_report[name] = {'seconds': round(duration, 3), 'channels': len(clip['channels'])}
     result = {'triangles': tris, 'export_vertices': vertices, 'meshes': len(doc['meshes']),
               'materials': len(mats), 'degenerate_triangles': degenerate,
               'dimensions_xyz_metres_gltf': dims, 'bytes': len(raw),
-              'core_gltf_materials': True, 'glass_alpha_blend': True}
+              'core_gltf_materials': True, 'glass_alpha_blend': True,
+              'animations': clip_report, 'hinged_leaves': 2, 'morph_animated_fabric_pieces': 4}
     print('SETTLEMENTS_GLB_OK '+json.dumps(result))
     return result
 

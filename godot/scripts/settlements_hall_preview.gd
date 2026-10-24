@@ -42,13 +42,14 @@ func _ready() -> void:
     _update_camera()
     var hud := CanvasLayer.new()
     var label := Label.new()
-    label.text = "TELANICO / SETTLEMENTS HALL\nDrag to orbit · Wheel to zoom · F front · R rear\n1 Blender unit = 1 metre"
+    label.text = "TELANICO / SETTLEMENTS HALL\nDrag to orbit · Wheel to zoom · F front · R rear\nO open · C close · D animation demo · 1 unit = 1 metre"
     label.position = Vector2(20, 18)
     label.add_theme_font_size_override("font_size", 18)
     label.add_theme_color_override("font_color", Color(0.95, 0.90, 0.78))
     label.mouse_filter = Control.MOUSE_FILTER_IGNORE
     hud.add_child(label)
     add_child(hud)
+    get_node("SettlementsHall").play_demo()
     print("SETTLEMENTS_PREVIEW_READY Godot ", Engine.get_version_info().string,
         " renderer=", ProjectSettings.get_setting("rendering/renderer/rendering_method"))
 
@@ -75,4 +76,10 @@ func _unhandled_input(event: InputEvent) -> void:
             azimuth = 0
         elif event.keycode == KEY_R:
             azimuth = PI
+        elif event.keycode == KEY_O:
+            get_node("SettlementsHall").open_doors()
+        elif event.keycode == KEY_C:
+            get_node("SettlementsHall").close_doors()
+        elif event.keycode == KEY_D:
+            get_node("SettlementsHall").play_demo()
         _update_camera()
