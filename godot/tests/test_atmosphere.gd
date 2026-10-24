@@ -29,11 +29,17 @@ func run():
     assert(world.top_buttons.Explore.size.is_equal_approx(Vector2(104,52)),"Desktop control size must stay unchanged")
     for button in game.ui_buttons.values():
         assert(button.has_node("HudPerimeterRunner"),"Asset HUD retains animation")
+    # This renderer/UI fixture must not start native MP3/WAV playback just before
+    # process shutdown. Audio/opening/restart have separate existing regressions.
+    game.music.queue_free()
+    game.music = null
+    game.sfx_on = false
     game._characters();game.start_game();game.close_modal();game.close_modal()
     assert(game.adapter.enter("settlements"))
     for button in game.choice_list.get_children():
         if button is Button:assert(button.has_node("HudPerimeterRunner"),"Dialogue retains click feedback")
     game.queue_free()
+    await process_frame
     await process_frame
     print("TELANICO_ATMOSPHERE_PASS NE sun, cached sky, AO/fog, 38 trees/36 bushes, shared materials, correct UI effects")
     quit(0)
