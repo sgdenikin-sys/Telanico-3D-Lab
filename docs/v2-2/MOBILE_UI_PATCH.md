@@ -89,3 +89,20 @@ Final local validation: desktop and complete phone route passed on game source
 music owner. Retina visual suite passed on `620fad1`; subsequent product change
 only adjusts office Menu safe insets, covered by final native/UI and story run.
 See [results](evidence/mobile-ui-results.json) and the matching evidence logs.
+
+## Verified public release
+
+[Pages and actual live browser validation, run 40118149777](https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/40118149777)
+completed successfully on public main `7f1d283`. All 24 HTTPS runtime hashes and
+the embedded in-game source `f593e4b` matched the tested snapshot at desktop
+1280×720 and Retina touch 844×306 with safe insets, followed by resize to 390.
+Clock plate, original Assistant frame, aligned artwork and control scaling
+passed on the real public site. Evidence artifact: `live-validation` 12570103059.
+
+[Play this release](https://sgdenikin-sys.github.io/Telanico-3D-Web/?release=f593e4b).
+Physical iPhone Safari remains untested. The previous runtime is recoverable
+by reverting public publication commit `7f1d283` (previous main `e5906f7`).
+
+Private auto-run 40118100126 again failed before runner assignment (runner 0,
+zero steps); it did not test or publish anything. The successful existing public
+publisher is the release evidence. No new workflow, importer, branch or PR.

@@ -28,6 +28,28 @@
   "runtime_errors": [],
   "physical_iphone_safari": "not tested",
   "canonical_frame_sha256": "9bd75b441c016b3be3dbf58afacc5dae17f8572ae883b1ebfd3dda4282b0b0c7",
-  "public_deployment": "pending",
-  "rollback_public_commit": "e5906f71826e027c6fb45b47e7ce073a17328a08"
+  "public_deployment": {
+    "result": "success",
+    "run_id": 40118149777,
+    "job_id": 120943702942,
+    "public_commit": "7f1d283905967eef0286ebb81ecc0c6e46ef3318",
+    "url": "https://sgdenikin-sys.github.io/Telanico-3D-Web/",
+    "actual_https_runtime_hashes": "all 24 passed",
+    "in_game_source": "f593e4b26a0d95ff051d50e381bf5136ddb70ac2 verified desktop and Retina touch",
+    "live_browser": "Chrome 155",
+    "viewports": [
+      "1280x720",
+      "844x306 Retina safe insets, then 844x390"
+    ],
+    "evidence_artifact": 12570103059,
+    "pages_artifact": 12569432671
+  },
+  "rollback_public_commit": "e5906f71826e027c6fb45b47e7ce073a17328a08",
+  "private_auto_publish": {
+    "run_id": 40118100126,
+    "result": "failed before runner",
+    "runner_id": 0,
+    "steps": 0,
+    "nothing_tested_or_deployed": true
+  }
 }
