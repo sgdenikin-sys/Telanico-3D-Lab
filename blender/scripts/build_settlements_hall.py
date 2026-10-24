@@ -26,6 +26,12 @@ M = {}
 COL = None
 ASSET = []
 CACHE = {}
+# The full preset reproduces the approved V2; lite is a separate, opt-in mobile LOD.
+QUALITY = 'full'
+
+
+def lite():
+    return QUALITY == 'lite'
 
 
 def collection(name):
@@ -57,7 +63,9 @@ def mesh(name, verts, faces, mat, smooth=False):
 
 
 def block(name, pos, dims, mat, bevel=.025):
-    # Reuse the repository's headless bevel/normal helper.
+    # Avoid bevel tessellation on tiny seams in the mobile LOD.
+    if lite() and bevel <= .030 and min(dims) < .35:
+        bevel = 0
     obj = register(cube(name, pos, dims, mat, 0))
     if bevel:
         modifier = obj.modifiers.new('Single architectural edge bevel', 'BEVEL')
@@ -80,6 +88,8 @@ def lathe(name, profile, mat, segments=32, pos=(0, 0, 0), phase=0, caps=True):
     """Radius/Z profile, smooth sides and flat ledges. Only a top cap is needed:
     the foot of each lathe sits on another solid stone or metal component.
     """
+    if lite():
+        segments = min(segments, 24)
     verts = [(r*math.cos(TAU*i/segments+phase),
               r*math.sin(TAU*i/segments+phase), z)
              for r, z in profile for i in range(segments)]
@@ -96,6 +106,9 @@ def lathe(name, profile, mat, segments=32, pos=(0, 0, 0), phase=0, caps=True):
 
 
 def tube(name, points, radius, mat, sides=4):
+    # Hairline ornament is invisible from the normal elevated game camera.
+    if lite() and radius <= .023:
+        return None
     verts = []
     for i, point in enumerate(points):
         tangent = Vector(points[min(i+1, len(points)-1)])-Vector(points[max(0, i-1)])
@@ -124,7 +137,8 @@ def prism(name, outline, low, high, mat, bevel=0):
     return obj
 
 
-def arch_points(width, bottom, spring, segments=12):
+def arch_points(width, bottom, spring, segments=None):
+    segments = (7 if lite() else 12) if segments is None else segments
     r = width/2
     return [(-r, bottom), (r, bottom)]+[
         (r*math.cos(math.pi*i/segments), spring+r*math.sin(math.pi*i/segments))
@@ -144,6 +158,8 @@ def arch_slab(name, width, bottom, spring, front, back, mat):
 
 
 def arch_ring(name, width, bottom, spring, band, front, back, mat, segments=10):
+    if lite():
+        segments = min(segments, 6)
     r = width/2
     inner = [(-r, bottom), (-r, spring)]+[
         (r*math.cos(math.pi-math.pi*i/segments), spring+r*math.sin(math.pi*i/segments))
@@ -177,9 +193,10 @@ def wall_arch(name, total_width, bottom, top, opening_width, opening_bottom, spr
         return lookup[key]
     def quad(points):
         faces.append(tuple(vertex(*p) for p in points))
+    arcs = 6 if lite() else 10
     contour = [(-r, spring)]+[
-        (-r*math.cos(math.pi*i/10), spring+r*math.sin(math.pi*i/10))
-        for i in range(1, 11)]
+        (-r*math.cos(math.pi*i/arcs), spring+r*math.sin(math.pi*i/arcs))
+        for i in range(1, arcs+1)]
     for y, reverse in ((0, False), (depth, True)):
         polygons = [[(-w, bottom), (-r, bottom), (-r, top), (-w, top)],
                     [(r, bottom), (w, bottom), (w, top), (r, top)]]
@@ -287,7 +304,7 @@ def column(name, x, y, low, high, radius=.30):
                    (radius*.88, h-.53), (radius*1.07, h-.45),
                    (radius*1.07, h-.33), (radius*1.34, h-.23),
                    (radius*1.40, h)]
-        segments = 12 if radius >= .3 else 8
+        segments = (8 if radius >= .3 else 6) if lite() else (12 if radius >= .3 else 8)
         shaft = lathe('Ivory entasis column', profile, M['ivory'], segments, caps=False)
         # Brass confined to the capital collar and foot band.
         collar = lathe('Aged brass collars', [(radius*1.20, .16), (radius*1.20, .24)], M['brass'], segments, caps=False)
@@ -310,6 +327,8 @@ def column(name, x, y, low, high, radius=.30):
 
 
 def dome(name, radius, base, height, mat, pos=(0, 0, 0), segments=64, rings=16):
+    if lite():
+        segments, rings = min(segments, 36), min(rings, 10)
     profile = [(radius*math.cos(math.pi*.5*i/rings), base+height*math.sin(math.pi*.5*i/rings))
                for i in range(rings)]
     profile.append((.025, base+height))
@@ -348,13 +367,14 @@ def build_rotunda():
     lathe('Cornice brass fillet', [(5.86, 7.27), (5.86, 7.32)], M['brass'], 36)
     # Low sloping annular roof below the raised dome drum.
     lathe('Rotunda annular standing seam roof', [(5.80, 7.78), (4.40, 8.53)], M['teal'], 36, caps=False)
-    for i in range(24):
-        a = i*TAU/24
+    for i in range(12 if lite() else 24):
+        a = i*TAU/(12 if lite() else 24)
         tube('Annular roof seam', [(5.77*math.cos(a), 5.77*math.sin(a), 7.80),
                                   (4.40*math.cos(a), 4.40*math.sin(a), 8.55)], .022, M['bronze'])
     # Balustrade crown posts are sparse to preserve the silhouette.
-    for i in range(12):
-        a = -math.pi/2+(i+.5)*TAU/12
+    n_post = 6 if lite() else 12
+    for i in range(n_post):
+        a = -math.pi/2+(i+.5)*TAU/n_post
         x, y = 5.65*math.cos(a), 5.65*math.sin(a)
         block('Parapet pedestal', (x, y, 7.98), (.49, .49, .53), M['ivory'], .025)
         lathe('Parapet brass acorn', [(.17, 8.26), (.22, 8.40), (.12, 8.57), (.01, 8.70)], M['brass'], 10, (x, y, 0))
@@ -376,10 +396,11 @@ def rectangular_ring(name, width, low, high, inner_width, inner_low, inner_high,
 def build_crown():
     collection('02 | Clerestory and ribbed dome')
     r = 4.30
-    w = 2*r*math.tan(math.pi/24)
+    n_drum = 16 if lite() else 24
+    w = 2*r*math.tan(math.pi/n_drum)
     template = None
-    for i in range(24):
-        a = -math.pi/2+i*TAU/24
+    for i in range(n_drum):
+        a = -math.pi/2+i*TAU/n_drum
         if template is None:
             start = len(ASSET)
             rectangular_ring('Clerestory cut stone bay', w, 8.36, 9.96,
@@ -403,8 +424,9 @@ def build_crown():
     for i in range(12):
         a = TAU*i/12
         points = []
-        for j in range(16):
-            t = math.pi*.5*j/16
+        rib_steps = 10 if lite() else 16
+        for j in range(rib_steps):
+            t = math.pi*.5*j/rib_steps
             r = 4.50*math.cos(t)
             points.append((r*math.cos(a), r*math.sin(a), 10.22+4.96*math.sin(t)))
         tube('Raised brass dome rib', points, .050, M['brass'], 4)
@@ -431,12 +453,14 @@ def hipped_roof(cx, cy, width, depth, low, high):
         tube('Hipped roof brass arris', [verts[i], verts[i+4]], .036, M['brass'])
     # Standing seams run down all four slopes, not a texture that will vanish.
     for sign in (-1, 1):
-        for i in range(1, 9):
-            xx = cx-x+width*i/9
+        seam_count = 4 if lite() else 8
+        for i in range(1, seam_count+1):
+            xx = cx-x+width*i/(seam_count+1)
             tube('Pavilion folded seam', [(xx, cy+sign*y, low+.015),
                  (cx+(xx-cx)*(x-inset)/x, cy+sign*(y-inset), high+.015)], .018, M['bronze'])
-        for i in range(1, 7):
-            yy = cy-y+depth*i/7
+        side_seams = 3 if lite() else 6
+        for i in range(1, side_seams+1):
+            yy = cy-y+depth*i/(side_seams+1)
             tube('Pavilion side folded seam', [(cx+sign*x, yy, low+.015),
                  (cx+sign*(x-inset), cy+(yy-cy)*(y-inset)/y, high+.015)], .018, M['bronze'])
 
@@ -609,7 +633,7 @@ def hanging_banner(x, y, bottom, width, height):
     start = len(ASSET)
     p = [(-width/2, bottom+height), (-width/2, bottom),
          (0, bottom+.15), (width/2, bottom), (width/2, bottom+height)]
-    cols, rows = 4, 4
+    cols, rows = (3, 3) if lite() else (4, 4)
     verts = [(x+(u-.5)*width, y, bottom+height-v*(height-.15*(1-abs(2*u-1))))
              for v in [j/rows for j in range(rows+1)] for u in [i/cols for i in range(cols+1)]]
     faces = [(j*(cols+1)+i, j*(cols+1)+i+1, (j+1)*(cols+1)+i+1, (j+1)*(cols+1)+i)
@@ -640,7 +664,8 @@ def build_flags():
         lathe('Flagpole spear', [(.07, 5.08), (.18, 5.30), (.075, 5.58), (.001, 5.70)], M['brass'], 10, (x, y, base))
         start = len(ASSET)
         # Cloth runs toward the outer wing; total span stays within the plaza.
-        w, h, cols, rows = 2.30, 1.38, 12, 6
+        w, h = 2.30, 1.38
+        cols, rows = (8, 4) if lite() else (12, 6)
         def flag_point(u, v, behind=0):
             xx = x+sign*(.09+w*u)
             yy = y-.12+.22*math.sin(u*math.pi*2.3-v*.8)*u+behind
@@ -676,17 +701,17 @@ def build_plaza():
                (-5.0, -9.5), (5.0, -9.5), (7.7, -8.0), (10.7, -7.2),
                (11.95, -5.0), (11.95, 6.4), (-11.95, 6.4)]
     prism('Shaped pale stone entrance platform', outline, 0, .24, M['paving'], .055)
-    # Restrained paved forecourt: inlay lines plus four large stone panels.
-    for x in (-3.5, 3.5):
+    # Retain the iconic compass and plaza; omit tiny stone joints in the LOD.
+    for x in (() if lite() else (-3.5, 3.5)):
         block('Forecourt inset paving', (x, -7.70, .245), (2.30, 2.6, .012), M['paving_alt'], .025)
-    for y in (-8.95, -8.30, -7.65):
+    for y in (() if lite() else (-8.95, -8.30, -7.65)):
         tube('Paving joint', [(-4.7, y, .251), (4.7, y, .251)], .009, M['sandstone'])
-    for x in (-4.65, -2.35, 2.35, 4.65):
+    for x in (() if lite() else (-4.65, -2.35, 2.35, 4.65)):
         tube('Paving joint', [(x, -9.1, .251), (x, -6.8, .251)], .009, M['sandstone'])
     # Simplified reference compass, placed in front of the steps.
     x, y = 0, -8.47
     lathe('Forecourt compass blue inset', [(1.02, .245), (1.02, .258)], M['teal'], 36, (x, y, 0))
-    for r in (.86, 1.04):
+    for r in ((.86,) if lite() else (.86, 1.04)):
         pts = [(x+r*math.sin(TAU*i/32), y+r*math.cos(TAU*i/32), .266) for i in range(33)]
         tube('Forecourt compass brass circle', pts, .022, M['brass'])
     compass('Forecourt compass rose', (x, y, .275), .84, M['brass'])
@@ -918,12 +943,16 @@ def export_runtime(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    global QUALITY
     parser.add_argument('--output-dir', type=Path)
+    parser.add_argument('--quality', choices=('full', 'lite'), default='full',
+                        help='Full V2 reference or lower-detail mobile experimental model')
     parser.add_argument('--render', action='store_true')
     parser.add_argument('--views', nargs='+', default=['hero', 'front', 'rear', 'detail'])
     args = parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
-    out = args.output_dir.resolve() if args.output_dir else ROOT/'blender/generated/settlements_hall'
-    glb = out/'settlements_hall.glb' if args.output_dir else ROOT/'godot/assets/generated/settlements_hall.glb'
+    QUALITY = args.quality
+    out = args.output_dir.resolve() if args.output_dir else ROOT/('blender/generated/settlements_hall_lite' if lite() else 'blender/generated/settlements_hall')
+    glb = out/'settlements_hall.glb' if (args.output_dir or lite()) else ROOT/'godot/assets/generated/settlements_hall.glb'
     out.mkdir(parents=True, exist_ok=True)
     glb.parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -944,6 +973,7 @@ def main():
     stats = export_runtime(glb)
     corners = [o.matrix_world@Vector(c) for o in ASSET for c in o.bound_box]
     stats['dimensions_metres'] = [round(max(v[j] for v in corners)-min(v[j] for v in corners), 3) for j in range(3)]
+    stats['quality_preset'] = QUALITY
     stats['blender_version'] = bpy.app.version_string
     stats['front_axis_blender'] = '-Y'
     stats['front_axis_godot'] = '+Z'
@@ -959,7 +989,7 @@ def main():
     scene['asset'] = 'TELANICO | Settlements Hall'
     scene['asset_notes'] = stats['notes']
     scene['units'] = '1 Blender unit = 1 metre; 1.8 m adult reference scale'
-    scene['regenerate'] = 'blender -b --python blender/scripts/build_settlements_hall.py -- --render'
+    scene['regenerate'] = ('blender -b --python blender/scripts/build_settlements_hall.py -- --quality '+QUALITY+' --render')
     scene['runtime_export'] = 'Static material batches plus separate hinged leaves and four morph-animated fabric pieces'
     bpy.ops.wm.save_as_mainfile(filepath=str(out/'settlements_hall.blend'))
     print('SETTLEMENTS_HALL_STATS '+json.dumps(stats), flush=True)
