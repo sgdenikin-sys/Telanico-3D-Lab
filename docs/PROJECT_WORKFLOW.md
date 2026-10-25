@@ -11,17 +11,17 @@ WebGL запуска после Pages. Не переносить исходни�
 для этого не требуется.
 
 Текущий адрес: https://sgdenikin-sys.github.io/Telanico-3D-Web/ .
-Текущая публикация Hall V3 Lite: source `5b7d02f344341ac412f7c5d1d491e42db5d8d0c9`,
-public commit `b09342d23a9f83d0ff78caf5080fe08b17b7df33`, Pages run **40149510355**.
-Шаг Deploy to GitHub Pages завершён успешно 25 октября 2026 в 01:09:49 UTC.
-Hall увеличен с 0.55 до 0.63, визуальный масштаб героя снижен с 3.0 до 2.55;
-вход, маршруты, остальные здания и сценарий не менялись.
-По прямому указанию владельца полный touch-прогон остановлен, дополнительные
-ручные проверки не запускались. Штатные автоматические post-deploy проверки
-workflow продолжаются; их завершение не является условием запрошенного handoff.
-Предыдущая полностью подтверждённая публикация: run **40149096854**, source
-`ee678d9` (HTTPS-хеши всех runtime-файлов и desktop/touch opening прошли).
-Детали: docs/assets/SETTLEMENTS_HALL_GAME_INTEGRATION.md.
+Текущая публикация Operations Textured V3 + ground textures + NW sun:
+source `8573f5afb5ef2efa4211ab0e87fa6effe818f67f`, public commit
+`47de15f691cdd84a6217fac795ee98d531a98324`, Pages run **40242903933 (success)**.
+HTTPS-хеши runtime и существующий desktop/touch opening прошли. Полный
+сюжет не запускался по ограниченному scope владельца. Новый корпус повернут
+из Z-up в Y-up на уровне экземпляра; исходный GLB сохранён. Шесть ground
+albedo 512×512 с mipmaps; солнце с СЗ, тени на ЮВ. Hall 0.63 и герой 2.55
+сохранены, карта и маршруты не менялись. Старое ожидание 3.0 в публичном
+live-чеке исправлено на утверждённое 2.55. Детали и три PNG:
+`docs/assets/OPERATIONS_DOME_GAME_INTEGRATION.md` и публичный
+`site/evidence/operations-ground-8573f5a/`.
 
 Последний прямой Lab запуск 40118100126 снова завершился до runner (runner_id=0,
 steps=[]). Он ничего не тестировал и не публиковал; это инфраструктурный отказ,

@@ -52,5 +52,15 @@
     "full_story": "not run per owner scope",
     "physical_iphone_safari": "not tested"
   },
-  "publication": "pending existing Pages workflow"
+  "publication": {
+    "status": "success",
+    "source_commit": "8573f5afb5ef2efa4211ab0e87fa6effe818f67f",
+    "public_commit": "47de15f691cdd84a6217fac795ee98d531a98324",
+    "pages_run": 40242903933,
+    "live_url": "https://sgdenikin-sys.github.io/Telanico-3D-Web/",
+    "https_runtime_hashes": "passed",
+    "desktop_touch_opening": "passed",
+    "physical_iphone_safari": "not tested",
+    "existing_live_check_correction": "Expected courier presentation scale updated from stale 3.0 to owner-approved 2.55; runtime not rebuilt."
+  }
 }

@@ -33,3 +33,10 @@ one instance-rotation correction and an affected visual/door recheck.
 Three final Web screenshots are stored with the published site evidence.
 Full story and physical iPhone checks were not run, per the owner's bounded scope.
 See `operations-ground-result.json`; release publication is recorded below.
+
+Published successfully: [Pages run 40242903933](https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/40242903933),
+public commit `47de15f691cdd84a6217fac795ee98d531a98324`. HTTPS runtime
+hashes and existing desktop/touch opening checks passed. The old public
+courier-scale assertion was aligned with the approved 2.55; no gameplay changed.
+Live: https://sgdenikin-sys.github.io/Telanico-3D-Web/ .
+Screenshots: `site/evidence/operations-ground-8573f5a/` in the public Web repo.
