@@ -9,3 +9,4 @@ metadata/asset_units = "metres"
 metadata/front = "+Z"
 
 [node name="Architecture" parent="." instance=ExtResource("1_ops")]
+rotation_degrees = Vector3(-90, 0, 0)

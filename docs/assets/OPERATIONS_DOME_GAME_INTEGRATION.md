@@ -11,6 +11,8 @@ original navigation/collision, site selection, office content, character scale,
 15-site registry or quest logic. Initial placement scale 0.75, front offset
 +0.65m (+Z) and height +0.06m are first-fit values matching the existing entrance
 waypoint. Door open/close actions are wired to existing site-arrival events.
+The supplied trimesh GLB is Z-up. The `Architecture` instance rotates -90°
+around X to become Godot Y-up; source geometry and animation tracks are intact.
 The standalone GLB has static flags — do not claim a flag-wind animation.
 
 The follow-up applies six owner-supplied ground albedos at 512×512 with mipmaps
