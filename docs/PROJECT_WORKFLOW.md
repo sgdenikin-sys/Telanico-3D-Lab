@@ -1,5 +1,11 @@
 # Рабочий порядок: main → Pages
 
+Последняя публикация terrain/lighting fix: source `ae482c02f709eefebd1e5a8b4f9d357cf51a12ac`,
+Web commit `cbebf3c928b836dc2a577f0ba8b7a8c5929308a5`, Pages **40244481981 (success)**.
+HTTPS runtime hashes and desktop/touch opening passed; no story regression.
+Screenshots: public `site/evidence/terrain-ae482c0/`.
+
+
 ## Фактически работающий путь — уточнение 23 октября
 
 Владелец впоследствии потребовал использовать уже работавшую публикацию V2.2.
