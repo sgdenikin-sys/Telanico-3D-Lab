@@ -8,7 +8,7 @@ import struct
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "artifacts/operations/v3/operations_textured_v3.glb.gz"
 TARGET = ROOT / "godot/assets/generated/operations_textured_v3.glb"
-ARCHIVE_SHA = "9d471cb3da4510f6eba16c80bab37364ceb82f5f9f5aa52cf471686ac802f220"
+ARCHIVE_SHA = "c736fb8bf5c8ffd2d7a7c312c7c6502cff61b9c143923e80592df4647fd6560f"
 GLB_SHA = "25518b2662254dfc2dc0d021f41e58cbbb9c7338ccccb632a7a129bd8c266c9f"
 
 def main():
