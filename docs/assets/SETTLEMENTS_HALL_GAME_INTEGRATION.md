@@ -105,4 +105,10 @@ Only Hall scale/offset and courier visual scale changed. Existing assertions
 were aligned with those requested values. The focused Hall integration check
 (including courier scale) and Godot 4.6.3 Web export passed. No full story rerun.
 The owner-stopped browser exception is pinned to this updated exact source.
-Updated live publication: pending existing Pages deployment.
+Updated live publication: [Pages run 40149510355](https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/40149510355),
+public commit `b09342d23a9f83d0ff78caf5080fe08b17b7df33`.
+The **Deploy to GitHub Pages** step succeeded at 01:09:49 UTC on 25 October 2026.
+Live URL: https://sgdenikin-sys.github.io/Telanico-3D-Web/ .
+The owner additionally instructed “тоже без проверок, доплой как установишь”.
+No further manual runtime/viewport checks were launched; the existing workflow's
+automatic post-deploy checks continue without blocking this requested handoff.
