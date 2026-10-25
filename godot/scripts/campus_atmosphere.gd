@@ -9,11 +9,11 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     sun.light_color = Color("#FFE1B2")
     sun.light_energy = 0.90
     sun.light_specular = 0.35
-    sun.light_angular_distance = 1.5
+    sun.light_angular_distance = 0.8
     sun.shadow_enabled = true
-    sun.shadow_bias = 0.10
-    sun.shadow_normal_bias = 0.8
-    sun.shadow_opacity = 0.42
+    sun.shadow_bias = 0.025
+    sun.shadow_normal_bias = 0.18
+    sun.shadow_opacity = 0.68
     sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
     sun.directional_shadow_max_distance = 320
     var environment := WorldEnvironment.new()
@@ -31,7 +31,7 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     settings.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
     settings.ambient_light_color = Color("#BACFE1")
     settings.ambient_light_sky_contribution = 0.70
-    settings.ambient_light_energy = 0.60
+    settings.ambient_light_energy = 0.45
     settings.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
     # Godot 4.6 Compatibility supports the simplified radius/intensity AO pass.
     settings.ssao_enabled = true
@@ -66,7 +66,7 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
                     mesh.set_surface_override_material(surface, replacement)
         if String(mesh.name).begins_with("Soft Canopy Bush"):
             mesh.material_override = bush
-            mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+            mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
         elif String(mesh.name).contains("Open teal water"):
             var water := StandardMaterial3D.new()
             water.albedo_color = Color("#215C63")
@@ -93,7 +93,7 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
         foliage.name = "InstancedBushCrowns"
         foliage.multimesh = instances
         foliage.material_override = bush
-        foliage.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+        foliage.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
         campus.add_child(foliage)
     var haze := MeshInstance3D.new()
     haze.name = "LowWaterHaze"
@@ -119,6 +119,7 @@ static func _ground_material(texture_name: String, tile_metres: float) -> Standa
     var ground := StandardMaterial3D.new()
     ground.resource_name = "Ground | " + texture_name
     ground.albedo_texture = load("res://assets/ground/" + texture_name + "_base_albedo.png")
+    ground.vertex_color_use_as_albedo = true
     ground.roughness = 0.96
     ground.metallic = 0.0
     ground.uv1_triplanar = true
@@ -135,5 +136,5 @@ static func _ground_materials() -> Dictionary:
         "Telanico grass_light": _ground_material("earth_sparse_grass", 5.0),
         "Telanico dirt": _ground_material("path_dirt", 3.0),
         "Telanico stone": _ground_material("stone_path", 2.6),
-        "promenade": _ground_material("cobblestone", 2.2),
+        "promenade": _ground_material("stone_path", 3.2),
     }

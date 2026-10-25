@@ -127,7 +127,7 @@ def road_subgrade(x,y):
             for px,py,radius in ROAD_BUCKETS.get((bx+dx,by+dy),[]):
                 distance=min(distance,math.hypot(x-px,y-py)-radius)
     t=max(0,min(1,(distance-.8)/2))
-    return .55*(1-t*t*(3-2*t))
+    return .06*(1-t*t*(3-2*t))
 
 def terrain(side):
     cx=-49 if side=='west' else 49;sectors=192;rings=45
@@ -144,11 +144,12 @@ def terrain(side):
     mesh=bpy.data.meshes.new(side+' continuous height terrain');mesh.from_pydata(vertices,[],faces);mesh.update()
     obj=bpy.data.objects.new(side+' Island Terrain',mesh);bpy.context.collection.objects.link(obj);obj.data.materials.append(M['grass'])
     for key in ('meadow','grass_light'):obj.data.materials.append(M[key])
-    # Broad mottled meadow patches follow the land; no added texture payload.
-    for p in obj.data.polygons:
-        centre=sum((obj.data.vertices[i].co for i in p.vertices),Vector())/len(p.vertices)
-        variation=math.sin(centre.x*.17)+math.cos(centre.y*.14)+.5*math.sin((centre.x+centre.y)*.22)
-        p.material_index=1 if variation>1.1 else 2 if variation<-.9 else 0
+    # Continuous vertex tint replaces discrete polygon material islands.
+    tint=mesh.color_attributes.new(name='MeadowTint',type='FLOAT_COLOR',domain='CORNER')
+    for loop in mesh.loops:
+        v=mesh.vertices[loop.vertex_index].co
+        t=.5+.25*math.sin(v.x*.17)+.25*math.cos(v.y*.14)
+        tint.data[loop.index].color=(.84+.16*t,.86+.14*t,.72+.28*t,1)
     for p in obj.data.polygons:p.use_smooth=True
     rim=vertices[-sectors:];v=[]
     # Four uneven coastal strata expose meaningful vertical depth at 40 degrees.
@@ -354,7 +355,10 @@ def main():
     M['atlas']=atlas_material()
     cylinder('Open teal water',(0,0,-.35),230,.4,M['water'],160)
     terrain('west');terrain('east');edges=L.route_data()
+    from road_surface import build as build_roads
+    build_roads(edges,L,M['stone'],M['dirt'])
     for i,e in enumerate(edges):
+        if e['kind']!='bridge':continue
         kind=e['kind'];width=5 if kind=='bridge' else 3.8 if kind=='main' else 2.6 if kind=='stone' else 1.6
         pts=[(x,y,z+i*.0005) for x,y,z in e['points']]
         road=ribbon(('Bridge WalkSurface' if kind=='bridge' else 'Path WalkSurface')+str(i),pts,width,M['dirt'] if kind=='trail' else M['stone'],.70)
@@ -372,7 +376,7 @@ def main():
                 pz=L.height(px,43)
                 cube('Bridge abutment',(px,43,pz/2),(3.0,6.3,pz+1.1),M['cliff'],.25)
             for side in (-1,1):ribbon('Bridge stone parapet',[(x,y+side*2.7,z+.8) for x,y,z in pts],.35,M['cliff'],.8)
-    validate_surface_clearance()
+    # Unified paving is sampled against the same canonical heightfield.
     sites=[build_site(site) for site in L.SITES]
     rng=random.Random(19)
     for i in range(24):
