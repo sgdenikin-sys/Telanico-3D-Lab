@@ -51,6 +51,8 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     var ground := _ground_materials()
     for mesh in campus.find_children("*","MeshInstance3D",true,false):
         var name_text := String(mesh.name)
+        if name_text.contains("Terrain") or name_text.begins_with("Path WalkSurface"):
+            mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
         # World triplanar projection works on the unchanged, UV-less terrain.
         # Existing broad grass zones and all route/collision geometry stay intact.
         if name_text.contains("Terrain") or (name_text.contains("WalkSurface") and not name_text.contains("Bridge")):

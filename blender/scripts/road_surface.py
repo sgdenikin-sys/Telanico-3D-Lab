@@ -19,11 +19,18 @@ def build(edges,layout,stone,dirt):
             distance=math.hypot(x-a[0]-t*dx,y-a[1]-t*dy)-r
             if distance<best:best,kind=distance,d
         return best,kind
+    from mathutils.bvhtree import BVHTree
+    bpy.context.view_layer.update()
+    dg=bpy.context.evaluated_depsgraph_get()
+    terrain={side:BVHTree.FromObject(bpy.data.objects[side+' Island Terrain'],dg) for side in ('west','east')}
     vertices=[];faces=[];materials=[];lookup={};step=.45
     def vert(p):
         key=(round(p[0],5),round(p[1],5))
         if key not in lookup:
-            lookup[key]=len(vertices);vertices.append((*key,layout.height(*key)+.055))
+            lookup[key]=len(vertices)
+            hit,_,_,_=terrain['west' if key[0]<0 else 'east'].ray_cast(Vector((*key,100)),Vector((0,0,-1)))
+            z=max(layout.height(*key),hit.z if hit is not None else -100)+.14
+            vertices.append((*key,z))
         return lookup[key]
     for i in range(-200,201):
         for j in range(-145,146):
