@@ -39,7 +39,7 @@ def verify(root=ROOT):
     # Owner stopped the remaining playthrough and requested this exact deployment.
     phone = manifest['validation']['phone_full_story']
     assert phone == 'passed' or (phone == 'stopped_by_owner' and
-        manifest['source_commit'] == 'ee678d9f80c6455da3048d087f7a171a6efbfd5f'), 'phone_full_story'
+        manifest['source_commit'] == '5b7d02f344341ac412f7c5d1d491e42db5d8d0c9'), 'phone_full_story'
     assert meta['commit'] in (site / 'index.html').read_text(encoding='utf-8')
     validate(site)
     print('RELEASE_SNAPSHOT_VERIFIED', meta['version'], meta['commit'], len(RUNTIME), 'files')

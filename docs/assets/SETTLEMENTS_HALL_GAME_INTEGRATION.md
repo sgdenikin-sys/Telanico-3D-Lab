@@ -20,11 +20,13 @@ waypoint remain authoritative, so the replacement does not change navigation.
 The freestanding preview model's `OptionalBuildingCollision` is disabled to
 avoid extra collision walls.
 
-Runtime placement: scale = **0.55**, position = canonical site centre
-+ `Vector3(0, 0.04, 3.25)` (Godot +Z points toward the entrance).
-The 0.55 scale fits the 14m reserved site. Visual review found a forecourt gap;
-the Hall alone was moved +0.75m in Z. Its platform front now reaches +8.475m,
-2.5cm short of the unchanged +8.5m canonical entrance.
+Runtime placement: scale = **0.63**, position = canonical site centre
++ `Vector3(0, 0.04, 2.5)` (Godot +Z points toward the entrance).
+The owner requested a modest size adjustment after the first live release:
+Hall +14.5% (0.55 → 0.63), courier visual −15% (3.0 → 2.55). The Hall is now
+about 15.06m wide. Its front reaches +8.485m, 1.5cm short of the unchanged
++8.5m canonical entrance. Other landmarks, route/collision graph, movement
+speed and story remain unchanged.
 
 The flag wind clip plays automatically from the existing asset script.
 Doors open on arriving at the Settlements Hall and on choosing Enter; doors
@@ -93,4 +95,14 @@ Evidence: [native Hall report](hall-game-integration/native-hall.json),
 [final desktop placement](hall-game-integration/hall-closed-1280.png),
 [initial touch view](hall-game-integration/hall-game-844.png).
 
-Live publication: pending existing Pages workflow and HTTPS verification.
+First deployment verified: Pages run [40149096854](https://github.com/sgdenikin-sys/Telanico-3D-Web/actions/runs/40149096854),
+source `ee678d9`, public commit `0b87c32`. The existing post-deploy check
+confirmed every HTTPS runtime hash and desktop/touch opening.
+
+### Owner-requested visual proportion adjustment
+Final source: `5b7d02f344341ac412f7c5d1d491e42db5d8d0c9`.
+Only Hall scale/offset and courier visual scale changed. Existing assertions
+were aligned with those requested values. The focused Hall integration check
+(including courier scale) and Godot 4.6.3 Web export passed. No full story rerun.
+The owner-stopped browser exception is pinned to this updated exact source.
+Updated live publication: pending existing Pages deployment.
