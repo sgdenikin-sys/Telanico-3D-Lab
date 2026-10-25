@@ -1,5 +1,11 @@
 # Рабочий порядок: main → Pages
 
+Daylight V2 published: source `d9d6f2cb2bb24380da62bdeac5bcdaf46c604afd`, Web
+`21eda739ab8c7bbcafdc3444e7b4954f1427b3f3`, Pages **40246308379 (success)**.
+Owner lighting settings exported unchanged; HTTPS hashes and desktop/touch
+opening passed. Overview: public `site/evidence/daylight-v2-d9d6f2c/overview.png`.
+
+
 Последняя публикация terrain/lighting fix: source `ae482c02f709eefebd1e5a8b4f9d357cf51a12ac`,
 Web commit `cbebf3c928b836dc2a577f0ba8b7a8c5929308a5`, Pages **40244481981 (success)**.
 HTTPS runtime hashes and desktop/touch opening passed; no story regression.
