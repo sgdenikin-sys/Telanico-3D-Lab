@@ -36,10 +36,10 @@ def verify(root=ROOT):
         assert hashlib.sha256(path.read_bytes()).hexdigest() == expected, name
     for key in ('native_release_gates', 'desktop_browser'):
         assert manifest['validation'][key] == 'passed', key
-    # Owner stopped the remaining playthrough and requested this exact deployment.
+    # Owner explicitly scoped this release to the overworld smoke, without a full story replay.
     phone = manifest['validation']['phone_full_story']
-    assert phone == 'passed' or (phone == 'stopped_by_owner' and
-        manifest['source_commit'] == '5b7d02f344341ac412f7c5d1d491e42db5d8d0c9'), 'phone_full_story'
+    assert phone == 'passed' or (phone == 'not_run_per_owner_scope' and
+        manifest['source_commit'] == '8573f5afb5ef2efa4211ab0e87fa6effe818f67f'), 'phone_full_story'
     assert meta['commit'] in (site / 'index.html').read_text(encoding='utf-8')
     validate(site)
     print('RELEASE_SNAPSHOT_VERIFIED', meta['version'], meta['commit'], len(RUNTIME), 'files')

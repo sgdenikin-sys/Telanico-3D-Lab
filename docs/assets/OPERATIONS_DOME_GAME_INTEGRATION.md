@@ -24,3 +24,12 @@ Source integration is not the same as a completed Godot Web build or live
 publication. The private Lab Actions previously failed before a runner was
 assigned. Keep the existing live game unchanged unless a verified Web runtime
 is built and deployed by the established publication process.
+
+
+## Ground / NW sun release
+Source: `8573f5afb5ef2efa4211ab0e87fa6effe818f67f`. One quick smoke and
+one Operations office entry passed. A visible Z-up orientation error required
+one instance-rotation correction and an affected visual/door recheck.
+Three final Web screenshots are stored with the published site evidence.
+Full story and physical iPhone checks were not run, per the owner's bounded scope.
+See `operations-ground-result.json`; release publication is recorded below.

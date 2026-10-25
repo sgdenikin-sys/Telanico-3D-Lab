@@ -1,0 +1,56 @@
+{
+  "source_commit": "8573f5afb5ef2efa4211ab0e87fa6effe818f67f",
+  "initial_smoke": {
+    "courier_scale": 2.54999995231628,
+    "door_opening_degrees": [
+      94.9999946750618,
+      94.9999946750618,
+      94.9999946750618,
+      94.9999946750618
+    ],
+    "doors_close_to_rest": true,
+    "engine": "4.6.3-stable (official)",
+    "ground_materials": [
+      "Ground | grass",
+      "Ground | grass_meadow",
+      "Ground | earth_sparse_grass",
+      "Ground | cobblestone",
+      "Ground | path_dirt",
+      "Ground | stone_path"
+    ],
+    "hall_scale": 0.629999995231628,
+    "mipmaps": true,
+    "old_operations_hidden": true,
+    "operations_visible": true,
+    "shadow_direction_xz": "south-east",
+    "site_count": 15,
+    "source_commit": "b325681b3bb7d056f41c3f76bc8134a5e0625888",
+    "sun_position": "(-180.0, 90.0, -180.0)",
+    "texture_size": 512,
+    "textured_surfaces": 47
+  },
+  "single_office_entry": "passed",
+  "corrected_orientation": {
+    "asset_z_up_to_godot_y_up": true,
+    "doors_open_outward": true,
+    "front_godot_plus_z": true,
+    "hinges_fixed": true,
+    "original_glb_unchanged": true,
+    "source_commit": "8573f5afb5ef2efa4211ab0e87fa6effe818f67f"
+  },
+  "final_web_visual": {
+    "source_commit": "8573f5afb5ef2efa4211ab0e87fa6effe818f67f",
+    "viewport": [
+      1280,
+      720
+    ],
+    "new_operations_rendered": true,
+    "ground_rendered": true,
+    "nw_sun_rendered": true,
+    "single_operations_walk_and_office_entry": "passed in initial smoke; not replayed after scene orientation fix",
+    "errors": [],
+    "full_story": "not run per owner scope",
+    "physical_iphone_safari": "not tested"
+  },
+  "publication": "pending existing Pages workflow"
+}
