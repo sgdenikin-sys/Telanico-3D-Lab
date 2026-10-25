@@ -139,8 +139,9 @@ func _install_settlements_hall() -> void:
         extra_collision.collision_mask = 0
     var centre: Vector3 = graph.vec(sites["settlements"].position)
     # Native asset: 23.9 x 15.9 m. 0.55 fits its 14 m site footprint.
-    # +Z points toward the existing entrance waypoint, 8.5 m ahead of centre.
-    settlements_hall.position = centre + Vector3(0.0, 0.04, 2.5)
+    # +Z points toward the entrance waypoint, 8.5 m ahead of centre.
+    # The platform front is 9.5 native metres: 3.25 + 9.5 * .55 = 8.475 m.
+    settlements_hall.position = centre + Vector3(0.0, 0.04, 3.25)
     settlements_hall.scale = Vector3.ONE * 0.55
     add_child(settlements_hall)
     original.visible = false

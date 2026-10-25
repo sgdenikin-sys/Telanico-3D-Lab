@@ -15,7 +15,7 @@ func run() -> void:
     assert(legacy != null and not legacy.visible, "Old Hall visible or missing")
     var hall: Node3D = game.settlements_hall
     assert(hall != null and hall.name == "SettlementsHallV3Lite", "V3 Lite not instantiated")
-    var expected: Vector3 = game.graph.vec(game.sites["settlements"].position) + Vector3(0, 0.04, 2.5)
+    var expected: Vector3 = game.graph.vec(game.sites["settlements"].position) + Vector3(0, 0.04, 3.25)
     assert(hall.position.distance_to(expected) < 0.01, "Hall location not aligned")
     assert(absf(hall.scale.x - 0.55) < 0.001, "Hall footprint changed")
     var optional_body := hall.get_node("OptionalBuildingCollision") as StaticBody3D
