@@ -45,6 +45,7 @@ def main():
     run('stamp-before', [python, 'tools/stamp_build.py', '--before'])
     base = [str(editor), '--headless', '--path', 'godot']
     run('import', base + ['--editor', '--import'], timeout=600)
+    run('hall-overworld', base + ['--script', '../tools/check_hall_overworld.gd'], 'TELANICO_HALL_GAME_PASS')
     tests = {
         'test_story_session': 'TELANICO_STORY_SESSION_PASS',
         'test_source_parity': 'TELANICO_SOURCE_PARITY_PASS',
