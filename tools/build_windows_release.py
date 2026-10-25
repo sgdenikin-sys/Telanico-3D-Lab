@@ -37,6 +37,7 @@ def main():
     os.environ['PYTHONUTF8'] = '1'
     python = sys.executable
     run('hall-staging', [python, 'tools/stage_settlements_hall_game.py'], 'SETTLEMENTS_HALL_V3_STAGED')
+    run('operations-staging', [python, 'tools/stage_operations_dome_game.py'], 'OPERATIONS_V3_STAGED')
     if not args.skip_generation:
         run('blender', [args.blender, '--background', '--factory-startup', '--python-exit-code', '1',
                         '--python', 'blender/scripts/build_world_v2.py'], 'V2_WORLD_OK', 600)

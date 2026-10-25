@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/generated/operations_textured_v3.glb" id="1_ops"]
+[ext_resource type="Script" path="res://scripts/operations_dome_asset.gd" id="2_controls"]
+
+[node name="OperationsDome" type="Node3D"]
+script = ExtResource("2_controls")
+metadata/asset_units = "metres"
+metadata/front = "+Z"
+
+[node name="Architecture" parent="." instance=ExtResource("1_ops")]

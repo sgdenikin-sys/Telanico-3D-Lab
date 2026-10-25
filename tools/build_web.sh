@@ -8,6 +8,7 @@ godot_bin=${GODOT_BIN:-godot}
 mkdir -p build/logs
 python3 tools/fetch_assets.py
 python3 tools/stage_settlements_hall_game.py
+python3 tools/stage_operations_dome_game.py
 # Remove only this reproducible output so stale runtime files cannot mask failures.
 rm -rf build/web
 mkdir -p build/web

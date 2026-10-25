@@ -7,7 +7,8 @@ const OVERVIEW_ZOOM := 124.0
 var data: Dictionary
 var graph: RefCounted
 var world: Node3D
-var settlements_hall: Node3D # V3 Lite overlay; other 14 site visuals remain unchanged.
+var settlements_hall: Node3D # Approved Hall unchanged.
+var operations_dome: Node3D # Replacement visual for Operations.
 var camera: Camera3D
 var actor: CharacterBody3D
 var visual: Node3D
@@ -96,6 +97,7 @@ func _ready() -> void:
     for ident in sites:
         _make_site_target(ident)
     _install_settlements_hall()
+    _install_operations_dome()
     ferry = world.find_child("Central Ferry", true, false)
     _make_actor()
     _make_camera_lighting()
@@ -147,6 +149,28 @@ func _install_settlements_hall() -> void:
     original.visible = false
     print("TELANICO_HALL_V3_INSTALLED at ", settlements_hall.position,
           " scale=", settlements_hall.scale.x)
+
+
+func _install_operations_dome() -> void:
+    # Existing site Area3D, WalkSurface collisions, graph and story stay intact.
+    var original: Node3D = world.find_child("Site_operations", true, false) as Node3D
+    var dome_scene: PackedScene = load("res://scenes/assets/operations_dome.tscn") as PackedScene
+    if original == null or dome_scene == null:
+        push_error("Operations V3: original site or staged GLB missing")
+        return
+    operations_dome = dome_scene.instantiate() as Node3D
+    if operations_dome == null:
+        push_error("Operations V3: unable to instantiate")
+        return
+    operations_dome.name = "OperationsDomeTexturedV3"
+    var centre: Vector3 = graph.vec(sites["operations"].position)
+    # V3 front is Godot +Z: stair ends .65 + 9.18 * .75 = 7.535m
+    # from centre, almost equal to the unchanged site entrance at 7.5m.
+    operations_dome.position = centre + Vector3(0.0, 0.06, 0.65)
+    operations_dome.scale = Vector3.ONE * 0.75
+    add_child(operations_dome)
+    original.visible = false
+    print("TELANICO_OPERATIONS_V3_INSTALLED")
 
 
 func _make_site_target(ident: String) -> void:
@@ -492,6 +516,8 @@ func _action(name: String) -> void:
         "Enter":
             if selected == "settlements" and is_instance_valid(settlements_hall):
                 settlements_hall.call("open_doors")
+            if selected == "operations" and is_instance_valid(operations_dome):
+                operations_dome.call("open_doors")
             if story_adapter != null:
                 if not story_adapter.enter(selected):
                     info.text = "No office quest at this location."
@@ -510,6 +536,8 @@ func start_walk(target: String) -> void:
 func _begin_walk(target: String,plan: Dictionary) -> void:
     if current_node == "settlements" and target != "settlements" and is_instance_valid(settlements_hall):
         settlements_hall.call("close_doors")
+    if current_node == "operations" and target != "operations" and is_instance_valid(operations_dome):
+        operations_dome.call("close_doors")
     walk_target = target
     walk_plan = plan
     walk_points = plan.points.duplicate()
@@ -585,6 +613,8 @@ func _arrive() -> void:
     current_node = walk_target
     if current_node == "settlements" and is_instance_valid(settlements_hall):
         settlements_hall.call("open_doors")
+    if current_node == "operations" and is_instance_valid(operations_dome):
+        operations_dome.call("open_doors")
     current_island = "west" if actor.position.x<0 else "east"
     _charge_story_time(int(walk_plan.minutes), "walk")
     last_trip = {"kind":"walk", "minutes":walk_plan.minutes,"length":walk_plan.length,"real_seconds":trip_real}
