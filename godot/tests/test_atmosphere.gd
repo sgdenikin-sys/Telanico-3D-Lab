@@ -5,8 +5,8 @@ func run():
     root.add_child(game)
     await process_frame
     var world=game.world
-    var sun: DirectionalLight3D=world.get_node("LateAfternoonSun_NE")
-    assert(sun.position.x>0 and sun.position.z<0 and sun.position.y>0)
+    var sun: DirectionalLight3D=world.get_node("LateAfternoonSun_NW")
+    assert(sun.position.x<0 and sun.position.z<0 and sun.position.y>0)
     var elevation=rad_to_deg(asin(sun.position.normalized().y))
     assert(elevation>17 and elevation<24,"Late afternoon, not a horizon/below-ground sun")
     var environment: Environment=world.get_node("CampusSkyAndContactAO").environment
@@ -56,5 +56,5 @@ func run():
     game.queue_free()
     await process_frame
     await process_frame
-    print("TELANICO_ATMOSPHERE_PASS NE sun, cached sky, AO/fog, 38 trees/36 bushes, shared materials, correct UI effects")
+    print("TELANICO_ATMOSPHERE_PASS NW sun, cached sky, AO/fog, 38 trees/36 bushes, shared materials, correct UI effects")
     quit(0)

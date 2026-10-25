@@ -2,9 +2,9 @@ extends RefCounted
 ## One shadow-casting key, cached sky radiance, Compatibility SSAO and one mist plane.
 static func apply(scene: Node3D, campus: Node3D) -> void:
     var sun := DirectionalLight3D.new()
-    sun.name = "LateAfternoonSun_NE"
+    sun.name = "LateAfternoonSun_NW"
     scene.add_child(sun)
-    sun.position = Vector3(180,90,-180)
+    sun.position = Vector3(-180,90,-180)
     sun.look_at(Vector3.ZERO,Vector3.UP)
     sun.light_color = Color("#FFE1B2")
     sun.light_energy = 0.90
@@ -22,6 +22,7 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     var sky := Sky.new()
     var material := ShaderMaterial.new()
     material.shader = load("res://shaders/campus_sky.gdshader")
+    material.set_shader_parameter("sun_direction", sun.position.normalized())
     sky.sky_material = material
     sky.radiance_size = Sky.RADIANCE_SIZE_128
     sky.process_mode = Sky.PROCESS_MODE_QUALITY
@@ -47,7 +48,22 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     scene.add_child(environment)
     var bush := ShaderMaterial.new()
     bush.shader = load("res://shaders/bush_breeze.gdshader")
+    var ground := _ground_materials()
     for mesh in campus.find_children("*","MeshInstance3D",true,false):
+        var name_text := String(mesh.name)
+        # World triplanar projection works on the unchanged, UV-less terrain.
+        # Existing broad grass zones and all route/collision geometry stay intact.
+        if name_text.contains("Terrain") or (name_text.contains("WalkSurface") and not name_text.contains("Bridge")):
+            for surface in range(mesh.mesh.get_surface_count()):
+                var source: Material = mesh.mesh.surface_get_material(surface)
+                if source == null:
+                    continue
+                var key := String(source.resource_name)
+                if ground.has(key):
+                    var replacement: Material = ground[key]
+                    if key == "Telanico stone" and name_text.contains("Path WalkSurface"):
+                        replacement = ground["promenade"]
+                    mesh.set_surface_override_material(surface, replacement)
         if String(mesh.name).begins_with("Soft Canopy Bush"):
             mesh.material_override = bush
             mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -97,3 +113,27 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     haze.material_override = mist
     haze.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
     campus.add_child(haze)
+
+
+static func _ground_material(texture_name: String, tile_metres: float) -> StandardMaterial3D:
+    var ground := StandardMaterial3D.new()
+    ground.resource_name = "Ground | " + texture_name
+    ground.albedo_texture = load("res://assets/ground/" + texture_name + "_base_albedo.png")
+    ground.roughness = 0.96
+    ground.metallic = 0.0
+    ground.uv1_triplanar = true
+    ground.uv1_world_triplanar = true
+    ground.uv1_scale = Vector3.ONE / tile_metres
+    ground.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+    return ground
+
+
+static func _ground_materials() -> Dictionary:
+    return {
+        "Telanico grass": _ground_material("grass", 5.0),
+        "Telanico meadow": _ground_material("grass_meadow", 5.0),
+        "Telanico grass_light": _ground_material("earth_sparse_grass", 5.0),
+        "Telanico dirt": _ground_material("path_dirt", 3.0),
+        "Telanico stone": _ground_material("stone_path", 2.6),
+        "promenade": _ground_material("cobblestone", 2.2),
+    }

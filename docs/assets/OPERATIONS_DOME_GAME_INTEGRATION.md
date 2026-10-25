@@ -13,8 +13,10 @@ original navigation/collision, site selection, office content, character scale,
 waypoint. Door open/close actions are wired to existing site-arrival events.
 The standalone GLB has static flags — do not claim a flag-wind animation.
 
-The new ground texture ZIP is deliberately NOT applied in this Operations-only
-change. Review building at normal game camera before changing surrounding terrain.
+The follow-up applies six owner-supplied ground albedos at 512×512 with mipmaps
+and world-space triplanar projection. Existing grass zones, terrain, routes and
+collisions are reused. Main sunlight and the matching sky now come from north-west
+(Godot -X/-Z); shadows fall south-east. Hall and courier sizes remain unchanged.
 
 Source integration is not the same as a completed Godot Web build or live
 publication. The private Lab Actions previously failed before a runner was

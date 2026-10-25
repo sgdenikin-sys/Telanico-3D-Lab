@@ -1,0 +1,39 @@
+{
+  "source": "Owner-supplied ground texture packs; albedo only, no baked lighting",
+  "runtime_resolution": [
+    512,
+    512
+  ],
+  "textures": {
+    "grass_base_albedo.png": {
+      "pack": "Telanico_Ground_Textures_V1.zip",
+      "archive_sha256": "5f4f5f5d2ff0c52523f875b89cd248955360dc8bd80dd58d3c926e1616875462",
+      "source_sha256": "1342fc9cda699548d66207439aa0dcb7a6d93c5c067f5990aa748c613c33e772"
+    },
+    "path_dirt_base_albedo.png": {
+      "pack": "Telanico_Ground_Textures_V1.zip",
+      "archive_sha256": "5f4f5f5d2ff0c52523f875b89cd248955360dc8bd80dd58d3c926e1616875462",
+      "source_sha256": "237628ab9c5c2d2d3568d1ba9e5d738dbe930526491207e5a1f13bc68b4474c6"
+    },
+    "stone_path_base_albedo.png": {
+      "pack": "Telanico_Ground_Textures_V1.zip",
+      "archive_sha256": "5f4f5f5d2ff0c52523f875b89cd248955360dc8bd80dd58d3c926e1616875462",
+      "source_sha256": "0403140097be6754858b19293706e9fc8ef10f260e4a6e1d613052ebd3a4212b"
+    },
+    "cobblestone_base_albedo.png": {
+      "pack": "Telanico_Ground_Textures_V1.zip",
+      "archive_sha256": "5f4f5f5d2ff0c52523f875b89cd248955360dc8bd80dd58d3c926e1616875462",
+      "source_sha256": "b507d6ddf6b077d370da28cb345044eed0b82e661b4023f2ecef51215bb6b57d"
+    },
+    "grass_meadow_base_albedo.png": {
+      "pack": "Telanico_Grass_Earth_Expansion (1).zip",
+      "archive_sha256": "7bde790ce4879af09bb6c4a2e19024f80e6152133c46ebd04bce8faef55305ce",
+      "source_sha256": "bc89f529bba65c72c40aad5a632ed62dde7b845e3d46f9c7a8113f8cf5eee6d7"
+    },
+    "earth_sparse_grass_base_albedo.png": {
+      "pack": "Telanico_Grass_Earth_Expansion (1).zip",
+      "archive_sha256": "7bde790ce4879af09bb6c4a2e19024f80e6152133c46ebd04bce8faef55305ce",
+      "source_sha256": "f6e1552bfe9e3d374113bbac85ef68e2cfe30c75263931cb2eff75ab9261d75f"
+    }
+  }
+}
