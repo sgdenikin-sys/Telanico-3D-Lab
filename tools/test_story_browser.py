@@ -221,7 +221,7 @@ def exercise(browser, url, output, width, height, touch, full, landmarks_only=Fa
         wait("window.__TELANICO_STORY.modal==='invoice'")
         compact_modal()
         assert 'Diorama' not in story()['hud']
-        assert story()['walk_speed']==9.375 and story()['courier_scale']==3
+        assert story()['walk_speed']==9.375 and abs(story()['courier_scale']-2.55)<0.001
         assert story()['clock_art'].endswith('clock_analog_blue.png')
         assert story()['time']==0 and story()['invoice']['cargo']=='High Quality Energy (Physical Oil)'
         assert story()['invoice']['quantity']=='' and story()['invoice']['total']==''

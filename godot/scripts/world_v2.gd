@@ -138,11 +138,11 @@ func _install_settlements_hall() -> void:
         extra_collision.collision_layer = 0
         extra_collision.collision_mask = 0
     var centre: Vector3 = graph.vec(sites["settlements"].position)
-    # Native asset: 23.9 x 15.9 m. 0.55 fits its 14 m site footprint.
+    # Native asset: 23.9 x 15.9 m. Owner requested a modest visual increase.
     # +Z points toward the entrance waypoint, 8.5 m ahead of centre.
-    # The platform front is 9.5 native metres: 3.25 + 9.5 * .55 = 8.475 m.
-    settlements_hall.position = centre + Vector3(0.0, 0.04, 3.25)
-    settlements_hall.scale = Vector3.ONE * 0.55
+    # Keep the platform at the entrance: 2.5 + 9.5 * .63 = 8.485 m.
+    settlements_hall.position = centre + Vector3(0.0, 0.04, 2.5)
+    settlements_hall.scale = Vector3.ONE * 0.63
     add_child(settlements_hall)
     original.visible = false
     print("TELANICO_HALL_V3_INSTALLED at ", settlements_hall.position,
@@ -189,7 +189,7 @@ func _make_actor() -> void:
     actor.position = graph.nodes[current_node]+Vector3(0,0.2,0)
     visual = load("res://assets/generated/courier.glb").instantiate()
     actor.add_child(visual)
-    visual.scale *= 3.0 # Presentation only: preserve the tested collision/navigation footprint.
+    visual.scale *= 2.55 # Presentation only: preserve the tested collision/navigation footprint.
     animation = visual.find_child("*", true, false) as AnimationPlayer
     var players := visual.find_children("*", "AnimationPlayer", true, false)
     if not players.is_empty(): animation = players[0]

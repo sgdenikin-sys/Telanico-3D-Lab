@@ -11,7 +11,7 @@ func run():
     game.close_modal()
     assert(not game.ui_buttons.has("Diorama"))
     assert(is_equal_approx(game.world.speed,9.375))
-    assert(game.world.visual.scale.is_equal_approx(Vector3.ONE*3))
+    assert(game.world.visual.scale.is_equal_approx(Vector3.ONE*2.55))
     assert(absf(game.clock_face.texture.get_size().aspect()-1.0)<0.1,
         "Clock must use the round canonical dial, not a wide HUD plate")
     for screen in [Vector2i(844,306),Vector2i(667,280),Vector2i(844,390),Vector2i(667,375),Vector2i(1920,1080)]:
