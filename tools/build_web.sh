@@ -17,6 +17,10 @@ python3 tools/validate_v2.py
 python3 tools/validate_glb.py godot/assets/generated/overworld.glb
 python3 tools/stamp_build.py --before
 "$godot_bin" --headless --path godot --editor --import 2>&1 | tee build/logs/import.log
+# Targeted safeguard for the replaced landmark; preserve existing full-story gates.
+timeout 120 "$godot_bin" --headless --path godot --script ../tools/check_hall_overworld.gd \
+  2>&1 | tee build/logs/hall-overworld.log
+rg -q 'TELANICO_HALL_GAME_PASS' build/logs/hall-overworld.log
 # Validate the shared rules and actual playable integration before exporting.
 for story_test in test_story_session test_source_parity test_world_integration test_playthrough test_optional_offices test_story_ui; do
   timeout 240 "$godot_bin" --headless --path godot \
