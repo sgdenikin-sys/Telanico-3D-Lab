@@ -1,0 +1,41 @@
+{
+  "source_triangles": 19816,
+  "source_mesh_objects": 583,
+  "unique_source_meshes": 323,
+  "runtime_meshes": 18,
+  "material_count": 11,
+  "section_triangles": {
+    "01 | Rotunda \u2014 twelve editable arch bays": 6914,
+    "02 | Clerestory and ribbed dome": 3712,
+    "03 | West wing": 3444,
+    "04 | East wing": 3444,
+    "05 | Entrance, stairs and banner piers": 964,
+    "06 | Flags and decorative metalwork": 788,
+    "07 | Optional entrance platform \u2014 remove independently": 550
+  },
+  "animated_door_hinges": 2,
+  "animated_fabric_objects": 4,
+  "animation_clips": [
+    "Doors_Open",
+    "Doors_Close",
+    "Flags_Wind-loop",
+    "Hall_Demo-loop"
+  ],
+  "wind_loop_seconds": 4.0,
+  "dimensions_metres": [
+    23.9,
+    15.9,
+    16.47
+  ],
+  "quality_preset": "lite",
+  "blender_version": "4.3.2",
+  "front_axis_blender": "-Y",
+  "front_axis_godot": "+Z",
+  "origin": "Ground plane, centre of circular hall",
+  "stair_rise_metres": 0.17,
+  "stair_tread_metres": 0.31,
+  "door_clear_width_metres": 1.99,
+  "door_clear_height_metres": 2.645,
+  "entrance_arch_height_metres": 4.155,
+  "notes": "Exterior landmark; no navigable interior. Hinged doors and four morph-animated fabric pieces. Core glTF PBR; no external dependencies."
+}

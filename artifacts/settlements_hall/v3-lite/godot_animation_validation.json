@@ -1,0 +1,40 @@
+{
+  "clips": {
+    "Doors_Close": {
+      "loop": 0,
+      "seconds": 1.0,
+      "tracks": 2
+    },
+    "Doors_Open": {
+      "loop": 0,
+      "seconds": 1.0,
+      "tracks": 2
+    },
+    "Flags_Wind": {
+      "loop": 1,
+      "seconds": 4.0,
+      "tracks": 14
+    },
+    "Hall_Demo": {
+      "loop": 1,
+      "seconds": 4.0,
+      "tracks": 14
+    }
+  },
+  "cloth_loop_seam_verified": true,
+  "colliders": 5,
+  "door_opening_degrees": [
+    99.9999868456455,
+    99.9999868456455
+  ],
+  "double_sided_fabric": true,
+  "engine": "4.6.3-stable (official)",
+  "glass_alpha": true,
+  "hinge_positions_fixed": true,
+  "independent_playback_verified": true,
+  "meshes": 18,
+  "morph_fabric_objects": 4,
+  "outward_opening_verified": true,
+  "surfaces": 22,
+  "triangles": 19816
+}

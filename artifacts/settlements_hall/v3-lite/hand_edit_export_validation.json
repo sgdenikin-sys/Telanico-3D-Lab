@@ -1,0 +1,35 @@
+{
+  "triangles": 19816,
+  "export_vertices": 28754,
+  "meshes": 18,
+  "materials": 11,
+  "degenerate_triangles": 0,
+  "dimensions_xyz_metres_gltf": [
+    23.9,
+    16.47,
+    15.9
+  ],
+  "bytes": 1112772,
+  "core_gltf_materials": true,
+  "glass_alpha_blend": true,
+  "animations": {
+    "Doors_Open": {
+      "seconds": 1.0,
+      "channels": 2
+    },
+    "Doors_Close": {
+      "seconds": 1.0,
+      "channels": 2
+    },
+    "Hall_Demo-loop": {
+      "seconds": 4.0,
+      "channels": 6
+    },
+    "Flags_Wind-loop": {
+      "seconds": 4.0,
+      "channels": 4
+    }
+  },
+  "hinged_leaves": 2,
+  "morph_animated_fabric_pieces": 4
+}

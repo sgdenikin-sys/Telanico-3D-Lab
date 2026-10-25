@@ -1,0 +1,39 @@
+{
+  "method": "Identical camera/light configuration; no independent image scaling or crop",
+  "views": {
+    "hero": {
+      "source_pixels": [
+        1500,
+        1300
+      ],
+      "v2_sha256": "28fda9f4c313727c67bb163948b4a20507541a8594ceb518fd92c8aa7c6d918e",
+      "lite_sha256": "2416d9757bc5875a16451fb2fa3064ed121e1d02d1e368f7f9e657db61466df4"
+    },
+    "front": {
+      "source_pixels": [
+        1125,
+        975
+      ],
+      "v2_sha256": "949e18f4e3b735d7e5afe15ae465102e5dfe921e5b080771fdec72563991aad9",
+      "lite_sha256": "e7dc47fe25455dec375403f45e0fac096d38e93d31c19e0b3676544cee460389"
+    },
+    "rear": {
+      "source_pixels": [
+        1125,
+        975
+      ],
+      "v2_sha256": "ae4c693f193d8c020e26a06ff8a3adf86c871a49c081ade2c2b796442008b64a",
+      "lite_sha256": "6da488c2111f9c48450c08d39aa9a9ba2a835180d9c3686aa8bf2bf9e9e11e4e"
+    },
+    "detail": {
+      "source_pixels": [
+        1125,
+        975
+      ],
+      "v2_sha256": "9e652656f8daea8b9db0f205838856d4899f3c39231be759e42dfc5ca4489aed",
+      "lite_sha256": "e290380eeb6dd21fa98a5c84d0bd294208cc595329fbc3e80910fee9dfad48e2"
+    }
+  },
+  "all_11_exported_materials_identical": true,
+  "artistic_review": "Dome, all main facade bays/columns, twelve ribs, stairs and color hierarchy retained. Reduced clerestory/post repetition and micro-ornament are visible at close inspection; no primitive blockout or proportion change."
+}

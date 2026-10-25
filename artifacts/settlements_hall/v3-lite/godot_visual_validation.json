@@ -1,0 +1,206 @@
+{
+  "viewport": [
+    844,
+    390
+  ],
+  "device_pixel_ratio": 1,
+  "physical_device": false,
+  "method": "Godot 4.6.3 Compatibility in Chromium with SwiftShader; cached engine, isolated PCK",
+  "glb_sha256": "c4bf665a9639db60a2d3371b2bbbeae496a1295b8886990a2419cff246f0297b",
+  "engine_js_sha256": "e3f56ee40e6f84371053db06692cfac15e2c8659547b11c6b2dfa1996dabd981",
+  "variants": {
+    "v2": {
+      "command_id": 1,
+      "decode_instantiate_ms": 62.5,
+      "engine": "4.6.3-stable (official)",
+      "engine_static_bytes": 0,
+      "fabric_weights": {
+        "Flag_Entry_L": [
+          0,
+          0,
+          0
+        ],
+        "Flag_Entry_R": [
+          0,
+          0,
+          0
+        ],
+        "Flag_Roof_L": [
+          0,
+          0,
+          0
+        ],
+        "Flag_Roof_R": [
+          0,
+          0,
+          0
+        ]
+      },
+      "fps": 3,
+      "hinge_degrees": {
+        "Door_Hinge_L": 0,
+        "Door_Hinge_R": 0
+      },
+      "mode": "model",
+      "ready": true,
+      "renderer": "gl_compatibility",
+      "variant": "v2",
+      "js_heap_bytes": 51962038
+    },
+    "lite": {
+      "command_id": 2,
+      "decode_instantiate_ms": 8.6,
+      "engine": "4.6.3-stable (official)",
+      "engine_static_bytes": 0,
+      "fabric_weights": {
+        "Flag_Entry_L": [
+          0,
+          0,
+          0
+        ],
+        "Flag_Entry_R": [
+          0,
+          0,
+          0
+        ],
+        "Flag_Roof_L": [
+          0,
+          0,
+          0
+        ],
+        "Flag_Roof_R": [
+          0,
+          0,
+          0
+        ]
+      },
+      "fps": 3,
+      "hinge_degrees": {
+        "Door_Hinge_L": 0,
+        "Door_Hinge_R": 0
+      },
+      "mode": "model",
+      "ready": true,
+      "renderer": "gl_compatibility",
+      "variant": "lite",
+      "js_heap_bytes": 53869185
+    }
+  },
+  "engine": "4.6.3-stable (official)",
+  "browser_startup_ms": 5546.0999999996275,
+  "gl_vendor": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "web_animation_pose": {
+    "command_id": 3,
+    "decode_instantiate_ms": 8.6,
+    "engine": "4.6.3-stable (official)",
+    "engine_static_bytes": 0,
+    "fabric_weights": {
+      "Flag_Entry_L": [
+        0.5,
+        0,
+        1
+      ],
+      "Flag_Entry_R": [
+        0.5,
+        0,
+        1
+      ],
+      "Flag_Roof_L": [
+        0.5,
+        0,
+        1
+      ],
+      "Flag_Roof_R": [
+        0.5,
+        0,
+        1
+      ]
+    },
+    "fps": 3,
+    "hinge_degrees": {
+      "Door_Hinge_L": -50.0000076293945,
+      "Door_Hinge_R": 50.0000076293945
+    },
+    "mode": "model",
+    "ready": true,
+    "renderer": "gl_compatibility",
+    "variant": "lite"
+  },
+  "glass_pixels": {
+    "hidden": [
+      [
+        229.0,
+        11.0,
+        1.0
+      ],
+      [
+        8.0,
+        204.0,
+        23.0
+      ],
+      [
+        8.0,
+        23.0,
+        229.0
+      ],
+      [
+        229.0,
+        191.0,
+        0.0
+      ]
+    ],
+    "transparent": [
+      [
+        152.0,
+        120.0,
+        126.0
+      ],
+      [
+        70.0,
+        191.0,
+        134.0
+      ],
+      [
+        64.6,
+        120.0,
+        206.4
+      ],
+      [
+        146.0,
+        182.8,
+        121.96
+      ]
+    ],
+    "opaque": [
+      [
+        106.0,
+        184.0,
+        199.6
+      ],
+      [
+        106.0,
+        184.0,
+        199.0
+      ],
+      [
+        98.0,
+        178.0,
+        193.0
+      ],
+      [
+        97.4,
+        177.4,
+        193.0
+      ]
+    ]
+  },
+  "glass_transparent_to_opaque_distance_ratios": [
+    0.6290315259804041,
+    0.6313356282132664,
+    0.626631379751752,
+    0.631436383068764
+  ],
+  "glass_render_verified": true,
+  "page_errors": [],
+  "limitations": "Software rendering, one emulated landscape viewport, both resource choices in one PCK. Decode timings share a warm cache. JS heap is not total WASM/device RAM; the native memory counter returns unsupported zero. Not physical Safari, a mobile-ready certification, or an isolated per-model performance/memory benchmark."
+}

@@ -1,0 +1,14 @@
+{
+  "result": "SETTLEMENTS_LOD_STATS_PASS",
+  "baseline_triangles": 34643,
+  "lite_triangles": 19816,
+  "reduction_percent": 42.8,
+  "review_target_met": true,
+  "materials": 11,
+  "animation_clips": [
+    "Doors_Close",
+    "Doors_Open",
+    "Flags_Wind-loop",
+    "Hall_Demo-loop"
+  ]
+}
