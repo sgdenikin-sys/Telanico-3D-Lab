@@ -34,8 +34,12 @@ def verify(root=ROOT):
         path = site / name
         assert not path.is_symlink(), name
         assert hashlib.sha256(path.read_bytes()).hexdigest() == expected, name
-    for key in ('native_release_gates', 'desktop_browser', 'phone_full_story'):
+    for key in ('native_release_gates', 'desktop_browser'):
         assert manifest['validation'][key] == 'passed', key
+    # Owner stopped the remaining playthrough and requested this exact deployment.
+    phone = manifest['validation']['phone_full_story']
+    assert phone == 'passed' or (phone == 'stopped_by_owner' and
+        manifest['source_commit'] == 'ee678d9f80c6455da3048d087f7a171a6efbfd5f'), 'phone_full_story'
     assert meta['commit'] in (site / 'index.html').read_text(encoding='utf-8')
     validate(site)
     print('RELEASE_SNAPSHOT_VERIFIED', meta['version'], meta['commit'], len(RUNTIME), 'files')

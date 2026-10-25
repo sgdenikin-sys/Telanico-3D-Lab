@@ -1,0 +1,102 @@
+{
+  "source_commit": "ee678d9f80c6455da3048d087f7a171a6efbfd5f",
+  "engine": "Godot 4.6.3 Compatibility, single-thread Web",
+  "hall_glb_sha256": "c4bf665a9639db60a2d3371b2bbbeae496a1295b8886990a2419cff246f0297b",
+  "native_hall": {
+    "canonical_sites": 15,
+    "clips": {
+      "Doors_Close": {
+        "loop": 0,
+        "seconds": 1.0,
+        "tracks": 2
+      },
+      "Doors_Open": {
+        "loop": 0,
+        "seconds": 1.0,
+        "tracks": 2
+      },
+      "Flags_Wind": {
+        "loop": 1,
+        "seconds": 4.0,
+        "tracks": 14
+      },
+      "Hall_Demo": {
+        "loop": 1,
+        "seconds": 4.0,
+        "tracks": 14
+      }
+    },
+    "cloth_loop_seam_verified": true,
+    "colliders": 5,
+    "context": "actual main.tscn integrated Hall",
+    "door_opening_degrees": [
+      99.9999868456455,
+      99.9999868456455
+    ],
+    "double_sided_fabric": true,
+    "engine": "4.6.3-stable (official)",
+    "glass_alpha": true,
+    "hinge_positions_fixed": true,
+    "independent_playback_verified": true,
+    "meshes": 18,
+    "morph_fabric_objects": 4,
+    "original_site_visual_hidden": true,
+    "outward_opening_verified": true,
+    "position": "(-63.0, 11.76549, -20.75)",
+    "scale": "(0.55, 0.55, 0.55)",
+    "surfaces": 22,
+    "triangles": 19816
+  },
+  "native_gates": {
+    "hall-overworld": [
+      "TELANICO_HALL_GAME_PASS V3 Lite visuals, placement, animations, 15 sites and original navigation"
+    ],
+    "test_story_session": [
+      "TELANICO_STORY_SESSION_PASS 61 assertions"
+    ],
+    "test_source_parity": [
+      "TELANICO_SOURCE_PARITY_PASS 1116 comparisons across 16 cases"
+    ],
+    "test_world_integration": [
+      "TELANICO_WORLD_STORY_PASS 29 assertions; physical walking, bridge, scheduled ferry, tube, explicit office and modal lock"
+    ],
+    "test_playthrough": [
+      "TELANICO_PLAYTHROUGH_PASS 104 assertions; victory at 13:54"
+    ],
+    "test_optional_offices": [
+      "TELANICO_OPTIONAL_OFFICES_PASS 36 assertions; actual Trade Finance/repeat and Compliance/chocolate/assistant/training"
+    ],
+    "test_story_ui": [
+      "TELANICO_STORY_UI_PASS landscape HUD/invoice, deadline result and real scene restart"
+    ],
+    "viewer": [
+      "TELANICO_TEST_OK all 15 reachable; physical district entrances/slopes; Follow; water/wall rejection; bridge, boat, tube, rig, cancellation"
+    ],
+    "atmosphere-native": [
+      "TELANICO_ATMOSPHERE_PASS NE sun, cached sky, AO/fog, 38 trees/36 bushes, shared materials, correct UI effects"
+    ]
+  },
+  "full_regression_source_commit": "01e17b6b79c2fa1b2cd554d410d2e9faebacf2cc",
+  "placement_delta_metres": [
+    0,
+    0,
+    0.75
+  ],
+  "placement_rationale": "Platform front: site centre +3.25 +9.5*.55 =8.475 m; canonical entrance remains +8.5 m. 0.025 m gap.",
+  "post_placement_gates": {
+    "hall-overworld-final": [
+      "TELANICO_HALL_GAME_PASS V3 Lite visuals, placement, animations, 15 sites and original navigation"
+    ],
+    "world-integration-final": [
+      "TELANICO_WORLD_STORY_PASS 29 assertions; physical walking, bridge, scheduled ferry, tube, explicit office and modal lock"
+    ]
+  },
+  "browser_status": {
+    "desktop_initial": "passed opening-office-wrong-answer",
+    "touch_full": "stopped_by_owner after FX",
+    "final_desktop": "departure and Hall render completed; return/Enter stopped",
+    "physical_iphone_safari": "not tested"
+  },
+  "owner_instruction": "\u0445\u0432\u0430\u0442\u0438\u0442 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u043f\u0440\u043e\u0445\u043e\u0436\u0434\u0435\u043d\u0438\u0435, \u0434\u0435\u043f\u043b\u043e\u0439",
+  "runtime_manifest": "tools/release.json"
+}
