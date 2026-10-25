@@ -16,8 +16,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_settlements_hall as hall
 
 parser = argparse.ArgumentParser(description=__doc__)
+is_lite = '--quality lite' in bpy.context.scene.get('regenerate', '')
 parser.add_argument('--output', type=Path,
-                    default=hall.ROOT/'godot/assets/generated/settlements_hall.glb')
+                    default=hall.ROOT/('blender/generated/settlements_hall_lite/settlements_hall.glb'
+                                       if is_lite else 'godot/assets/generated/settlements_hall.glb'))
 args = parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 hall.ASSET[:] = sorted({obj for col in bpy.context.scene.collection.children
                      if col.name[:2] in {'01', '02', '03', '04', '05', '06', '07'}

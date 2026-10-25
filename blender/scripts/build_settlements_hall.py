@@ -84,11 +84,11 @@ def instance(source, name, pos=(0, 0, 0), angle=0):
     return obj
 
 
-def lathe(name, profile, mat, segments=32, pos=(0, 0, 0), phase=0, caps=True):
+def lathe(name, profile, mat, segments=32, pos=(0, 0, 0), phase=0, caps=True, preserve_segments=False):
     """Radius/Z profile, smooth sides and flat ledges. Only a top cap is needed:
     the foot of each lathe sits on another solid stone or metal component.
     """
-    if lite():
+    if lite() and not preserve_segments:
         segments = min(segments, 24)
     verts = [(r*math.cos(TAU*i/segments+phase),
               r*math.sin(TAU*i/segments+phase), z)
@@ -107,7 +107,8 @@ def lathe(name, profile, mat, segments=32, pos=(0, 0, 0), phase=0, caps=True):
 
 def tube(name, points, radius, mat, sides=4):
     # Hairline ornament is invisible from the normal elevated game camera.
-    if lite() and radius <= .023:
+    visible_seams = {'Pavilion folded seam', 'Pavilion side folded seam', 'Forecourt compass brass circle'}
+    if lite() and radius <= .023 and name not in visible_seams:
         return None
     verts = []
     for i, point in enumerate(points):
@@ -328,11 +329,11 @@ def column(name, x, y, low, high, radius=.30):
 
 def dome(name, radius, base, height, mat, pos=(0, 0, 0), segments=64, rings=16):
     if lite():
-        segments, rings = min(segments, 36), min(rings, 10)
+        segments, rings = min(segments, 48), min(rings, 10)
     profile = [(radius*math.cos(math.pi*.5*i/rings), base+height*math.sin(math.pi*.5*i/rings))
                for i in range(rings)]
     profile.append((.025, base+height))
-    return lathe(name, profile, mat, segments, pos, caps=False)
+    return lathe(name, profile, mat, segments, pos, caps=False, preserve_segments=True)
 
 
 def build_rotunda():
@@ -421,7 +422,7 @@ def build_crown():
     lathe('Dome spring cornice', [(4.32, 9.78), (4.60, 9.86), (4.60, 10.05), (4.49, 10.14)], M['ivory'], 36)
     lathe('Dome brass waterline', [(4.49, 10.12), (4.53, 10.19), (4.53, 10.26)], M['brass'], 36)
     dome('Smooth deep blue metal dome', 4.48, 10.20, 4.95, M['teal'])
-    n_ribs = 8 if lite() else 12
+    n_ribs = 12  # Keep the V2 landmark rhythm; reduce rib tessellation instead.
     for i in range(n_ribs):
         a = TAU*i/n_ribs
         points = []
@@ -479,8 +480,6 @@ def build_wing(sign):
             ('front', 2, 'x', cy-depth/2, 0, width),
             ('rear', 2, 'x', cy+depth/2, math.pi, width),
             ('outer', 3, 'y', cx+sign*width/2, sign*math.pi/2, depth)]:
-        if lite() and label in ('rear', 'outer'):
-            count -= 1  # Preserve front facade; simplify distant side/rear repetition.
         for i in range(count):
             offset = -span/2+span/count*(i+.5)
             parts = window_bay(span/count, .86, 5.45, 1.35, 1.40, 3.70)
@@ -490,7 +489,7 @@ def build_wing(sign):
     # Short inner return walls, mostly behind the central hall.
     block(side+' inner return', (cx-sign*width/2, cy+1.8, 3.10), (.28, 3.40, 4.48), M['ivory'])
     for yy in (cy-depth/2-.08, cy+depth/2+.08):
-        for xx in ((cx-width/2, cx+width/2) if lite() else (cx-width/2, cx, cx+width/2)):
+        for xx in (cx-width/2, cx, cx+width/2):
             column(side+' facade column', xx, yy, .89, 5.20, .22)
     # Low tiered cornice and a visibly shaped roof, not a flat slab.
     for z, w, d, h, mat in [(5.23, 5.94, 7.24, .18, M['ivory']),
@@ -705,7 +704,7 @@ def build_plaza():
                (11.95, -5.0), (11.95, 6.4), (-11.95, 6.4)]
     prism('Shaped pale stone entrance platform', outline, 0, .24, M['paving'], .055)
     # Retain the iconic compass and plaza; omit tiny stone joints in the LOD.
-    for x in (() if lite() else (-3.5, 3.5)):
+    for x in (-3.5, 3.5):  # Retain the eleventh PBR material in the actual GLB.
         block('Forecourt inset paving', (x, -7.70, .245), (2.30, 2.6, .012), M['paving_alt'], .025)
     for y in (() if lite() else (-8.95, -8.30, -7.65)):
         tube('Paving joint', [(-4.7, y, .251), (4.7, y, .251)], .009, M['sandstone'])
