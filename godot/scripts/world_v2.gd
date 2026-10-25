@@ -7,6 +7,7 @@ const OVERVIEW_ZOOM := 124.0
 var data: Dictionary
 var graph: RefCounted
 var world: Node3D
+var settlements_hall: Node3D # V3 Lite overlay; other 14 site visuals remain unchanged.
 var camera: Camera3D
 var actor: CharacterBody3D
 var visual: Node3D
@@ -94,6 +95,7 @@ func _ready() -> void:
                     if body is StaticBody3D: body.collision_layer = 8
     for ident in sites:
         _make_site_target(ident)
+    _install_settlements_hall()
     ferry = world.find_child("Central Ferry", true, false)
     _make_actor()
     _make_camera_lighting()
@@ -115,6 +117,36 @@ func _ready() -> void:
     get_viewport().size_changed.connect(_resize_view)
     _layout_ui()
     print("TELANICO_V2_READY imported world, animated courier, 15 sites")
+
+func _install_settlements_hall() -> void:
+    # Visual swap only. Keep original route nodes, selectable Area3D, and the
+    # collision created for the old WalkSurface. No overworld geometry rebuild.
+    var original := world.find_child("Site_settlements", true, false) as Node3D
+    if original == null:
+        push_error("Settlements Hall: original Site_settlements missing")
+        return
+    var hall_scene := load("res://scenes/assets/settlements_hall.tscn") as PackedScene
+    if hall_scene == null:
+        push_error("Settlements Hall V3 Lite asset not staged")
+        return
+    settlements_hall = hall_scene.instantiate() as Node3D
+    settlements_hall.name = "SettlementsHallV3Lite"
+    # Retain canonical site collision and entrance path; do not add a second
+    # overlapping wall/ground collider from the freestanding preview model.
+    var extra_collision := settlements_hall.get_node_or_null("OptionalBuildingCollision") as StaticBody3D
+    if extra_collision != null:
+        extra_collision.collision_layer = 0
+        extra_collision.collision_mask = 0
+    var centre: Vector3 = graph.vec(sites["settlements"].position)
+    # Native asset: 23.9 x 15.9 m. 0.55 fits its 14 m site footprint.
+    # +Z points toward the existing entrance waypoint, 8.5 m ahead of centre.
+    settlements_hall.position = centre + Vector3(0.0, 0.04, 2.5)
+    settlements_hall.scale = Vector3.ONE * 0.55
+    add_child(settlements_hall)
+    original.visible = false
+    print("TELANICO_HALL_V3_INSTALLED at ", settlements_hall.position,
+          " scale=", settlements_hall.scale.x)
+
 
 func _make_site_target(ident: String) -> void:
     var item: Dictionary = sites[ident]
@@ -457,6 +489,8 @@ func _action(name: String) -> void:
             route_mesh.mesh = null
             selection_ring.visible = false
         "Enter":
+            if selected == "settlements" and is_instance_valid(settlements_hall):
+                settlements_hall.call("open_doors")
             if story_adapter != null:
                 if not story_adapter.enter(selected):
                     info.text = "No office quest at this location."
@@ -473,6 +507,8 @@ func start_walk(target: String) -> void:
     _begin_walk(target,plan)
 
 func _begin_walk(target: String,plan: Dictionary) -> void:
+    if current_node == "settlements" and target != "settlements" and is_instance_valid(settlements_hall):
+        settlements_hall.call("close_doors")
     walk_target = target
     walk_plan = plan
     walk_points = plan.points.duplicate()
@@ -546,6 +582,8 @@ func _arrive() -> void:
     if state != "WALKING": return # Completion may only charge once.
     actor.position = graph.nodes[walk_target]
     current_node = walk_target
+    if current_node == "settlements" and is_instance_valid(settlements_hall):
+        settlements_hall.call("open_doors")
     current_island = "west" if actor.position.x<0 else "east"
     _charge_story_time(int(walk_plan.minutes), "walk")
     last_trip = {"kind":"walk", "minutes":walk_plan.minutes,"length":walk_plan.length,"real_seconds":trip_real}
