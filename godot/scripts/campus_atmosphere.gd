@@ -6,14 +6,14 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     scene.add_child(sun)
     sun.position = Vector3(-180,90,-180)
     sun.look_at(Vector3.ZERO,Vector3.UP)
-    sun.light_color = Color("#FFE1B2")
-    sun.light_energy = 0.90
+    sun.light_color = Color("#FFF0D8")
+    sun.light_energy = 0.62
     sun.light_specular = 0.35
-    sun.light_angular_distance = 0.8
+    sun.light_angular_distance = 1.4
     sun.shadow_enabled = true
     sun.shadow_bias = 0.025
     sun.shadow_normal_bias = 0.18
-    sun.shadow_opacity = 0.68
+    sun.shadow_opacity = 0.74
     sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
     sun.directional_shadow_max_distance = 320
     var environment := WorldEnvironment.new()
@@ -29,9 +29,9 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     settings.sky = sky
     settings.background_mode = Environment.BG_SKY
     settings.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-    settings.ambient_light_color = Color("#BACFE1")
-    settings.ambient_light_sky_contribution = 0.70
-    settings.ambient_light_energy = 0.45
+    settings.ambient_light_color = Color("#C8D8E5")
+    settings.ambient_light_sky_contribution = 0.80
+    settings.ambient_light_energy = 0.66
     settings.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
     # Godot 4.6 Compatibility supports the simplified radius/intensity AO pass.
     settings.ssao_enabled = true
