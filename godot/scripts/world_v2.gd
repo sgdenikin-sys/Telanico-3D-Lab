@@ -16,6 +16,9 @@ var animation: AnimationPlayer
 var idle_animation := ""
 var walk_animation := ""
 var ferry: Node3D
+var tube_visuals: Dictionary = {}
+var ferry_visual: Node3D
+var ferry_doors_open := false
 var sites: Dictionary = {}
 var current_node := "settlements"
 var selected := ""
@@ -99,6 +102,7 @@ func _ready() -> void:
     _install_settlements_hall()
     _install_operations_dome()
     ferry = world.find_child("Central Ferry", true, false)
+    _install_transport_visuals()
     _make_actor()
     _make_camera_lighting()
     route_mesh = MeshInstance3D.new()
@@ -172,6 +176,44 @@ func _install_operations_dome() -> void:
     original.visible = false
     print("TELANICO_OPERATIONS_V3_INSTALLED")
 
+
+func _install_transport_visuals() -> void:
+    # Visual replacements only: original selectable sites, routes, dock geometry
+    # and moving ferry parent remain authoritative. These GLBs are already Y-up.
+    var station_scene := load("res://assets/generated/transport/pneumatic_station.glb") as PackedScene
+    var ferry_scene := load("res://assets/generated/transport/commuter_ferry.glb") as PackedScene
+    var launch_scene := load("res://assets/generated/transport/harbor_launch.glb") as PackedScene
+    for ident in ["tube_w", "tube_e"]:
+        var original := world.find_child("Site_" + ident, true, false) as Node3D
+        var station := station_scene.instantiate() as Node3D
+        station.name = "PneumaticStation_" + ident
+        station.position = graph.vec(sites[ident].position) + Vector3(0, 0.03, 2.0)
+        add_child(station)
+        tube_visuals[ident] = station
+        original.visible = false
+    for child in ferry.get_children():
+        if child is Node3D: child.visible = false
+    ferry_visual = ferry_scene.instantiate() as Node3D
+    ferry_visual.name = "CommuterFerryV1"
+    ferry_visual.rotation.y = PI / 2.0
+    ferry_visual.scale = Vector3.ONE * 0.86
+    ferry_visual.position.y = -0.27 # Hull keel at the existing waterline.
+    ferry.add_child(ferry_visual)
+    for i in range(3):
+        var original := world.find_child("Decorative boat " + str(i), true, false) as Node3D
+        for child in original.get_children():
+            if child is Node3D: child.visible = false
+        var launch := launch_scene.instantiate() as Node3D
+        launch.name = "HarborLaunchV1_" + str(i)
+        launch.rotation.y = PI / 2.0
+        launch.scale = Vector3.ONE * 0.65
+        original.add_child(launch)
+    print("TELANICO_TRANSPORT_INSTALLED stations=2 ferry=1 launches=3")
+
+func _transport_doors(model: Node3D, opened: bool) -> void:
+    var clip := "Doors_Open" if opened else "Doors_Close"
+    for player in model.find_children("*", "AnimationPlayer", true, false):
+        if player.has_animation(clip): player.play(clip)
 
 func _make_site_target(ident: String) -> void:
     var item: Dictionary = sites[ident]
@@ -534,6 +576,8 @@ func start_walk(target: String) -> void:
     _begin_walk(target,plan)
 
 func _begin_walk(target: String,plan: Dictionary) -> void:
+    if tube_visuals.has(current_node) and target != current_node:
+        _transport_doors(tube_visuals[current_node], false)
     if current_node == "settlements" and target != "settlements" and is_instance_valid(settlements_hall):
         settlements_hall.call("close_doors")
     if current_node == "operations" and target != "operations" and is_instance_valid(operations_dome):
@@ -611,6 +655,8 @@ func _arrive() -> void:
     if state != "WALKING": return # Completion may only charge once.
     actor.position = graph.nodes[walk_target]
     current_node = walk_target
+    if tube_visuals.has(current_node):
+        _transport_doors(tube_visuals[current_node], true)
     if current_node == "settlements" and is_instance_valid(settlements_hall):
         settlements_hall.call("open_doors")
     if current_node == "operations" and is_instance_valid(operations_dome):
@@ -653,10 +699,14 @@ func _transport_tick(delta: float) -> void:
     var west_to_east := current_island=="west"
     var peer := ("dock_" if kind=="boat" else "tube_")+("e" if west_to_east else "w")
     if kind=="boat":
+        var boarding := t < 0.18 or t > 0.82
+        if boarding != ferry_doors_open:
+            ferry_doors_open = boarding
+            _transport_doors(ferry_visual, boarding)
         var start_x := -9.0 if west_to_east else 9.0
         var sailing := clampf((t-.18)/.64,0,1)
         ferry.position = Vector3(lerpf(start_x,-start_x,smoothstep(0,1,sailing)),0.2,0)
-        var deck := ferry.position+Vector3(2,1.3,0)
+        var deck := ferry.position+Vector3(2,0.45,0) # New model's interior floor.
         if t<.18:
             actor.position = graph.nodes[current_node].lerp(deck,t/.18)
             _animate(true)
@@ -680,6 +730,8 @@ func _transport_tick(delta: float) -> void:
         actor.collision_mask = 1
         fade.color.a = 0
         current_node = peer
+        if tube_visuals.has(peer):
+            _transport_doors(tube_visuals[peer], true)
         selected = peer
         current_island = "east" if west_to_east else "west"
         last_trip = {"kind":kind,"minutes":cost+ferry_wait_minutes,"real_seconds":duration,"wait_minutes":ferry_wait_minutes}
