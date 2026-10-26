@@ -1,0 +1,18 @@
+{
+  "asset": "commuter_ferry",
+  "geometry_sha256_unchanged": "852f449be5abe6167384b2f12209af5a408f808c191082528f2fdc720a49953d",
+  "triangles_checked": 10755,
+  "charts": {
+    "MAIN": 59,
+    "TRIM": 103
+  },
+  "old_face_islands": 5881,
+  "density_px_per_m": 91.726,
+  "padding_px_between_chart_bounds": 12,
+  "uv": "complete UV0; bounds and positive triangle areas; exact triangle intersection check passed per chart; disjoint chart packing",
+  "animations": [
+    "Doors_Open",
+    "Doors_Close"
+  ],
+  "runtime": "not changed; no engine build or deployment"
+}

@@ -176,7 +176,7 @@ def analytic_surfaces(o):
             xy=[]
             for v in f.vertices:
                 p=o.data.vertices[v].co;t=math.atan2((p.y+1.3)/1.12,p.x/1.22)
-                if t<0:t+=math.tau
+                if t<math.pi-1e-5:t+=math.tau
                 # Faceted elliptical arc with exact segment-length coordinates.
                 j=round((t-math.pi)/math.pi*12);j=max(0,min(12,j))
                 pts=[Vector((1.22*math.cos(math.pi+i*math.pi/12),1.12*math.sin(math.pi+i*math.pi/12))) for i in range(13)]
