@@ -198,6 +198,7 @@ func _install_transport_visuals() -> void:
     ferry_visual.rotation.y = PI / 2.0
     ferry_visual.scale = Vector3.ONE * 0.86
     ferry_visual.position.y = -0.27 # Hull keel at the existing waterline.
+    ferry_visual.position.x = -ferry.position.x * 0.6 # Clear the pier at either bank.
     ferry.add_child(ferry_visual)
     for i in range(3):
         var original := world.find_child("Decorative boat " + str(i), true, false) as Node3D
@@ -706,7 +707,8 @@ func _transport_tick(delta: float) -> void:
         var start_x := -9.0 if west_to_east else 9.0
         var sailing := clampf((t-.18)/.64,0,1)
         ferry.position = Vector3(lerpf(start_x,-start_x,smoothstep(0,1,sailing)),0.2,0)
-        var deck := ferry.position+Vector3(2,0.45,0) # New model's interior floor.
+        ferry_visual.position.x = -ferry.position.x * 0.6
+        var deck := ferry.position+Vector3(2+ferry_visual.position.x,0.45,0)
         if t<.18:
             actor.position = graph.nodes[current_node].lerp(deck,t/.18)
             _animate(true)
