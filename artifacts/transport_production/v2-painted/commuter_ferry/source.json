@@ -1,0 +1,12 @@
+{
+  "source_drive_file": "https://drive.google.com/file/d/1kzpi0QpXAMSzsEg5X5oxPgjvg8z011uM/view",
+  "model": "commuter_ferry",
+  "runtime_glb_sha256": "35004bcc06156e52edaede08b1064bc313969e6a217962cfebaaecaeb02c9114",
+  "original_v2_geometry_uv_animation_buffers": "byte-identical",
+  "nodes_meshes_animation_json": "identical",
+  "embedded_atlases": 2,
+  "clips": [
+    "Doors_Open",
+    "Doors_Close"
+  ]
+}

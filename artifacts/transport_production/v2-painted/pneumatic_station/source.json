@@ -1,0 +1,12 @@
+{
+  "source_drive_file": "https://drive.google.com/file/d/1kzpi0QpXAMSzsEg5X5oxPgjvg8z011uM/view",
+  "model": "pneumatic_station",
+  "runtime_glb_sha256": "9a5d21901a441e51d9f72b2103b8874270af42fc5729afcc52bac8e79caf6f6d",
+  "original_v2_geometry_uv_animation_buffers": "byte-identical",
+  "nodes_meshes_animation_json": "identical",
+  "embedded_atlases": 2,
+  "clips": [
+    "Doors_Open",
+    "Doors_Close"
+  ]
+}
