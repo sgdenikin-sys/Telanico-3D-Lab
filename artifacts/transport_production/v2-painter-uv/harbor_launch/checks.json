@@ -1,0 +1,18 @@
+{
+  "asset": "harbor_launch",
+  "geometry_sha256_unchanged": "7c3ace0692aab1a38d36dbf17604f944d595993dbb64e4f10d3264cc6ee0520b",
+  "triangles_checked": 7189,
+  "charts": {
+    "MAIN": 49,
+    "TRIM": 82
+  },
+  "old_face_islands": 3974,
+  "density_px_per_m": 94.178,
+  "padding_px_between_chart_bounds": 12,
+  "uv": "complete UV0; bounds and positive triangle areas; exact triangle intersection check passed per chart; disjoint chart packing",
+  "animations": [
+    "Doors_Open",
+    "Doors_Close"
+  ],
+  "runtime": "not changed; no engine build or deployment"
+}

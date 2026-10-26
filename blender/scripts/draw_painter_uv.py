@@ -46,13 +46,21 @@ for sheet,size in data['sheets'].items():
         cx,cy=sum(xs)/len(xs),sum(ys)/len(ys)
         text=c['id'];fs=18 if size==2048 else 12
         if max(xs)-min(xs)>fs*3 and max(ys)-min(ys)>fs:
-            for d in (gd,xd):d.text((cx,cy),text,font=font(fs),anchor='mm',fill=(10,15,20),stroke_width=1,stroke_fill=(255,255,255))
-            if sheet=='MAIN' and max(xs)-min(xs)>150 and max(ys)-min(ys)>60:
+            xd.text((cx,cy),text,font=font(fs),anchor='mm',fill=(10,15,20),stroke_width=1,stroke_fill=(255,255,255))
+        # Label whole charts, not individual polygons: a hull strip or canopy
+        # may be large even though every constituent quad is narrow. Chart
+        # bounds are disjoint, so labels in an annulus' hole remain unambiguous.
+        allpts=[p for face in pixel_faces for p in face]
+        xx=[p[0] for p in allpts];yy=[p[1] for p in allpts]
+        x=(min(xx)+max(xx))/2;y=(min(yy)+max(yy))/2
+        if max(xx)-min(xx)>fs*2 and max(yy)-min(yy)>fs:
+            gd.text((x,y),c['id'],font=font(fs),anchor='mm',fill=(10,15,20),stroke_width=1,stroke_fill=(255,255,255))
+            if sheet=='MAIN' and max(xx)-min(xx)>150 and max(yy)-min(yy)>60:
                 label=c['label'].replace('_',' ').upper()
-                if 'ROOF GORE' in label:label='ROOF GORE'+label.split('ROOF GORE')[-1].split()[0]
+                if 'ROOF GORE' in label:label='ROOF GORE '+label.split('ROOF GORE')[-1].split()[0]
                 elif 'HULL ' in label:label=label.split(' / ')[-1]
                 else:label=label.replace('FOUNDATION OCTAGONAL STONE','FOUNDATION').replace('HALL WALKABLE FLOOR','HALL FLOOR').replace(' / NET','')
-                gd.text((cx,cy+23),label[:27],font=font(15),anchor='mm',fill=(15,20,25),stroke_width=1,stroke_fill=(255,255,255))
+                gd.text((x,y+23),label[:31],font=font(15),anchor='mm',fill=(10,15,20),stroke_width=1,stroke_fill=(255,255,255))
     # The exact same boundary PNG is overlaid last on both diagnostic variants.
     Image.alpha_composite(guide,clean).save(out/(name+'_guide.png'))
     Image.alpha_composite(checker,clean).save(out/(name+'_checker.png'))
