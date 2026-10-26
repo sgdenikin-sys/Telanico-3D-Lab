@@ -1,0 +1,22 @@
+{
+  "asset": "pneumatic_station",
+  "triangles": 8146,
+  "editable_meshes": 201,
+  "hinged_doors": 2,
+  "clips": [
+    "Doors_Open",
+    "Doors_Close"
+  ],
+  "uv0": "all mesh loops mapped, non-degenerate, unique face rectangles, uniform metric texel density",
+  "minimum_uv_gap_px": 4.23893531674136,
+  "texel_density_px_per_m": 41.762909524545414,
+  "materials": "glTF metallic/roughness, alpha BLEND tinted separate glass; no final textures",
+  "roof_collection": "ROOF_removable",
+  "units": "meters",
+  "checks": "Blender geometry, UV bounds/overlap/padding and GLB animation payload only; no game build",
+  "exported_animation_channels": {
+    "Doors_Open": 2,
+    "Doors_Close": 2
+  },
+  "exported_door_motion": "binary quaternion samples verified: closed default pose, independent 100 degree hinges, inverse open/close endpoints, 1 second"
+}
