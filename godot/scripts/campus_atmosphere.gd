@@ -35,14 +35,23 @@ static func apply(scene: Node3D, campus: Node3D) -> void:
     settings.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
     # Godot 4.6 Compatibility supports the simplified radius/intensity AO pass.
     settings.ssao_enabled = true
-    settings.ssao_radius = 1.25
-    settings.ssao_intensity = 0.65
+    settings.ssao_radius = 0.55
+    settings.ssao_intensity = 1.05
+    settings.ssao_power = 1.6
+    settings.ssao_detail = 0.65
+    settings.ssao_light_affect = 0.12
     settings.fog_enabled = true
     settings.fog_light_color = Color("#B5D1D6")
     settings.fog_light_energy = 0.75
-    settings.fog_density = 0.00022
+    # Orthographic camera sits 230m from its target: keep local play clear.
+    settings.fog_mode = Environment.FOG_MODE_DEPTH
+    settings.fog_depth_begin = 215.0
+    settings.fog_depth_end = 310.0
+    settings.fog_depth_curve = 1.7
+    settings.fog_density = 0.12
+    settings.fog_sky_affect = 0.05
     settings.fog_height = 0.5
-    settings.fog_height_density = 0.025
+    settings.fog_height_density = 0.0
     settings.fog_sun_scatter = 0.15
     environment.environment = settings
     scene.add_child(environment)
