@@ -1,0 +1,22 @@
+{
+  "asset": "harbor_launch",
+  "triangles": 7189,
+  "editable_meshes": 81,
+  "hinged_doors": 1,
+  "clips": [
+    "Doors_Open",
+    "Doors_Close"
+  ],
+  "uv0": "all mesh loops mapped, non-degenerate, unique face rectangles, uniform metric texel density",
+  "minimum_uv_gap_px": 5.763756434170897,
+  "texel_density_px_per_m": 82.33937763101282,
+  "materials": "glTF metallic/roughness, alpha BLEND tinted separate glass; no final textures",
+  "roof_collection": "ROOF_removable",
+  "units": "meters",
+  "checks": "Blender geometry, UV bounds/overlap/padding and GLB animation payload only; no game build",
+  "exported_animation_channels": {
+    "Doors_Open": 1,
+    "Doors_Close": 1
+  },
+  "exported_door_motion": "binary samples verified: closed default pose, independent 100 degree hinges, inverse open/close endpoints, 1 second"
+}

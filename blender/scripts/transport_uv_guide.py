@@ -15,8 +15,12 @@ for node in ET.parse(out/'uv_layout.svg').getroot().iter():
         nd.line(coords+[coords[0]],fill=(12,18,24,255),width=1)
 native.save(out/'uv_layout.png')
 im=Image.new('RGBA',(size,size),(30,38,48,255));d=ImageDraw.Draw(im)
-fontpath='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-font=ImageFont.truetype(fontpath,20);small=ImageFont.truetype(fontpath,11)
+def portable_font(size):
+    for name in ('DejaVuSans.ttf','arial.ttf'):
+        try:return ImageFont.truetype(name,size)
+        except OSError:pass
+    return ImageFont.load_default()
+font=portable_font(20);small=portable_font(11)
 for f in data['surfaces']:
     pts=[(u*size,(1-v)*size) for u,v in f['uv']]
     d.polygon(pts,fill=palette[f['region']])

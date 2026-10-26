@@ -326,7 +326,8 @@ def launch():
     for x in (-1.22,0,1.22):
         yy=-2.42 if x==0 else -1.3
         rod('Windscreen_primary_frame',[(x,yy,1.38),(x,yy,2.28)],.045,'bronze','CABIN')
-    for side in (-1,1):seat(f'Cockpit_seat_{side}',side*.67,-.70,width=.72)
+    # Keep the complete 100-degree cabin-door sweep clear of both seat backs.
+    for side in (-1,1):seat(f'Cockpit_seat_{side}',side*.67,-.95,width=.72)
     helm(.67,-1.75)
     # Aft cargo/passenger cabin, with an actual central door opening facing cockpit.
     w=1.18;front=.70;back=2.66;low=.80;top=3.05
@@ -341,9 +342,17 @@ def launch():
         box('FRONT_door_sidewall',(side*.85,front,1.93),(.66,.18,2.26),'ivory','FRONT',.035)
     box('FRONT_door_lintel',(0,front,2.95),(1.04,.18,.20),'ivory','FRONT',.035)
     door('Cabin_entry',(-.50,front-.10,low),1.00,2.04,0,-1)
-    roof=box('Removable_ivory_cabin_roof',(0,1.68,3.15),(2.64,2.26,.26),'ivory','ROOF',.10)
-    box('Navy_roof_access_panel',(0,1.68,3.30),(1.10,1.40,.07),'navy','ROOF',.06)
-    for side in (-1,1):rod('Roof_brass_edge',[(side*1.30,.57,3.22),(side*1.30,2.79,3.22)],.045,'brass','ROOF')
+    # Solid rounded pressure-cover silhouette from the original small launch.
+    profile=[(-1.32,3.03),(-1.32,3.13),(-1.29,3.25),(-1.20,3.35),
+             (-1.07,3.42),(-.90,3.44),(.90,3.44),(1.07,3.42),
+             (1.20,3.35),(1.29,3.25),(1.32,3.13),(1.32,3.03)]
+    n=len(profile);v=[(x,y,z) for y in (.55,2.81) for x,z in profile]
+    f=[tuple(reversed(range(n))),tuple(range(n,2*n))]
+    f += [(i,(i+1)%n,(i+1)%n+n,i+n) for i in range(n)]
+    roof=mesh('Removable_rounded_ivory_cabin_roof',v,f,'ivory','ROOF')
+    for p in roof.data.polygons:p.use_smooth=p.index>=2 and abs(p.normal.z)<.99
+    box('Navy_roof_access_panel',(0,1.68,3.475),(1.10,1.40,.07),'navy','ROOF',.06)
+    for side in (-1,1):rod('Roof_brass_edge',[(side*1.32,.56,3.08),(side*1.32,2.80,3.08)],.045,'brass','ROOF')
     box('Cabin_port_bench',(-.78,1.68,1.12),(.57,1.34,.64),'navy','INTERIOR',.06)
     box('Cabin_port_cushion',(-.78,1.68,1.49),(.62,1.40,.14),'ivory','INTERIOR',.05)
     box('Cabin_starboard_storage',(.82,2.13,1.17),(.46,.65,.72),'navy','INTERIOR',.045)
