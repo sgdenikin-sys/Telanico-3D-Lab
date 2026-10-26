@@ -227,8 +227,17 @@ def boat_hull(length,width):
     # Separate flat walkable interior floor, exposed in the open cockpit and cabin.
     p=[(x*.865,y*.976,.78) for x,y in pts]
     mesh('Usable_interior_deck',p,[tuple(range(n))],'deck','FLOOR')
-    v=[(x*s,y*(.82+.18*s),z) for s,z in [(1.02,1.34),(.87,1.34)] for x,y in pts]
+    v=[(x*s,y*(.82+.18*s),z) for s,z in [(1.02,1.375),(.87,1.375)] for x,y in pts]
     mesh('Ivory_walkaround_gunwale',v,[(i,(i+1)%n,n+(i+1)%n,n+i) for i in range(n)],'ivory','DECK')
+    # Closed foredeck, while cockpit/cabin remain truly open below their roofs.
+    cut=-3.18 if length>10 else -2.60
+    inner=[(x*.87,y*.976) for x,y in pts];bow=[]
+    for i,p in enumerate(inner):
+        q=inner[(i+1)%n]
+        if p[1]<=cut:bow.append((p[0],p[1],1.375))
+        if (p[1]<cut)!=(q[1]<cut):
+            t=(cut-p[1])/(q[1]-p[1]);bow.append((p[0]+t*(q[0]-p[0]),cut,1.375))
+    mesh('Ivory_solid_foredeck',bow,[tuple(range(len(bow)))],'ivory','DECK')
     for z,s,mat in [(1.38,1.015,'brass'),(.95,1.0,'ivory'),(.39,.79,'brass')]:
         rod('Continuous_rubbing_strake',[(x*s,y*(.82+.18*s),z) for x,y in pts]+[(pts[0][0]*s,pts[0][1]*(.82+.18*s),z)],.035,mat,'HULL')
     # Sparse practical deck fittings rather than tiny ornamental beams.
@@ -260,41 +269,50 @@ def helm(x,y):
 
 def ferry():
     boat_hull(11.5,4.25)
-    w=1.45; z=.80; top=2.98
-    # Two real side entry gaps aft; all other bays are separate wall/pane parts.
+    w=1.45; z=.80; sill=1.45; arch_height=2.08
+    # Full rounded glass canopy follows the original boat, rather than a box cabin.
+    # Double boarding doors are in the flat aft end, below the arched glazing.
     for side,g in [(-1,'LEFT'),(1,'RIGHT')]:
         x=side*w
-        box(g+'_cabin_sill',(x,-.60,1.12),(.12,5.10,.64),'navy',g,.02)
-        for j,(a,b) in enumerate([(-3.15,-1.85),(-1.85,-.55),(-.55,.75),(.75,1.95)]):
-            pane(f'{g}_side_glass_{j}',[(x,a,1.45),(x,b,1.45),(x,b,top),(x,a,top)],j)
-            rod(f'{g}_window_pier_{j}',[(x,a,.83),(x,a,top)],.055,'brass',g)
-        for yy in (1.95,3.02):rod(g+'_entry_jamb',[(x,yy,z),(x,yy,top)],.07,'bronze',g)
-        door(g+'_boarding_door',(x,1.98,z),1.00,2.15,math.pi/2,side)
-        box(g+'_lintel',(x,2.5,3.04),(.15,1.14,.18),'ivory',g,.025)
-    for yy,group in [(-3.15,'FRONT'),(3.04,'BACK')]:
-        box(group+'_cabin_base',(0,yy,1.11),(2*w,.12,.62),'ivory',group,.04)
-        pane(group+'_panoramic_glazing',[(-w,yy,1.45),(w,yy,1.45),(w,yy,top),(-w,yy,top)],1)
-        rod(group+'_central_pier',[(0,yy,1.45),(0,yy,top)],.055,'brass',group)
-    # True barrel canopy: glass panels removable along with structural cap ribs.
+        box(g+'_cabin_sill',(x,-.05,1.12),(.13,6.22,.64),'navy',g,.03)
+        rod(g+'_brass_sill',[(x,-3.17,sill),(x,3.07,sill)],.065,'brass',g)
+    front=-3.15;back=3.05
+    # Forward end is a broad continuous, genuinely transparent panoramic pane.
+    box('FRONT_cabin_base',(0,front,1.11),(2*w,.13,.62),'ivory','FRONT',.04)
+    arc=[(w*math.cos(j*math.pi/16),front,sill+arch_height*math.sin(j*math.pi/16)) for j in range(17)]
+    pane('FRONT_panoramic_arch',arc,1)
+    rod('FRONT_windscreen_center',[(0,front,sill),(0,front,sill+arch_height)],.045,'brass','FRONT')
+    # Actual rear opening: no wall or pane extends behind either hinged leaf.
+    half=.64;door_top=z+2.15
+    for side in (-1,1):
+        box('BACK_entry_sidewall',(side*(w+half)/2,back,1.11),(w-half,.14,.62),'ivory','BACK',.035)
+    door('Aft_entry_left',(-half,back,z),half,2.15,0,1)
+    door('Aft_entry_right',(half,back,z),half,2.15,math.pi,-1)
+    t=math.acos(half/w);ztop=sill+arch_height*math.sin(t)
+    right=[(half,back,sill),(w,back,sill)]+[(w*math.cos(t*j/8),back,sill+arch_height*math.sin(t*j/8)) for j in range(1,9)]
+    pane('BACK_glass_right',right,0)
+    pane('BACK_glass_left',[(-x,y,zz) for x,y,zz in reversed(right)],2)
+    crown=[(-half,back,door_top),(half,back,door_top),(half,back,ztop)]+[
+        (w*math.cos(t+(math.pi-2*t)*j/8),back,sill+arch_height*math.sin(t+(math.pi-2*t)*j/8)) for j in range(1,9)]
+    pane('BACK_glass_above_entry',crown,1)
+    # Structural end jambs, no decorative thin crossbars over the entry opening.
+    for x in (-half,half):rod('BACK_door_jamb',[(x,back,z),(x,back,ztop)],.065,'bronze','BACK')
     for k in range(5):
         ya=-3.15+k*1.24;yb=ya+1.24
-        for j in range(12):
-            a=j*math.pi/12;b=(j+1)*math.pi/12
-            pts=[(w*math.cos(t),yy,top+.72*math.sin(t)) for yy,t in [(ya,a),(yb,a),(yb,b),(ya,b)]]
+        for j in range(16):
+            a=j*math.pi/16;b=(j+1)*math.pi/16
+            pts=[(w*math.cos(t),yy,sill+arch_height*math.sin(t)) for yy,t in [(ya,a),(yb,a),(yb,b),(ya,b)]]
             pane(f'Canopy_glass_{k:02}_{j:02}',pts,j,'ROOF')
     for k in range(6):
         yy=-3.15+k*1.24
-        rod(f'Canopy_brass_hoop_{k}',[(w*math.cos(j*math.pi/24),yy,top+.72*math.sin(j*math.pi/24)) for j in range(25)],.055,'brass','ROOF')
-    for x in (-w,w):rod('Canopy_side_spine',[(x,-3.17,top),(x,3.07,top)],.07,'bronze','ROOF')
-    for yy,g in [(-3.16,'FRONT'),(3.06,'BACK')]:
-        pane(g+'_canopy_end',[(-w,yy,top),(w,yy,top)]+[(w*math.cos(j*math.pi/12),yy,top+.72*math.sin(j*math.pi/12)) for j in range(1,12)],0,'ROOF')
+        rod(f'Canopy_brass_hoop_{k}',[(w*math.cos(j*math.pi/32),yy,sill+arch_height*math.sin(j*math.pi/32)) for j in range(33)],.055,'brass','ROOF')
     for row,yy in enumerate((-1.65,-.40,.85)):
         for side in (-1,1):seat(f'Passenger_{row}_{side}',side*.87,yy,width=.82)
     seat('Pilot',.66,-2.5,width=.66);helm(.66,-2.92)
-    box('Aft_transom_bench',(0,3.85,1.08),(2.0,.58,.52),'ivory','INTERIOR',.08)
-    # Readable bow hatch and stern machinery cover, clear of side door entries.
-    box('Bow_access_hatch',(0,-4.35,1.05),(.85,1.0,.22),'ivory','DECK',.07)
-    rod('Bow_hatch_handle',[(-.15,-4.34,1.18),(.15,-4.34,1.18)],.035,'brass','DECK')
+    # Stern boarding space stays clear behind the double doorway.
+    for side in (-1,1):box('Aft_side_bench',(side*1.05,3.66,1.08),(.55,.72,.52),'ivory','INTERIOR',.08)
+    box('Bow_access_hatch',(0,-4.35,1.46),(.85,1.0,.16),'ivory','DECK',.07)
+    rod('Bow_hatch_handle',[(-.15,-4.34,1.56),(.15,-4.34,1.56)],.035,'brass','DECK')
 
 
 def launch():
@@ -329,8 +347,8 @@ def launch():
     box('Cabin_port_bench',(-.78,1.68,1.12),(.57,1.34,.64),'navy','INTERIOR',.06)
     box('Cabin_port_cushion',(-.78,1.68,1.49),(.62,1.40,.14),'ivory','INTERIOR',.05)
     box('Cabin_starboard_storage',(.82,2.13,1.17),(.46,.65,.72),'navy','INTERIOR',.045)
-    box('Bow_hatch',(0,-3.25,1.22),(.65,.63,.20),'ivory','DECK',.055)
-    rod('Bow_hatch_pull',[(-.12,-3.27,1.34),(.12,-3.27,1.34)],.03,'brass','DECK')
+    box('Bow_hatch',(0,-3.25,1.46),(.65,.63,.16),'ivory','DECK',.055)
+    rod('Bow_hatch_pull',[(-.12,-3.27,1.56),(.12,-3.27,1.56)],.03,'brass','DECK')
 
 
 def shelf_pack(items,width,pad):
