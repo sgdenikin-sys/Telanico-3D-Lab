@@ -1,0 +1,18 @@
+{
+  "asset": "pneumatic_station",
+  "geometry_sha256_unchanged": "a175203f6d52e8207b5450e59f2562a49055912bde15c345a1096629e366aeb3",
+  "triangles_checked": 8146,
+  "charts": {
+    "MAIN": 73,
+    "TRIM": 348
+  },
+  "old_face_islands": 3767,
+  "density_px_per_m": 65.542,
+  "padding_px_between_chart_bounds": 12,
+  "uv": "complete UV0; bounds and positive triangle areas; exact triangle intersection check passed per chart; disjoint chart packing",
+  "animations": [
+    "Doors_Open",
+    "Doors_Close"
+  ],
+  "runtime": "not changed; no engine build or deployment"
+}
