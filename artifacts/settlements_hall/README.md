@@ -8,6 +8,8 @@ verified after isolated Godot 4.6.3 import. Existing game assets are unchanged.
 
 [Download the complete V4 painting kit](settlements_hall_v4_painter_10k.zip?raw=true)
 
+[Google Drive: complete V4 kit and individual files](https://drive.google.com/drive/folders/1TtSmIUMXTGIdDNJ_RgiwOLI5_XLZIFBI) · [Drive ZIP](https://drive.google.com/file/d/1DA3TEaUZ7jJVdyZA8JU45lo3cZrJqhVP/view)
+
 **Previous standalone delivery: animated v2**
 
 [Download the corrected ZIP](v2-animated/settlements_hall_asset_pack.zip?raw=true) · [Gallery, demonstration and reports](v2-animated/README.md)

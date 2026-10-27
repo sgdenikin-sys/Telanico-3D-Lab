@@ -1,0 +1,71 @@
+{
+  "engine": "4.6.3-stable (official)",
+  "materials": [
+    {
+      "alpha": 1.0,
+      "name": "T_Base",
+      "texture": [
+        4096,
+        4096
+      ],
+      "transparency": 0
+    },
+    {
+      "alpha": 1.0,
+      "name": "T_Blue_roof",
+      "texture": [
+        4096,
+        4096
+      ],
+      "transparency": 0
+    },
+    {
+      "alpha": 1.0,
+      "name": "T_Doors",
+      "texture": [
+        4096,
+        4096
+      ],
+      "transparency": 0
+    },
+    {
+      "alpha": 1.0,
+      "name": "T_Glass",
+      "texture": [
+        4096,
+        4096
+      ],
+      "transparency": 0
+    },
+    {
+      "alpha": 1.0,
+      "name": "T_Gold_trim",
+      "texture": [
+        4096,
+        4096
+      ],
+      "transparency": 0
+    },
+    {
+      "alpha": 1.0,
+      "name": "T_Limestone",
+      "texture": [
+        4096,
+        4096
+      ],
+      "transparency": 0
+    },
+    {
+      "alpha": 1.0,
+      "name": "T_Plaster",
+      "texture": [
+        4096,
+        4096
+      ],
+      "transparency": 0
+    }
+  ],
+  "meshes": 7,
+  "scope": "Isolated Godot GLB import, no game build or placement yet",
+  "triangles": 10990
+}
