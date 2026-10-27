@@ -1,6 +1,14 @@
 # Settlements Hall downloads
 
-**Current delivery: animated v2**
+**New separate painting source: [V4 Painter 10k](v4-painter-10k/README.md)**
+
+10,805 triangles; three 2048px atlases, editable Blender source, matching GLB,
+clean/annotated UVs and actual mapping renders. Doors, four flags and glass
+verified after isolated Godot 4.6.3 import. Existing game assets are unchanged.
+
+[Download the complete V4 painting kit](settlements_hall_v4_painter_10k.zip?raw=true)
+
+**Previous standalone delivery: animated v2**
 
 [Download the corrected ZIP](v2-animated/settlements_hall_asset_pack.zip?raw=true) · [Gallery, demonstration and reports](v2-animated/README.md)
 

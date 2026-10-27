@@ -1,0 +1,34 @@
+{
+  "source": "V3 Lite",
+  "source_sha256": "84b627b6874931449f839a77eb6c1199d4838a1b5510bdbf7f048e99c21f3f6d",
+  "original_triangles": 19816,
+  "triangles": 10805,
+  "reduction_percent": 45.5,
+  "source_mesh_objects": 583,
+  "charts": {
+    "MAIN": 111,
+    "TRIM": 371,
+    "ROOF": 16
+  },
+  "density_px_per_m": {
+    "MAIN": 72.17,
+    "ROOF": 56.634,
+    "TRIM": 36.534
+  },
+  "padding_px": 12,
+  "intentional_shared_repeat_objects": 425,
+  "unique_paint_modules": 158,
+  "uv_check": "UV0 complete; positive UV triangle areas; exact triangle intersection check; disjoint chart bounds; identical modules intentionally share UVs (listed in surface_mapping.json)",
+  "animations": [
+    "Doors_Close",
+    "Doors_Open",
+    "Flags_Wind-loop",
+    "Hall_Demo-loop"
+  ],
+  "animated_flags": 4,
+  "materials": "Original PBR and glass alpha retained; unconnected PAINT_ATLAS image nodes",
+  "runtime": "Not changed; no game build or deploy",
+  "clean_guide_boundary_pixels_match": true,
+  "all_objects_in_mapping_csv": 583,
+  "godot_import_report": "godot_import_check.json"
+}
