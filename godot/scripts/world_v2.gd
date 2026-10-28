@@ -7,7 +7,7 @@ const OVERVIEW_ZOOM := 124.0
 var data: Dictionary
 var graph: RefCounted
 var world: Node3D
-var settlements_hall: Node3D # Approved Hall unchanged.
+var settlements_hall: Node3D # Painted Hall V4; existing entrance and controls.
 var operations_dome: Node3D # Replacement visual for Operations.
 var camera: Camera3D
 var actor: CharacterBody3D
@@ -101,6 +101,7 @@ func _ready() -> void:
         _make_site_target(ident)
     _install_settlements_hall()
     _install_operations_dome()
+    _install_meridian_palace()
     ferry = world.find_child("Central Ferry", true, false)
     _install_transport_visuals()
     _make_actor()
@@ -136,7 +137,7 @@ func _install_settlements_hall() -> void:
         push_error("Settlements Hall V3 Lite asset not staged")
         return
     settlements_hall = hall_scene.instantiate() as Node3D
-    settlements_hall.name = "SettlementsHallV3Lite"
+    settlements_hall.name = "SettlementsHallV4Textured"
     # Retain canonical site collision and entrance path; do not add a second
     # overlapping wall/ground collider from the freestanding preview model.
     var extra_collision := settlements_hall.get_node_or_null("OptionalBuildingCollision") as StaticBody3D
@@ -151,7 +152,7 @@ func _install_settlements_hall() -> void:
     settlements_hall.scale = Vector3.ONE * 0.63
     add_child(settlements_hall)
     original.visible = false
-    print("TELANICO_HALL_V3_INSTALLED at ", settlements_hall.position,
+    print("TELANICO_HALL_V4_TEXTURED_INSTALLED at ", settlements_hall.position,
           " scale=", settlements_hall.scale.x)
 
 
@@ -175,6 +176,23 @@ func _install_operations_dome() -> void:
     add_child(operations_dome)
     original.visible = false
     print("TELANICO_OPERATIONS_V3_INSTALLED")
+
+
+func _install_meridian_palace() -> void:
+    # Replace the free Trade Finance visual; keep its Area3D, entry and routes.
+    var original := world.find_child("Site_finance", true, false) as Node3D
+    var palace_scene := load("res://assets/generated/meridian_palace_lite_textured.glb") as PackedScene
+    if original == null or palace_scene == null:
+        push_error("Meridian Palace: original Finance site or GLB missing")
+        return
+    var palace := palace_scene.instantiate() as Node3D
+    palace.name = "MeridianPalaceLiteTextured"
+    palace.scale = Vector3.ONE * 0.52
+    # Native +Z stair front: 1.404 + 9.8 * .52 = canonical 6.5m entrance.
+    palace.position = graph.vec(sites["finance"].position) + Vector3(0, 0.04, 1.404)
+    add_child(palace)
+    original.visible = false
+    print("TELANICO_MERIDIAN_FINANCE_INSTALLED")
 
 
 func _install_transport_visuals() -> void:
