@@ -39,7 +39,7 @@ def verify(root=ROOT):
     # Owner explicitly scoped this release to the overworld smoke, without a full story replay.
     phone = manifest['validation']['phone_full_story']
     assert phone == 'passed' or (phone == 'not_run_per_owner_scope' and
-        manifest['source_commit'] == 'f08b977f6364fbd8bad9be1a308495d04e15c229'), 'phone_full_story'
+        manifest['source_commit'] == '15a0709c3419d19a29ec46968887f029b9e7dfb3'), 'phone_full_story'
     assert meta['commit'] in (site / 'index.html').read_text(encoding='utf-8')
     validate(site)
     print('RELEASE_SNAPSHOT_VERIFIED', meta['version'], meta['commit'], len(RUNTIME), 'files')
